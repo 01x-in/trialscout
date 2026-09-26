@@ -5,6 +5,8 @@
   --fg: #1f1b16;
   --muted: #5c554c;
   --line: #d9d2c7;
+  /* Borders that mark a field or button: 3:1 against the page and cards. */
+  --control: #857b6f;
   --surface: #ffffff;
   --accent: #7a4424;
   --error: #9f1d1d;
@@ -27,6 +29,7 @@
     --fg: #f6f1ea;
     --muted: #b3aa9e;
     --line: #463f37;
+    --control: #8a8074;
     --surface: #26221e;
     --accent: #e0a47c;
     --error: #fca5a5;
@@ -39,9 +42,25 @@
   }
 }
 
+/* The disclaimer strip is sticky: keep a focused or jumped-to element clear of it
+   (WCAG 2.4.11). On a phone the strip wraps to three lines. */
+html {
+  scroll-padding-top: 6rem;
+}
+
 body {
   margin: 0;
   background: var(--bg);
+}
+
+a {
+  color: var(--accent);
+}
+
+/* One focus ring for every control and link, as the form uses. */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .demo-caution {
@@ -59,6 +78,8 @@ body {
 .page {
   box-sizing: border-box;
   max-width: 40rem;
+  /* Long trial titles and sponsor names wrap rather than widen the page on a phone. */
+  overflow-wrap: break-word;
   margin: 0 auto;
   padding: 2rem 1rem 4rem;
 }
@@ -124,7 +145,7 @@ h1 {
   font: inherit;
   color: var(--fg);
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid var(--control);
   border-radius: 0.4rem;
 }
 
@@ -287,7 +308,7 @@ h1 {
   padding: 0.5rem 0.9rem;
   color: var(--fg);
   background: transparent;
-  border: 2px solid var(--line);
+  border: 2px solid var(--control);
   border-radius: 0.4rem;
   font: inherit;
   font-weight: 600;
