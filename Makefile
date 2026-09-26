@@ -1,4 +1,4 @@
-.PHONY: install dev dev-worker dev-web test test-worker test-web lint format db-local db-generate check-deploy deploy
+.PHONY: install dev dev-worker dev-web test test-worker test-web lint format db-local db-generate check-deploy deploy smoke
 
 install:
 	npm install
@@ -46,3 +46,7 @@ check-deploy:
 deploy:
 	cd apps/worker && npm run deploy
 	cd apps/web && npm run deploy
+
+# Smoke-test a deployment: make smoke URL=https://trialscout.cc (one real search and one trial check with Jev)
+smoke:
+	cd apps/worker && node scripts/smoke.ts $(URL)
