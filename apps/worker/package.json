@@ -9,14 +9,18 @@
     "deploy": "vite build && wrangler deploy",
     "check:deploy": "vite build && wrangler deploy --dry-run",
     "test": "vitest run",
-    "typecheck": "tsc -p . && tsc -p scripts",
+    "typecheck": "tsc -p . && tsc -p tsconfig.node.json && tsc -p scripts",
     "tools:jev-spike": "node --env-file-if-exists=.dev.vars scripts/jev-spike.ts",
-    "tools:record-ctgov": "node scripts/record-ctgov.ts"
+    "tools:record-ctgov": "node scripts/record-ctgov.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:cities": "node scripts/import-cities.ts"
   },
   "dependencies": {
     "@hono/typia-validator": "0.1.3",
     "@trialscout/contract": "*",
     "@typesafe-ai/sdk": "^0.6.0",
+    "drizzle-orm": "^0.45.3",
     "hono": "^4.13.9",
     "typia": "15.0.0"
   },
@@ -26,6 +30,7 @@
     "@cloudflare/workers-types": "^5.20260924.1",
     "@ttsc/unplugin": "0.30.4",
     "@types/node": "^24.19.0",
+    "drizzle-kit": "^0.31.11",
     "vite": "^8.3.0",
     "vitest": "^4.1.0",
     "wrangler": "^4.141.0"

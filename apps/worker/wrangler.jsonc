@@ -10,6 +10,15 @@
   "workers_dev": false,
   "preview_urls": false,
   "observability": { "enabled": true },
+  // No database_id yet: `wrangler d1 create trialscout` fills it in at M4
+  // (docs/deploy-cloudflare.md). Local dev and tests use the name.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "trialscout",
+      "migrations_dir": "migrations"
+    }
+  ],
   // Secret: TYPESAFE_API_KEY (apps/worker/.dev.vars locally, `wrangler secret put` in production).
   "vars": {
     // Pinned, not jev-latest: cached verdicts and GATE 1 thresholds belong to one version.

@@ -1,4 +1,4 @@
-.PHONY: install dev dev-worker dev-web test test-worker test-web lint format check-deploy deploy
+.PHONY: install dev dev-worker dev-web test test-worker test-web lint format db-local db-generate check-deploy deploy
 
 install:
 	npm install
@@ -27,6 +27,15 @@ lint:
 
 format:
 	npm run format
+
+# Local D1: apply migrations, then import GeoNames cities (downloads ~3 MB on first run)
+db-local:
+	cd apps/worker && npm run db:migrate:local
+	cd apps/worker && npm run db:cities
+
+# Regenerate D1 migrations after changing apps/worker/src/db/schema.ts
+db-generate:
+	cd apps/worker && npm run db:generate
 
 # Build both Workers and run `wrangler deploy --dry-run` on each; deploys nothing
 check-deploy:

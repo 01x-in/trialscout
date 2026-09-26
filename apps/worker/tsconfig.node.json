@@ -2,21 +2,18 @@
   "compilerOptions": {
     "target": "es2023",
     "lib": ["ES2023"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "types": ["@cloudflare/workers-types", "@cloudflare/vitest-pool-workers/types", "vite/client"],
+    "types": ["node"],
+    "module": "nodenext",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
     "skipLibCheck": true,
     "strict": true,
-    "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "plugins": [{ "transform": "typia/lib/transform" }]
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "test"]
+  "include": ["vite.config.ts", "vitest.config.ts", "drizzle.config.ts"]
 }

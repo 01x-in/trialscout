@@ -146,7 +146,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 
 - M3.1 Daily cron refreshes cached trials with a cursor and re-splits trials that changed.
 - M3.2 When ClinicalTrials.gov is unavailable, serve cached trials with a "data as of" date.
-- M3.3 "About this demo" page: how matching works, what Jev is, the method's limits, and why no clinician has verified the results.
+- M3.3 "About this demo" page: how matching works, what Jev is, the method's limits, and why no clinician has verified the results. Credit GeoNames (CC BY 4.0) for city data.
 - M3.4 WCAG AA pass: axe in tests, keyboard navigation, contrast, phone layout.
 - M3.5 Privacy audit: no body logging, no profile analytics, KV values hold verdicts only.
 

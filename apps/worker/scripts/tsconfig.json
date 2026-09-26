@@ -3,7 +3,7 @@
     "target": "es2023",
     "lib": ["ES2023", "DOM"],
     "module": "nodenext",
-    "types": ["node"],
+    "types": ["node", "@cloudflare/workers-types"],
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

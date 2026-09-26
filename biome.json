@@ -20,7 +20,8 @@
       "!**/node_modules",
       "!**/dist",
       "!**/.wrangler",
-      "!fixtures/**"
+      "!fixtures/**",
+      "!**/migrations/meta"
     ]
   },
   "formatter": {
