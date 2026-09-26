@@ -1,6 +1,7 @@
 import type { CriterionVerdict, TrialVerdictsResponse } from '@trialscout/contract'
 import type { JSX } from 'react'
 import { type CountVerdict, VERDICT_ICONS, VERDICT_LABELS } from './format.ts'
+import { doctorQuestion } from './questions.ts'
 
 // Every rule of a trial, each verdict (icon and label) next to the verbatim text it was
 // judged against. Medical terms appear only inside those quotes.
@@ -26,6 +27,11 @@ function Rule({ criterion }: { criterion: Judged }): JSX.Element {
       </p>
       <blockquote className="criterion-text">{criterion.text}</blockquote>
       <Group group={criterion.group} />
+      {criterion.verdict === 'ask_your_doctor' && (
+        <p className="criterion-question">
+          <strong>To ask:</strong> {doctorQuestion(criterion)}
+        </p>
+      )}
     </li>
   )
 }

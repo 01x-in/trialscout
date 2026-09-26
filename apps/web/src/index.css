@@ -386,6 +386,10 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
+.criterion-question {
+  margin: 0.5rem 0 0;
+}
+
 /* Printed sheets are black on white, and the disclaimer is always printed. */
 @media print {
   :root {

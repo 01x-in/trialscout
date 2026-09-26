@@ -60,6 +60,15 @@ describe('Checklist', () => {
     }
   })
 
+  it('gives each "ask your doctor" rule a plain question to ask', () => {
+    render(<Checklist trial={trial()} />)
+
+    expect(within(item('ECOG performance status 0-1')).getByText(/daily activities/)).toHaveClass(
+      'criterion-question',
+    )
+    expect(item('Histologically confirmed NSCLC').querySelector('.criterion-question')).toBeNull()
+  })
+
   it('lists the rules to take part apart from the rules that keep people out', () => {
     render(<Checklist trial={trial()} />)
 
