@@ -83,6 +83,15 @@ describe('searchTrials', () => {
     expect(outcome).toEqual({ kind: 'unavailable' })
   })
 
+  it('reports a successful response with an unreadable body as unavailable', async () => {
+    const outcome = await searchTrials(
+      PROFILE,
+      fetching(() => new Response('{"results": [', { status: 200 })),
+    )
+
+    expect(outcome).toEqual({ kind: 'unavailable' })
+  })
+
   it('reports a network failure as unavailable', async () => {
     const outcome = await searchTrials(
       PROFILE,
@@ -144,6 +153,16 @@ describe('checkTrial', () => {
     )
 
     expect(outcome).toEqual({ kind: 'rate_limited', retryAfterSeconds: 30 })
+  })
+
+  it('reports a successful response with an unreadable body as unavailable', async () => {
+    const outcome = await checkTrial(
+      'NCT00000001',
+      PROFILE,
+      fetching(() => new Response('{"criteria": [', { status: 200 })),
+    )
+
+    expect(outcome).toEqual({ kind: 'unavailable' })
   })
 
   it('reports a failure or network error as unavailable', async () => {

@@ -35,14 +35,19 @@ function client(fetchImpl: typeof fetch): ReturnType<typeof hc<AppType>> {
   return hc<AppType>(globalThis.location.origin, { fetch: fetchImpl })
 }
 
+/** The parsed JSON body, or undefined when it is missing, truncated or not JSON. */
+async function bodyOf(response: Response): Promise<unknown> {
+  try {
+    return (await response.json()) as unknown
+  } catch {
+    return undefined
+  }
+}
+
 /** The Problem Details body of a failed response, or null when it has none. */
 async function problemOf(response: Response): Promise<Problem | null> {
-  try {
-    const body: unknown = await response.json()
-    return isProblem(body) ? body : null
-  } catch {
-    return null
-  }
+  const body = await bodyOf(response)
+  return isProblem(body) ? body : null
 }
 
 function rateLimited(response: Response): RateLimited | null {
@@ -64,7 +69,13 @@ export async function searchTrials(
   } catch {
     return { kind: 'unavailable' }
   }
-  if (response.ok) return { kind: 'results', response: (await response.json()) as SearchResponse }
+  if (response.ok) {
+    // A 2xx with an unreadable body is treated like any other failure, so the page can retry.
+    const body = await bodyOf(response)
+    return body === undefined
+      ? { kind: 'unavailable' }
+      : { kind: 'results', response: body as SearchResponse }
+  }
 
   const problem = await problemOf(response)
   if (problem?.type === PROBLEM_TYPES.unknownCity) {
@@ -92,7 +103,10 @@ export async function checkTrial(
     return { kind: 'unavailable' }
   }
   if (response.ok) {
-    return { kind: 'verdicts', response: (await response.json()) as TrialVerdictsResponse }
+    const body = await bodyOf(response)
+    return body === undefined
+      ? { kind: 'unavailable' }
+      : { kind: 'verdicts', response: body as TrialVerdictsResponse }
   }
   const problem = await problemOf(response)
   if (problem?.type === PROBLEM_TYPES.trialNotFound) return { kind: 'not_found' }
