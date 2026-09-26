@@ -1,7 +1,9 @@
 import type { Profile, TrialResult } from '@trialscout/contract'
-import { type JSX, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
+import { createPortal, flushSync } from 'react-dom'
 import type { CheckTrial, TrialOutcome } from './api.ts'
 import { Checklist } from './Checklist.tsx'
+import { DoctorSheet } from './DoctorSheet.tsx'
 import { countParts, phaseLabel, VERDICT_ICONS } from './format.ts'
 
 function siteLabel(trial: TrialResult): string {
@@ -35,8 +37,28 @@ type Props = { trial: TrialResult; profile: Profile; checkTrial: CheckTrial }
 export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
   const [open, setOpen] = useState(false)
   const [check, setCheck] = useState<Check>({ kind: 'idle' })
+  const [printing, setPrinting] = useState(false)
   const phase = phaseLabel(trial.phases)
   const detailsId = `${trial.nctId}-details`
+
+  // While printing, the sheet is the only thing on the page (index.css); afterwards it goes.
+  useEffect(() => {
+    if (!printing) return
+    const done = (): void => setPrinting(false)
+    window.addEventListener('afterprint', done)
+    return () => {
+      window.removeEventListener('afterprint', done)
+      document.body.classList.remove('printing-sheet')
+    }
+  }, [printing])
+
+  function print(): void {
+    // Render the sheet first, then print from this click: a print started in an effect
+    // would run twice under StrictMode.
+    flushSync(() => setPrinting(true))
+    document.body.classList.add('printing-sheet')
+    window.print()
+  }
 
   async function toggle(): Promise<void> {
     const opening = !open
@@ -98,9 +120,23 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
           {open ? checkMessage(check) : ''}
         </p>
         {open && check.kind === 'done' && check.outcome.kind === 'verdicts' && (
-          <Checklist trial={check.outcome.response} />
+          <>
+            <Checklist trial={check.outcome.response} />
+            <button type="button" className="trial-toggle" onClick={print}>
+              Print questions for your doctor
+            </button>
+          </>
         )}
       </div>
+      {printing &&
+        check.kind === 'done' &&
+        check.outcome.kind === 'verdicts' &&
+        createPortal(
+          <div className="print-root">
+            <DoctorSheet trial={check.outcome.response} profile={profile} site={siteLabel(trial)} />
+          </div>,
+          document.body,
+        )}
     </article>
   )
 }

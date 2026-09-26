@@ -5,7 +5,7 @@ import type {
   TrialVerdictsResponse,
 } from '@trialscout/contract'
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { SearchOutcome, TrialOutcome } from './api.ts'
 import { App } from './App.tsx'
 
@@ -293,5 +293,26 @@ describe('App', () => {
     const card = await searchAndOpen({ kind: 'unavailable' })
 
     expect(await within(card).findByText(/could not check this trial/i)).toBeInTheDocument()
+  })
+
+  it('prints a sheet of questions for the doctor, with the disclaimer, then tidies up', async () => {
+    const print = vi.spyOn(window, 'print').mockImplementation(() => {})
+    const card = await searchAndOpen({ kind: 'verdicts', response: verdicts('NCT00000001') })
+    await within(card).findByText('Histologically confirmed breast cancer')
+
+    fireEvent.click(within(card).getByRole('button', { name: /print questions for your doctor/i }))
+
+    const sheet = await screen.findByRole('document', { name: 'Questions for your doctor' })
+    expect(print).toHaveBeenCalledTimes(1)
+    expect(document.body).toHaveClass('printing-sheet')
+    expect(within(sheet).getByText(DISCLAIMER)).toBeInTheDocument()
+    expect(within(sheet).getByText('Prior treatment with trastuzumab')).toBeInTheDocument()
+
+    window.dispatchEvent(new Event('afterprint'))
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('document', { name: 'Questions for your doctor' })).toBeNull(),
+    )
+    expect(document.body).not.toHaveClass('printing-sheet')
+    print.mockRestore()
   })
 })

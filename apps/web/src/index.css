@@ -390,8 +390,85 @@ h1 {
   margin: 0.5rem 0 0;
 }
 
+/* The doctor sheet exists only while printing, and is never shown on screen. */
+.print-root {
+  display: none;
+}
+
+.sheet-layout {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sheet-layout td {
+  padding: 0;
+  vertical-align: top;
+}
+
+.sheet-caution {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.7rem;
+  border: 2px solid #000000;
+  font-weight: 700;
+}
+
+.sheet-trial {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 1rem;
+}
+
+.sheet-trial dt {
+  font-weight: 700;
+}
+
+.sheet-trial dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.sheet-list li {
+  margin-bottom: 0.8rem;
+  break-inside: avoid;
+}
+
+.sheet-question {
+  margin: 0.3rem 0 0;
+  font-weight: 700;
+}
+
+.sheet-question::after {
+  display: block;
+  height: 2.5rem;
+  border-bottom: 1px solid #000000;
+  content: '';
+}
+
+.sheet-footer {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
 /* Printed sheets are black on white, and the disclaimer is always printed. */
 @media print {
+  body.printing-sheet #root {
+    display: none;
+  }
+
+  body.printing-sheet .print-root {
+    display: block;
+  }
+
+  .doctor-sheet,
+  .doctor-sheet * {
+    color: #000000 !important;
+    background: none !important;
+  }
+
+  .trial-toggle {
+    display: none;
+  }
+
   :root {
     --bg: #ffffff;
     --fg: #000000;
