@@ -197,6 +197,61 @@ describe('Judge.judgeSearch', () => {
   })
 })
 
+describe('Judge.judgeTrial', () => {
+  it('judges every criterion, even after a confident fail', async () => {
+    const jev = new FakeJev(rules(when('"Known EGFR', 'applies', 0.97), when('"ECOG', 'meets')))
+    const report = await judge(jev).judgeTrial(PROFILE, trial('NCT00000001', STANDARD), BUDGET)
+
+    expect(report.trials.get('NCT00000001')?.map((v) => [v.text, v.verdict])).toEqual([
+      ['Stage IV NSCLC', 'ask_your_doctor'],
+      ['ECOG 0-1', 'likely_meets'],
+      ['Known EGFR sensitising mutation', 'likely_fails'],
+      ['Pregnant', 'ask_your_doctor'],
+    ])
+    expect(jev.requests).toHaveLength(2)
+  })
+
+  it("asks only what the search left not checked, reusing the search's answers", async () => {
+    const cache = memoryAnswerCache()
+    const rule = when('"Known EGFR', 'applies', 0.97)
+    await judge(new FakeJev(rule), cache).judgeSearch(
+      PROFILE,
+      [trial('NCT00000001', STANDARD)],
+      BUDGET,
+    )
+    const opened = new FakeJev(rule)
+    const report = await judge(opened, cache).judgeTrial(
+      PROFILE,
+      trial('NCT00000001', STANDARD),
+      BUDGET,
+    )
+
+    expect(opened.questionsAsked).toBe(2)
+    expect(
+      Object.values(opened.requests[0]?.questions ?? {}).every((q) =>
+        String(q.instructions).includes('requires this'),
+      ),
+    ).toBe(true)
+    expect(report.cacheHits).toBe(1)
+    expect(report.trials.get('NCT00000001')?.some((v) => v.verdict === 'not_checked')).toBe(false)
+  })
+
+  it('leaves criteria beyond the budget not checked', async () => {
+    const jev = new FakeJev()
+    const report = await judge(jev).judgeTrial(PROFILE, trial('NCT00000001', STANDARD), {
+      maxQuestions: 2,
+      maxRequests: 5,
+    })
+
+    expect(report.trials.get('NCT00000001')?.map((v) => v.verdict)).toEqual([
+      'not_checked',
+      'not_checked',
+      'ask_your_doctor',
+      'ask_your_doctor',
+    ])
+  })
+})
+
 describe('parseJevResponse (Typia)', () => {
   it('reads a recorded jev-1.13.0 response', async () => {
     const recorded = (await import('../../../fixtures/jev/NCT06563999-rich-cohort.json')).default

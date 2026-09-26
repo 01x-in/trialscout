@@ -30,6 +30,8 @@
     // Pinned, not jev-latest: cached verdicts and GATE 1 thresholds belong to one version.
     "TYPESAFE_MODEL": "jev-1.13.0",
     "SEARCH_PER_MINUTE": "5",
-    "SEARCH_PER_DAY": "50"
+    "SEARCH_PER_DAY": "50",
+    "TRIAL_CHECKS_PER_MINUTE": "20",
+    "TRIAL_CHECKS_PER_DAY": "200"
   }
 }

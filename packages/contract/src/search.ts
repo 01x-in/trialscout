@@ -25,6 +25,14 @@ export type TrialResult = {
   counts: VerdictCounts
 }
 
+// How much Jev work a request took. `model` is null when every answer came from the cache.
+export type JudgeWork = {
+  questions: number
+  requests: number
+  cacheHits: number
+  model: string | null
+}
+
 export type EmptyReason = 'none_nearby' | 'age' | 'sex' | 'no_open_site_nearby'
 
 export type EmptyExplanation = { reason: EmptyReason; relax: 'distance' }
@@ -37,7 +45,7 @@ export type SearchResponse = {
   // Set when no trial survived the hard filters.
   empty: EmptyExplanation | null
   // How much Jev work this search took.
-  checked: { questions: number; requests: number; cacheHits: number; model: string | null }
+  checked: JudgeWork
   // Epoch milliseconds the trial data was fetched.
   dataAsOf: number
 }
@@ -47,4 +55,5 @@ export const PROBLEM_TYPES = {
   unknownCity: 'https://trialscout.cc/problems/unknown-city',
   unknownCountry: 'https://trialscout.cc/problems/unknown-country',
   rateLimited: 'https://trialscout.cc/problems/rate-limited',
+  trialNotFound: 'https://trialscout.cc/problems/trial-not-found',
 } as const

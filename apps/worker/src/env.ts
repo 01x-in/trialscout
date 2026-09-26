@@ -15,4 +15,6 @@ export interface Env {
   CTGOV_BASE_URL?: string
   SEARCH_PER_MINUTE?: string
   SEARCH_PER_DAY?: string
+  TRIAL_CHECKS_PER_MINUTE?: string
+  TRIAL_CHECKS_PER_DAY?: string
 }

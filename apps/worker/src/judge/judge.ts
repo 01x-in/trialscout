@@ -8,11 +8,12 @@ import type { JevClient, JevRequest } from './jev.ts'
 import { jevQuestion, jevState, profileKey, QUESTION_VERSION } from './questions.ts'
 import { type Answer, toVerdict } from './verdict.ts'
 
-// Judges a search's trials with Jev, within a budget:
+// Judges trials with Jev, within a budget:
 //   1. Every trial's exclusion criteria, nearest trial first, one request per trial.
-//   2. The inclusion criteria of trials with no confident exclusion fail.
-// Whatever the budget does not reach, and the inclusions of a trial that already has a
-// confident fail, are "not checked yet"; the trial page judges them when opened (M2.1).
+//   2. The inclusion criteria: in a search, only of trials with no confident exclusion fail.
+// Whatever the budget does not reach, and in a search the inclusions of a trial that already
+// has a confident fail, are "not checked yet"; judgeTrial judges them when the trial is
+// opened. Both use the same cache keys, so opening a trial reuses the search's answers.
 // Cached answers cost nothing and are always used.
 
 export type JudgeTrial = {
@@ -23,6 +24,14 @@ export type JudgeTrial = {
 }
 
 export type Budget = { maxQuestions: number; maxRequests: number }
+
+type Options = {
+  // Leave the inclusions of a trial with a confident exclusion fail not checked.
+  stopAfterFail: boolean
+  // Runs once, just before the first Jev request; throwing stops the judging. Used to count
+  // only requests that reach Jev against a rate limit.
+  beforeJev?: () => Promise<void>
+}
 
 export type JudgeReport = {
   trials: Map<string, CriterionVerdict[]>
@@ -120,7 +129,30 @@ export class Judge {
     this.#cache = cache
   }
 
-  async judgeSearch(profile: Profile, trials: JudgeTrial[], budget: Budget): Promise<JudgeReport> {
+  /** A search's trials: after a confident fail, a trial's inclusions are left not checked. */
+  judgeSearch(profile: Profile, trials: JudgeTrial[], budget: Budget): Promise<JudgeReport> {
+    return this.#judge(profile, trials, budget, { stopAfterFail: true })
+  }
+
+  /** One opened trial: every criterion, as far as the budget allows. */
+  judgeTrial(
+    profile: Profile,
+    trial: JudgeTrial,
+    budget: Budget,
+    beforeJev?: () => Promise<void>,
+  ): Promise<JudgeReport> {
+    return this.#judge(profile, [trial], budget, {
+      stopAfterFail: false,
+      ...(beforeJev === undefined ? {} : { beforeJev }),
+    })
+  }
+
+  async #judge(
+    profile: Profile,
+    trials: JudgeTrial[],
+    budget: Budget,
+    options: Options,
+  ): Promise<JudgeReport> {
     const answers = new Map<string, (Answer | null)[]>()
     for (const trial of trials)
       answers.set(
@@ -135,6 +167,7 @@ export class Judge {
       model: null,
     }
     const who = profileKey(profile)
+    let beforeJevRan = false
 
     const partOf = async (trial: JudgeTrial, kind: Criterion['kind']): Promise<Part | null> => {
       const positions = trial.criteria.flatMap((c, i) => (c.kind === kind ? [i] : []))
@@ -170,6 +203,10 @@ export class Judge {
       if (toAsk.length === 0) return
       const jev = this.#jev
       if (jev === null) throw new JudgeError('TYPESAFE_API_KEY is not configured.')
+      if (!beforeJevRan) {
+        beforeJevRan = true
+        await options.beforeJev?.()
+      }
       await pool(
         toAsk.map((part) => async () => {
           const { model, answers: got } = await this.#ask(jev, profile, part)
@@ -192,9 +229,10 @@ export class Judge {
           c.kind === 'exclusion' &&
           toVerdict('exclusion', answers.get(trial.nctId)?.[i] ?? null) === 'likely_fails',
       )
-    const inclusions = (
-      await Promise.all(trials.filter((t) => !failed(t)).map((t) => partOf(t, 'inclusion')))
-    ).filter((p): p is Part => p !== null)
+    const open = options.stopAfterFail ? trials.filter((t) => !failed(t)) : trials
+    const inclusions = (await Promise.all(open.map((t) => partOf(t, 'inclusion')))).filter(
+      (p): p is Part => p !== null,
+    )
     await runPhase(inclusions)
 
     const verdicts = new Map<string, CriterionVerdict[]>()

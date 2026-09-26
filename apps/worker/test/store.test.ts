@@ -49,6 +49,16 @@ describe('TrialStore', () => {
     expect(row?.sites).toHaveLength(1)
   })
 
+  it('finds a saved trial with the time it was fetched', async () => {
+    await store(2_000).save([trial('NCT00000001')])
+
+    expect(await store().find('NCT00000001')).toEqual({
+      trial: trial('NCT00000001'),
+      fetchedAt: 2_000,
+    })
+    expect(await store().find('NCT00000002')).toBeNull()
+  })
+
   it('splits a trial once per version and reads the split back from D1', async () => {
     const s = store()
     await s.save([trial('NCT00000001')])

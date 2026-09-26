@@ -24,6 +24,14 @@ export function toVerdict(
   return 'ask_your_doctor'
 }
 
+/** An unsplittable trial counts as one "ask your doctor": its raw text is shown instead. */
+export const UNSPLITTABLE_COUNTS: VerdictCounts = {
+  likely_meets: 0,
+  likely_fails: 0,
+  ask_your_doctor: 1,
+  not_checked: 0,
+}
+
 /** Counts shown on a result card; not-applicable criteria are left out. */
 export function countVerdicts(verdicts: Verdict[]): VerdictCounts {
   const counts: VerdictCounts = {

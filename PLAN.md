@@ -136,7 +136,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 
 ### M2 Trial checklist and doctor sheet
 
-- M2.1 `GET /api/trials/:nctId/verdicts` returns every criterion with its verdict, confidence and verbatim text. It judges "not checked yet" criteria on demand.
+- M2.1 `POST /api/trials/:nctId/verdicts` returns every criterion with its verdict, confidence and verbatim text. It judges "not checked yet" criteria on demand. It is a POST because the profile must travel in the body, never in a URL. Checks are rate limited per client apart from searches (`TRIAL_CHECKS_PER_MINUTE`, `TRIAL_CHECKS_PER_DAY`), and only checks that reach Jev count.
 - M2.2 Checklist UI: verdicts shown with icon and label, readable without colour. Motion is used only for expanding.
 - M2.3 "Ask your doctor" criteria become plain questions, written from templates in code. M1.3 confirmed Jev cannot generate text.
 - M2.4 Printable "Questions for your doctor" sheet with a `@media print` stylesheet: black and white, disclaimer printed, trial ID and official link.
