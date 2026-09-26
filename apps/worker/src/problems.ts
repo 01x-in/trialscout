@@ -1,5 +1,6 @@
 import type { Hook } from '@hono/typia-validator'
 import type { Context, Hono, Env as HonoEnv } from 'hono'
+import { HTTPException } from 'hono/http-exception'
 import type { IValidation } from 'typia'
 
 // RFC 7807 Problem Details for every error the API returns. Details name fields, never
@@ -117,6 +118,11 @@ export function registerProblemHandlers<E extends HonoEnv>(app: Hono<E>): void {
   app.onError((error, c) => {
     if (error instanceof ProblemError) {
       return problem(error.status, error.detail, error.headers, error.type)
+    }
+    // Hono's own client errors, such as a malformed JSON body (400) before validation runs.
+    // Its messages are fixed strings and never echo the request body.
+    if (error instanceof HTTPException && error.status < 500) {
+      return problem(error.status, error.message || (PHRASES[error.status] ?? 'Bad Request'))
     }
     if (error instanceof UpstreamError) {
       console.warn(`Upstream failure on ${describe(c)}`, causes(error))

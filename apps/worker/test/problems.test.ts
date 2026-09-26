@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { validator } from 'hono/validator'
 import typia, { type tags } from 'typia'
 import { describe, expect, it, vi } from 'vitest'
 import {
@@ -34,6 +35,11 @@ function app(): Hono {
   hono.get('/judge', () => {
     throw new JudgeError('Jev answered outside the options')
   })
+  hono.post(
+    '/json',
+    validator('json', (body) => body),
+    (c) => c.json(c.req.valid('json')),
+  )
   hono.get('/paged', (c) => {
     const { page } = validOr422(validatePaging(c.req.query()), 'query')
     return c.json(page)
@@ -106,6 +112,21 @@ describe('Problem Details', () => {
 
     expect(response.status).toBe(503)
     expect(await detail(response)).toBe('Trial checks are unavailable right now. Try again later.')
+  })
+
+  it('answers a malformed JSON body with a 400, not a 500', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    error.mockClear()
+    const response = await app().request('/json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{"cancerType": ',
+    })
+
+    expect(response.status).toBe(400)
+    expect(response.headers.get('content-type')).toBe(PROBLEM_JSON)
+    expect(await response.json()).toMatchObject({ title: 'Bad Request', status: 400 })
+    expect(error).not.toHaveBeenCalled()
   })
 
   it('names the invalid fields of a request, validated by Typia', async () => {
