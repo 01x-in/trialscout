@@ -171,5 +171,5 @@ Record the result in `docs/gate-2-review.md`.
 - How should multi-cohort trials be handled? `not_applicable` fixes "For melanoma: …" criteria, but "NSCLC and cutaneous melanoma" is still read literally as a false `likely fails` (0.98). Review at GATE 1.
 - Do criteria with numeric thresholds or date windows need to be forced to `ask your doctor`? Jev is weak at math and dates. Review at GATE 1.
 - Should KV cache keys be narrowed to only the profile fields relevant to each criterion, to raise the hit rate?
-- Is cancer stage a hard filter, or only a criterion for Jev?
+- ~~Is cancer stage a hard filter?~~ No (M1.7). ClinicalTrials.gov has no structured stage field, so Jev judges stage criteria and a mismatch shows as `likely fails`. The trial is ranked down, never removed. Zero-result hints therefore only suggest a larger distance.
 - Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue?
