@@ -1,0 +1,29 @@
+{
+  "name": "trialscout-worker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "deploy": "vite build && wrangler deploy",
+    "check:deploy": "vite build && wrangler deploy --dry-run",
+    "test": "vitest run",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@hono/typia-validator": "0.1.3",
+    "@trialscout/contract": "*",
+    "hono": "^4.13.9",
+    "typia": "15.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.60.2",
+    "@cloudflare/vitest-pool-workers": "^0.22.0",
+    "@cloudflare/workers-types": "^5.20260924.1",
+    "vite": "^8.3.0",
+    "vitest": "^4.1.0",
+    "wrangler": "^4.141.0",
+    "@ttsc/unplugin": "0.30.4"
+  }
+}

@@ -7,28 +7,30 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-No code and no git repo yet. Next story: M1.1 (workspace scaffold + Typia proof). When M1.1 lands, replace the "planned" Layout and Commands below with the real ones.
+M1 in progress on `milestone/m1-profile-to-ranked-list`. See PLAN.md for the next story.
 
-## Layout (planned)
+## Layout
 
 ```
-apps/worker/       Hono API Worker (D1, KV, cron, rate-limit DO, Jev client)
-apps/web/          Vite + React, served by a web Worker with static assets
-packages/contract/ shared plain TS types with Typia tags
+apps/worker/       Hono API Worker, built by Vite + @cloudflare/vite-plugin (src/app.ts exports AppType)
+apps/web/          Vite + React; worker/index.ts is the web Worker serving dist/ and forwarding /api/*
+packages/contract/ shared plain TS types with Typia tags (Profile)
 docs/              jev-budget.md, gate reviews, deploy-cloudflare.md
 blocked.md         written only when a story is stuck
 ```
 
-## Commands (planned, mirror rx-jev — not yet created)
+## Commands
 
 ```bash
-make -j2 dev    # worker :8787 + Vite :5173 with /api proxied
-make test       # npm test --workspaces
-make lint       # biome format:check + oxlint + typecheck
-make db-local   # wrangler d1 migrations apply DB --local
-make deploy     # API Worker, then web Worker
-make smoke URL=https://trialscout.cc
+make -j2 dev       # API Worker (vite dev) :8787 + web Vite :5173 with /api proxied
+make test          # worker (workerd pool) then web (jsdom)
+make lint          # biome format:check + oxlint + typecheck (tsc 7)
+make format        # biome format --write
+make check-deploy  # vite build + wrangler deploy --dry-run for both Workers
+make deploy        # API Worker, then web Worker
 ```
+
+Later stories add `make db-local` (M1.5) and `make smoke URL=…` (M4).
 
 ## Stack
 
@@ -46,13 +48,14 @@ make smoke URL=https://trialscout.cc
 
 - **Typia, not Zod — everywhere.** This deliberately overrides the global "Zod for all external data" rule. Do not introduce Zod or revert this. Typia validates ClinicalTrials.gov responses, Jev responses, request bodies, the profile form and env vars, on both client and Worker.
   - Constraints are Typia type tags on plain TS types; validators are generated at compile time.
-  - `unplugin-typia` must run in the web Vite build, the Worker build and Vitest. M1.1 must prove this before anything else.
+  - The transform runs through `ttsc` + `@ttsc/unplugin` (not the deprecated `@ryoppippi/unplugin-typia`) in the web Vite build, the Worker Vite build and both Vitest configs. The plugin is declared in `tsconfig.json` / `tsconfig.app.json` `compilerOptions.plugins`; a file outside that tsconfig's `include` is left untransformed.
   - Typia has no coercion/transforms — normalisation lives in plain functions.
-  - Typia versions are tied to TypeScript versions; pin both together.
+  - Exact pins that must move together: `typescript` 7.0.2 (Go), `typia` 15.0.0, `ttsc` + `@ttsc/unplugin` 0.30.4. `@hono/typia-validator` declares typia ≤12, so the root `overrides` forces it onto typia 15 and `npm ls` reports it as invalid; that is expected.
+  - The first Vitest/Vite run compiles typia's Go plugin (about 2 minutes); later runs use the cache.
 
 ## Workflow
 
-- `git init` before M1.1. Work on `task/<slug>`, `milestone/<slug>` or `gate/<slug>` branches, never `main`.
+- Work on `task/<slug>`, `milestone/<slug>` or `gate/<slug>` branches, never `main`.
 - One commit per passing story, prefixed with its ID: `M1.6: criteria splitter`.
 - Max 3 fix cycles per story, then write `blocked.md` and stop.
 - Stop at every `GATE` in PLAN.md until a human signs off.
@@ -62,7 +65,8 @@ make smoke URL=https://trialscout.cc
 
 - TDD: write tests first; never change assertions to make them pass.
 - Vitest: `@cloudflare/vitest-pool-workers` for the Worker, jsdom + Testing Library for web.
-- Vitest must load `unplugin-typia`; without the transform, `typia.*` calls throw at runtime.
+- Vitest must load `@ttsc/unplugin`; without the transform, `typia.*` calls throw at runtime.
+- The pool-workers package pins its own workerd, which caps `compatibility_date` (currently 2026-08-20). Do not raise the date past what it supports.
 - No live network in tests: Jev is faked, and Jev and ClinicalTrials.gov responses are replayed from recorded fixtures.
 - Pure functions (criteria splitter, verdict mapping, ranking) get table-driven tests against real eligibility texts.
 

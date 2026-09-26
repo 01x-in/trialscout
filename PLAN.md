@@ -96,7 +96,8 @@ Makefile           dev / test / lint / db-local / deploy / smoke
 
 - **Bindings** (API Worker): `DB` (D1), `CACHE` (KV), `SEARCH_LIMITER` (Durable Object), a daily cron trigger. The web Worker uses `run_worker_first: ["/api/*"]` and forwards through the service binding `API`.
 - **Types:** the API Worker exports Hono `AppType`, and the web app calls it through `hc<AppType>` (typed RPC). Request bodies are validated with `@hono/typia-validator`.
-- **Typia:** `unplugin-typia` runs in the web Vite build, in the Worker build (via `@cloudflare/vite-plugin` or esbuild, decided in M1.1) and in Vitest. There is no Zod anywhere.
+- **Typia:** `ttsc` + `@ttsc/unplugin` run the transform in the web Vite build, in the API Worker's Vite build (`@cloudflare/vite-plugin`) and in Vitest. There is no Zod anywhere.
+  - Toolchain decision (2026-09-26, M1.1): `@ryoppippi/unplugin-typia`, which the seed named, is deprecated on npm with a "contact support" notice, and Typia's README now points to `@ttsc/unplugin`. Pinned together: TypeScript 7.0.2, typia 15.0.0, ttsc and `@ttsc/unplugin` 0.30.4. The seed has been updated to match.
 - **Errors:** RFC 7807 Problem Details with `application/problem+json`, ported from rx-jev `apps/worker/src/problems.ts`.
 - **Privacy:** the profile exists only in the request body and browser `sessionStorage`. It is never logged, never persisted and never sent to analytics.
 

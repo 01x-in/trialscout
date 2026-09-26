@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  // The API Worker. Not public: the web Worker reaches it through a service binding, so it
+  // has no workers.dev or preview URL of its own. Built by Vite (vite.config.ts) so Typia's
+  // transform runs; `wrangler deploy` then uses the config Vite writes into dist/.
+  "name": "trialscout-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true }
+}

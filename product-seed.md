@@ -32,7 +32,7 @@ TrialScout lets a newly diagnosed patient see which recruiting oncology trials a
 - Cloudflare Workers static assets for the client (same as rxjev.cc), Cloudflare Cron for the daily trial refresh.
 - Cloudflare D1 with Drizzle ORM caches trials and their split criteria; Cloudflare KV caches Jev verdicts. No raw SQL.
 - Typia validates every external payload, on both frontend and backend: ClinicalTrials.gov API responses, Jev responses, request bodies, the profile form and environment variables. Validators are generated at compile time from plain TypeScript types, and constraints are written as Typia type tags. Zod is not used anywhere in this project.
-- The Typia transformer runs through `unplugin-typia` in both the Vite (client) and Wrangler/esbuild (Worker) builds. The first milestone must prove this build setup works.
+- The Typia transformer runs through `ttsc` and `@ttsc/unplugin` (the successor to the deprecated `unplugin-typia`) in both the client and Worker Vite builds. The first milestone must prove this build setup works.
 - TypeSafe AI's Jev is the only AI component. It judges each (patient profile, criterion) pair and returns a typed verdict with a confidence.
 - Trial data comes from the ClinicalTrials.gov API v2.
 - Errors use RFC 7807 Problem Details.
@@ -79,7 +79,7 @@ Calm, trustworthy and plain-spoken, a sibling of rxjev.cc. The permanent red dis
 <!-- Agent Handoff Note
 
 system-design-agent: The red disclaimer strip and verbatim source quotes are the product's safety mechanism — they must appear on every page and every printed sheet. No server-side storage of patient profiles. Jev is the only AI component; keep calls under ~300 per search via hard pre-filters, early exit on confident exclusion fails, and KV caching. Confirm Jev API and pricing from live docs. No auth provider.
-  Use Typia everywhere, not Zod. This deliberately overrides the global Zod rule; do not revert it. Wire unplugin-typia into both the Vite and Wrangler builds, and use @hono/typia-validator for routes.
+  Use Typia everywhere, not Zod. This deliberately overrides the global Zod rule; do not revert it. Wire ttsc (@ttsc/unplugin) into both the client and Worker Vite builds, and use @hono/typia-validator for routes.
 
 milestone-agent: Milestone 1 = profile form → ClinicalTrials.gov fetch with hard filters → cached criteria split → Jev verdicts → ranked trial list with disclaimer strip. The criterion checklist view and printable doctor sheet follow. Accounts, alerts, other registries and non-oncology conditions are explicitly deferred.
 
