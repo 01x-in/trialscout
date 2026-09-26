@@ -3,10 +3,11 @@ import { env } from 'cloudflare:workers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp } from '../src/app.ts'
 import { createDb } from '../src/db/index.ts'
-import { criteria } from '../src/db/schema.ts'
+import { eq } from 'drizzle-orm'
+import { criteria, trials } from '../src/db/schema.ts'
 import { PROBLEM_JSON } from '../src/problems.ts'
 import { rankTrials } from '../src/ranking.ts'
-import { PUNE_NSCLC, seedPlaces, type TestOptions, testServices } from './helpers.ts'
+import { NOW, PUNE_NSCLC, seedPlaces, type TestOptions, testServices } from './helpers.ts'
 import { FakeJev, rules } from './jev.ts'
 import { mockFetch } from './recorded.ts'
 
@@ -150,6 +151,83 @@ describe('POST /api/search', () => {
 
     expect(response.status).toBe(502)
     expect(await detail(response)).toBe('Trial data is unavailable right now. Try again later.')
+  })
+
+  it('says a live search came from ClinicalTrials.gov just now', async () => {
+    const body = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+
+    expect(body.source).toBe('live')
+    expect(body.dataAsOf).toBe(NOW)
+  })
+})
+
+describe('POST /api/search while ClinicalTrials.gov is down', () => {
+  const DOWN: TestOptions = { fetch: mockFetch(() => new Response('down', { status: 503 })) }
+  const FIVE_DAYS_AGO = NOW - 5 * 86_400_000
+
+  async function liveSearchFirst(): Promise<SearchResponse> {
+    const live = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+    // One saved trial was last confirmed five days ago.
+    const oldest = live.results.at(-1)?.nctId ?? ''
+    await createDb(env.DB)
+      .update(trials)
+      .set({ checked_at: FIVE_DAYS_AGO })
+      .where(eq(trials.nct_id, oldest))
+    return live
+  }
+
+  it('serves saved trials nearby, dated by the oldest check among them', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const live = await liveSearchFirst()
+
+    const response = await post(PUNE_NSCLC, DOWN)
+    expect(response.status).toBe(200)
+    const body = (await response.json()) as SearchResponse
+
+    expect(body.source).toBe('saved')
+    expect(body.dataAsOf).toBe(FIVE_DAYS_AGO)
+    expect(body.location).toEqual({ city: 'Pune', countryCode: 'IN' })
+    expect(body.results.length).toBeGreaterThan(0)
+    const liveIds = new Set(live.results.map((r) => r.nctId))
+    for (const result of body.results) {
+      expect(liveIds.has(result.nctId)).toBe(true)
+      expect(result.url).toBe(`https://clinicaltrials.gov/study/${result.nctId}`)
+    }
+    // Jev answers are cached per trial, so the saved copy is judged the same way.
+    expect(body.checked.cacheHits).toBeGreaterThan(0)
+  })
+
+  it('does not mark the saved trials as checked while serving them', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await liveSearchFirst()
+    const before = await createDb(env.DB)
+      .select({ id: trials.nct_id, checked: trials.checked_at })
+      .from(trials)
+
+    await post(PUNE_NSCLC, DOWN)
+
+    expect(
+      await createDb(env.DB).select({ id: trials.nct_id, checked: trials.checked_at }).from(trials),
+    ).toEqual(before)
+  })
+
+  it('logs the outage without the patient’s condition or place', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await liveSearchFirst()
+
+    await post(PUNE_NSCLC, DOWN)
+
+    expect(warn).toHaveBeenCalled()
+    expect(JSON.stringify(warn.mock.calls)).not.toMatch(/lung|Pune|India|18\.52|73\.85/i)
+  })
+
+  it('answers a calm 502 when no saved trial fits', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await liveSearchFirst()
+
+    const response = await post({ ...PUNE_NSCLC, cancerType: 'glioblastoma' }, DOWN)
+
+    expect(response.status).toBe(502)
   })
 })
 

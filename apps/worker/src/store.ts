@@ -1,4 +1,4 @@
-import { and, eq, gt, inArray, lt, ne, or } from 'drizzle-orm'
+import { and, desc, eq, gt, inArray, like, lt, ne, or } from 'drizzle-orm'
 import type { BatchItem } from 'drizzle-orm/batch'
 import { type Criterion, type Split, splitCriteria } from './criteria.ts'
 import type { Db } from './db/index.ts'
@@ -25,6 +25,25 @@ export type RefreshCursor = { nctId: string; checkedAt: number }
 
 function version(trial: Trial): string {
   return trial.lastUpdated ?? ''
+}
+
+function toTrial(row: typeof trials.$inferSelect): Trial {
+  return {
+    nctId: row.nct_id,
+    title: row.title,
+    phases: row.phases,
+    sponsor: row.sponsor,
+    conditions: row.conditions,
+    status: row.status,
+    lastUpdated: row.version === '' ? null : row.version,
+    eligibility: {
+      criteria: row.criteria,
+      sex: row.sex,
+      minimumAgeYears: row.min_age_years,
+      maximumAgeYears: row.max_age_years,
+    },
+    sites: row.sites,
+  }
 }
 
 export class TrialStore {
@@ -67,25 +86,30 @@ export class TrialStore {
   async find(nctId: string): Promise<{ trial: Trial; fetchedAt: number } | null> {
     const [row] = await this.#db.select().from(trials).where(eq(trials.nct_id, nctId)).limit(1)
     if (row === undefined) return null
-    return {
-      trial: {
-        nctId: row.nct_id,
-        title: row.title,
-        phases: row.phases,
-        sponsor: row.sponsor,
-        conditions: row.conditions,
-        status: row.status,
-        lastUpdated: row.version === '' ? null : row.version,
-        eligibility: {
-          criteria: row.criteria,
-          sex: row.sex,
-          minimumAgeYears: row.min_age_years,
-          maximumAgeYears: row.max_age_years,
-        },
-        sites: row.sites,
-      },
-      fetchedAt: row.fetched_at,
-    }
+    return { trial: toTrial(row), fetchedAt: row.fetched_at }
+  }
+
+  /**
+   * Saved recruiting trials whose conditions or title contain every term, most recently
+   * checked first, for when ClinicalTrials.gov is down. No terms matches every saved trial.
+   */
+  async recruiting(terms: string[], limit: number): Promise<{ trial: Trial; checkedAt: number }[]> {
+    const rows = await this.#db
+      .select()
+      .from(trials)
+      .where(
+        and(
+          eq(trials.status, 'RECRUITING'),
+          // SQLite's LIKE ignores ASCII case. Terms are letters and digits only (fallback.ts),
+          // so they hold no LIKE wildcards.
+          ...terms.map((term) =>
+            or(like(trials.conditions, `%${term}%`), like(trials.title, `%${term}%`)),
+          ),
+        ),
+      )
+      .orderBy(desc(trials.checked_at), trials.nct_id)
+      .limit(limit)
+    return rows.map((row) => ({ trial: toTrial(row), checkedAt: row.checked_at }))
   }
 
   /**

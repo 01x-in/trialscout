@@ -156,6 +156,33 @@ describe('TrialStore', () => {
     expect(rest).toEqual([{ nctId: 'NCT00000004', checkedAt: 2_000 }])
   })
 
+  it('finds saved recruiting trials by condition terms, most recently checked first', async () => {
+    await store(1_000).save([
+      trial('NCT00000001', { conditions: ['Non-Small-Cell Lung Carcinoma'] }),
+      trial('NCT00000002', { conditions: ['Breast Cancer'], title: 'A lung study' }),
+      trial('NCT00000003', { conditions: ['Lung Cancer'], status: 'COMPLETED' }),
+    ])
+    await store(2_000).save([trial('NCT00000004', { conditions: ['NON-SMALL CELL LUNG CANCER'] })])
+    const s = store()
+
+    const lung = await s.recruiting(['non', 'small', 'lung'], 10)
+    expect(lung.map((r) => [r.trial.nctId, r.checkedAt])).toEqual([
+      ['NCT00000004', 2_000],
+      ['NCT00000001', 1_000],
+    ])
+    expect(lung[1]?.trial).toEqual(
+      trial('NCT00000001', { conditions: ['Non-Small-Cell Lung Carcinoma'] }),
+    )
+    // The title counts too.
+    expect((await s.recruiting(['lung'], 10)).map((r) => r.trial.nctId)).toEqual([
+      'NCT00000004',
+      'NCT00000001',
+      'NCT00000002',
+    ])
+    expect(await s.recruiting(['lung'], 1)).toHaveLength(1)
+    expect(await s.recruiting([], 10)).toHaveLength(3)
+  })
+
   it('removes trials and their criteria', async () => {
     const s = store()
     await s.save([trial('NCT00000001'), trial('NCT00000002')])

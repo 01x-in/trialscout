@@ -5,11 +5,12 @@ import {
   type TrialResult,
 } from '@trialscout/contract'
 import { studyUrl, type Trial } from './trial.ts'
-import { applyHardFilters, type Candidate, explainEmpty } from './filters.ts'
+import { conditionTerms, FALLBACK_LIMIT } from './fallback.ts'
+import { applyHardFilters, type Candidate, explainEmpty, type HardFilterInput } from './filters.ts'
 import { locate } from './geo/locate.ts'
 import type { JudgeTrial } from './judge/judge.ts'
 import { countVerdicts, UNSPLITTABLE_COUNTS } from './judge/verdict.ts'
-import { ProblemError } from './problems.ts'
+import { ProblemError, UpstreamError } from './problems.ts'
 import { rankTrials } from './ranking.ts'
 import type { Services } from './services.ts'
 
@@ -33,6 +34,25 @@ async function fetchTrials(
     pageToken = result.nextPageToken
   }
   return found
+}
+
+type Found = { source: SearchResponse['source']; kept: Candidate[]; dataAsOf: number }
+
+/** Saved trials that pass the hard filters, dated by the oldest check; null when none do. */
+async function savedTrials(
+  services: Services,
+  condition: string,
+  filters: HardFilterInput,
+): Promise<Found | null> {
+  const saved = await services.store.recruiting(conditionTerms(condition), FALLBACK_LIMIT)
+  const { kept } = applyHardFilters(
+    saved.map((s) => s.trial),
+    filters,
+  )
+  if (kept.length === 0) return null
+  const checkedAt = new Map(saved.map((s) => [s.trial.nctId, s.checkedAt]))
+  const dataAsOf = Math.min(...kept.map((c) => checkedAt.get(c.trial.nctId) ?? 0))
+  return { source: 'saved', kept, dataAsOf }
 }
 
 function byDistance(a: Candidate, b: Candidate): number {
@@ -60,33 +80,47 @@ export async function search(services: Services, profile: Profile): Promise<Sear
   }
   const { place } = located
   const origin = { lat: place.lat, lon: place.lon }
-  const dataAsOf = services.now()
-
-  const fetched = await fetchTrials(services, {
-    condition: profile.cancerType,
-    ...origin,
-    distanceKm: profile.maxDistanceKm,
-  })
-  const { kept, removed } = applyHardFilters(fetched, {
+  const filters = {
     age: profile.age,
     sex: profile.sex,
     origin,
     maxDistanceKm: profile.maxDistanceKm,
-  })
+  }
   const location = { city: place.name, countryCode: place.countryCode }
-  if (kept.length === 0) {
-    return {
-      location,
-      results: [],
-      empty: explainEmpty(fetched.length, removed),
-      checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
-      dataAsOf,
+
+  let found: Found
+  try {
+    const fetched = await fetchTrials(services, {
+      condition: profile.cancerType,
+      ...origin,
+      distanceKm: profile.maxDistanceKm,
+    })
+    const { kept, removed } = applyHardFilters(fetched, filters)
+    if (kept.length === 0) {
+      return {
+        location,
+        results: [],
+        empty: explainEmpty(fetched.length, removed),
+        checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
+        source: 'live',
+        dataAsOf: services.now(),
+      }
     }
+    found = { source: 'live', kept, dataAsOf: services.now() }
+  } catch (error) {
+    if (!(error instanceof UpstreamError)) throw error
+    const saved = await savedTrials(services, profile.cancerType, filters)
+    // Nothing saved fits: an empty list could wrongly suggest nothing recruits nearby.
+    if (saved === null) throw error
+    // Fixed text: the upstream error can carry the query, which holds the patient's condition.
+    console.warn('ClinicalTrials.gov is unavailable; serving saved trials')
+    found = saved
   }
 
   // Nearest first, so the Jev budget goes to the trials the patient can most easily reach.
-  const candidates = [...kept].sort(byDistance)
-  await services.store.save(candidates.map((c) => c.trial))
+  const candidates = [...found.kept].sort(byDistance)
+  // A saved trial served during an outage was not checked now, so it is not saved again.
+  if (found.source === 'live') await services.store.save(candidates.map((c) => c.trial))
   const splits = await services.store.criteriaFor(candidates.map((c) => c.trial))
   const toJudge: JudgeTrial[] = []
   for (const { trial } of candidates) {
@@ -140,6 +174,7 @@ export async function search(services: Services, profile: Profile): Promise<Sear
       cacheHits: report.cacheHits,
       model: report.model,
     },
-    dataAsOf,
+    source: found.source,
+    dataAsOf: found.dataAsOf,
   }
 }

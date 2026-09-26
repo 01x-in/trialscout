@@ -170,6 +170,14 @@ h1 {
   font-size: 0.95rem;
 }
 
+/* Saved copy served during a ClinicalTrials.gov outage: calm, but hard to miss. */
+.results-saved {
+  padding: 0.75rem 1rem;
+  color: var(--fg);
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+}
+
 .trial-list {
   display: grid;
   gap: 1rem;
