@@ -315,4 +315,56 @@ describe('App', () => {
     expect(document.body).not.toHaveClass('printing-sheet')
     print.mockRestore()
   })
+
+  it('refills the form from this tab, so a search re-runs without typing it again', async () => {
+    sessionStorage.setItem('trialscout.profile', JSON.stringify(PROFILE))
+    const seen: Profile[] = []
+    renderWith({ kind: 'results', response: response([result('NCT00000001')]) }, seen)
+
+    expect(screen.getByLabelText(/cancer type/i)).toHaveValue(PROFILE.cancerType)
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+    await screen.findAllByRole('article')
+    expect(seen).toEqual([PROFILE])
+  })
+
+  it('shows what the results were checked for, with a way to change the answers', async () => {
+    renderWith({ kind: 'results', response: response([result('NCT00000001')]) })
+    fillProfile()
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+    await screen.findAllByRole('article')
+
+    expect(screen.getByText(/breast cancer, stage II, age 47, female/)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Change your answers' }))
+    expect(screen.getByLabelText(/cancer type/i)).toHaveFocus()
+  })
+
+  it('closes rules checked against old answers when the search is run again', async () => {
+    const checked: Checked[] = []
+    const card = await searchAndOpen(
+      { kind: 'verdicts', response: verdicts('NCT00000001') },
+      checked,
+    )
+    await within(card).findByText('Histologically confirmed breast cancer')
+
+    fill(/^age/i, '48')
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+    await vi.waitFor(() =>
+      expect(screen.queryByText('Histologically confirmed breast cancer')).toBeNull(),
+    )
+    const [again] = await screen.findAllByRole('article')
+    if (again === undefined) throw new Error('Expected a trial card')
+    fireEvent.click(within(again).getByRole('button', { name: /check each rule/i }))
+    await within(again).findByText('Histologically confirmed breast cancer')
+
+    expect(checked.map((c) => c.profile.age)).toEqual([47, 48])
+  })
+
+  it('links to the official ClinicalTrials.gov page from the opened rules', async () => {
+    const card = await searchAndOpen({ kind: 'verdicts', response: verdicts('NCT00000001') })
+
+    const link = await within(card).findByRole('link', {
+      name: /every rule on ClinicalTrials\.gov/i,
+    })
+    expect(link).toHaveAttribute('href', 'https://clinicaltrials.gov/study/NCT00000001')
+  })
 })

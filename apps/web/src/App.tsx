@@ -44,6 +44,13 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
     setState({ kind: 'done', outcome: await search(profile), profile })
   }
 
+  // The form stays filled in (and in sessionStorage), so a changed answer re-runs the search
+  // without typing the rest again.
+  // Focusing scrolls the field into view, with no motion.
+  function editProfile(): void {
+    document.getElementById('cancerType')?.focus()
+  }
+
   const placeError: PlaceError | null =
     state.kind === 'done' && state.outcome.kind === 'unknown_place'
       ? { field: state.outcome.field, message: state.outcome.message }
@@ -72,6 +79,7 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
             response={state.outcome.response}
             profile={state.profile}
             checkTrial={checkTrial}
+            onEdit={editProfile}
           />
         )}
       </main>

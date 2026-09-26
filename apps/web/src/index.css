@@ -390,6 +390,36 @@ h1 {
   margin: 0.5rem 0 0;
 }
 
+.checked-for {
+  color: var(--muted);
+}
+
+.link-button {
+  padding: 0;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:focus-visible,
+.trial-source a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.trial-source {
+  margin: 1.2rem 0 0;
+}
+
+.trial-source a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* The doctor sheet exists only while printing, and is never shown on screen. */
 .print-root {
   display: none;

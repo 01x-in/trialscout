@@ -122,6 +122,12 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
         {open && check.kind === 'done' && check.outcome.kind === 'verdicts' && (
           <>
             <Checklist trial={check.outcome.response} />
+            <p className="trial-source">
+              <a href={trial.url} target="_blank" rel="noreferrer">
+                Read every rule on ClinicalTrials.gov
+                <span className="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            </p>
             <button type="button" className="trial-toggle" onClick={print}>
               Print questions for your doctor
             </button>

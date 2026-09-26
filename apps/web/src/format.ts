@@ -1,4 +1,4 @@
-import type { VerdictCounts } from '@trialscout/contract'
+import type { Profile, VerdictCounts } from '@trialscout/contract'
 
 /** "Phase 2", "Phase 1/2", "Early phase 1"; null when ClinicalTrials.gov gives no phase. */
 export function phaseLabel(phases: string[]): string | null {
@@ -49,4 +49,10 @@ export function dateLabel(epochMs: number): string {
     year: 'numeric',
     timeZone: 'UTC',
   })
+}
+
+/** "breast cancer, stage II, age 47, female.", as the patient entered it. */
+export function profileSummary(profile: Profile): string {
+  const stage = profile.stage === 'unknown' ? 'stage not known' : `stage ${profile.stage}`
+  return `${profile.cancerType}, ${stage}, age ${profile.age}, ${profile.sex}.`
 }

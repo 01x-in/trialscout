@@ -1,17 +1,12 @@
 import type { CriterionVerdict, Profile, TrialVerdictsResponse } from '@trialscout/contract'
 import type { JSX } from 'react'
 import { DISCLAIMER } from './DemoCaution.tsx'
-import { dateLabel } from './format.ts'
+import { dateLabel, profileSummary } from './format.ts'
 import { doctorQuestion } from './questions.ts'
 
 // The printed "Questions for your doctor" sheet: black and white, with the disclaimer at the
 // top of every page. A table's header group repeats on each printed page, so the disclaimer
 // sits in one; the table is for layout only.
-
-function describeProfile(profile: Profile): string {
-  const stage = profile.stage === 'unknown' ? 'stage not known' : `stage ${profile.stage}`
-  return `${profile.cancerType}, ${stage}, age ${profile.age}, ${profile.sex}.`
-}
 
 function Question({ criterion }: { criterion: CriterionVerdict }): JSX.Element {
   return (
@@ -79,7 +74,7 @@ export function DoctorSheet({ trial, profile, site }: Props): JSX.Element {
                 <dd>{site}</dd>
               </dl>
               <p>
-                What I entered: {describeProfile(profile)}
+                What I entered: {profileSummary(profile)}
                 {notes ? ` My notes: ${notes}` : ''}
               </p>
 
