@@ -22,6 +22,7 @@ const RESPONSE: SearchResponse = {
   results: [],
   empty: { reason: 'none_nearby', relax: 'distance' },
   checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
+  source: 'live',
   dataAsOf: 1_790_000_000_000,
 }
 

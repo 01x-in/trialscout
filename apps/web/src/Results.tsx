@@ -36,9 +36,23 @@ function CheckedFor({ profile, onEdit }: Pick<Props, 'profile' | 'onEdit'>): JSX
   )
 }
 
+// Where the trial details came from, and how current they are.
+function DataAsOf({ response }: { response: SearchResponse }): JSX.Element {
+  const date = dateLabel(response.dataAsOf)
+  if (response.source === 'saved') {
+    return (
+      <p className="results-note results-saved">
+        ClinicalTrials.gov is not answering right now, so these trials come from our saved copy,
+        last checked on {date}. Some may have changed or closed since. Check the official page of
+        any trial before you talk to your doctor.
+      </p>
+    )
+  }
+  return <p className="results-note">Trial details from ClinicalTrials.gov, {date}.</p>
+}
+
 export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.Element {
   const where = `within ${profile.maxDistanceKm} km of ${response.location.city}`
-  const asOf = `Trial details from ClinicalTrials.gov, ${dateLabel(response.dataAsOf)}.`
 
   if (response.empty !== null || response.results.length === 0) {
     return (
@@ -52,7 +66,7 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
             ? ', or a broader cancer type such as "lung cancer".'
             : '.'}
         </p>
-        <p className="results-note">{asOf}</p>
+        <DataAsOf response={response} />
       </section>
     )
   }
@@ -66,7 +80,7 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
         {count} recruiting {count === 1 ? 'trial' : 'trials'} {where}. Trials where something likely
         rules you out are listed last, not hidden.
       </p>
-      <p className="results-note">{asOf}</p>
+      <DataAsOf response={response} />
       <div className="trial-list">
         {response.results.map((trial) => (
           <TrialCard key={trial.nctId} trial={trial} profile={profile} checkTrial={checkTrial} />

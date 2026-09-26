@@ -52,6 +52,20 @@ export function searchParams(query: TrialQuery, page: PageRequest): Record<strin
   }
 }
 
+/**
+ * Several trials by NCT number, in any status. Numbers ClinicalTrials.gov does not know,
+ * and studies no longer interventional, are left out of the page, as a search would.
+ */
+export function idsParams(ids: string[]): Record<string, string> {
+  return {
+    format: 'json',
+    'filter.ids': ids.join('|'),
+    'filter.advanced': 'AREA[StudyType]INTERVENTIONAL',
+    fields: CTGOV_FIELDS,
+    pageSize: String(ids.length),
+  }
+}
+
 export function studyParams(): Record<string, string> {
   return { format: 'json', fields: CTGOV_FIELDS }
 }

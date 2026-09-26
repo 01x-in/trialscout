@@ -1,0 +1,67 @@
+{
+ "path": "/studies",
+ "params": {
+  "format": "json",
+  "filter.ids": "NCT06563999|NCT09999999",
+  "filter.advanced": "AREA[StudyType]INTERVENTIONAL",
+  "fields": "NCTId,BriefTitle,OverallStatus,LastUpdatePostDate,LeadSponsorName,Condition,Phase,StudyType,EligibilityCriteria,Sex,MinimumAge,MaximumAge,LocationFacility,LocationCity,LocationState,LocationCountry,LocationStatus,LocationGeoPoint",
+  "pageSize": "2"
+ },
+ "status": 200,
+ "body": {
+  "studies": [
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT06563999",
+      "briefTitle": "Neoadjuvant Umbrella Trial for Patients With Unresectable Stage III NSCLC Harboring Rare Mutations."
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "lastUpdatePostDateStruct": {
+       "date": "2026-04-21"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Sun Yat-sen University"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Lung Cancer Stage III",
+       "Mutation"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ]
+     },
+     "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Subjects must have treatment-naive unresectable stage III NSCLC according to the AJCC 8th edition staging;\n* Squamous or non-squamous NSCLC histology;\n* Subjects should have a rare mutation based on NGS, including mutations of EGFR exon20ins, ROS1 fusion, RET fusion, NTRK fusion, MET 14 exon, HER2, BRAF V600E, KRAS G12C, and ALK fusion.\n* Subjects should be without EGFR exon 19 deletions or exon 21 L858R activating mutation;\n* Male and female, aged 18-75 years;\n* Blood and specimens before and after treatment must be provided;\n* Eastern Cooperative Oncology Group (ECOG) performance status of 0-1;\n* Adequate hematological function: Absolute neutrophil count (ANC) ≥2.0 x 109/L, and Platelet count ≥100 x 109/L, and Hemoglobin ≥9 g/dL (may be transfused to maintain or exceed this level);\n* Adequate liver function: Total bilirubin ≤ 1.5 x upper limit of normal (ULN), Aspartate aminotransferase (AST), alanine aminotransferase (ALT) ≤ 2.5 x ULN;\n* Adequate renal function: Serum creatinine ≤ 1.25 x ULN, or ≥ 60 ml/min;\n* Female subjects should not be pregnant or breast-feeding;\n* Written informed consent provided. Being willing and able to comply with the visits, treatment plan, laboratory examinations and other study procedures scheduled in the study.\n\nExclusion Criteria:\n\n* Not unresectable stage III disease according to the investigator;\n* Subjects with known EGFR sensitive mutations;\n* Previous treatment with systemic antitumor therapy for NSCLC;\n* Eye inflammation or eye infection not fully treated or conditions predisposing the subject to this.\n* History of another malignancy in the last 5 years with the exception of the following: other malignancies cured by surgery alone and having a continuous disease-free interval of 5 years are permitted. Cured basal cell carcinoma of the skin and cured in situ carcinoma of the uterine cervix are permitted.\n* Evidence of clinically active interstitial lung disease;\n* Known history of testing positive for human immunodeficiency virus (HIV) or known acquired immunodeficiency syndrome (AIDS);\n* Inability to comply with protocol or study procedures;\n* Any unstable systemic disease (including active infection, active tuberculosis uncontrolled hypertension, unstable angina, congestive heart failure, myocardial infarction within the previous year, serious cardiac arrhythmia requiring medication, hepatic, renal, or metabolic disease);\n* A serious concomitant systemic disorder that, in the opinion of the investigator, would compromise the patient's ability to complete the study and may confuse the study results;\n* Women who are pregnant or nursing.\n* Ingredients mixed with small cell lung cancer patients.",
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "75 Years"
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "facility": "Sun Yat-sen University Cancer Center",
+        "status": "RECRUITING",
+        "city": "Guangzhou",
+        "state": "Guangdong",
+        "country": "China",
+        "geoPoint": {
+         "lat": 23.11667,
+         "lon": 113.25
+        }
+       }
+      ]
+     }
+    }
+   }
+  ]
+ }
+}

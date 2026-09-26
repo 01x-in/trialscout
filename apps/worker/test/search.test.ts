@@ -3,10 +3,13 @@ import { env } from 'cloudflare:workers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp } from '../src/app.ts'
 import { createDb } from '../src/db/index.ts'
-import { criteria } from '../src/db/schema.ts'
+import { eq } from 'drizzle-orm'
+import { criteria, trials } from '../src/db/schema.ts'
 import { PROBLEM_JSON } from '../src/problems.ts'
 import { rankTrials } from '../src/ranking.ts'
-import { PUNE_NSCLC, seedPlaces, type TestOptions, testServices } from './helpers.ts'
+import { TrialStore } from '../src/store.ts'
+import type { Trial } from '../src/trial.ts'
+import { NOW, PUNE_NSCLC, seedPlaces, type TestOptions, testServices } from './helpers.ts'
 import { FakeJev, rules } from './jev.ts'
 import { mockFetch } from './recorded.ts'
 
@@ -150,6 +153,144 @@ describe('POST /api/search', () => {
 
     expect(response.status).toBe(502)
     expect(await detail(response)).toBe('Trial data is unavailable right now. Try again later.')
+  })
+
+  it('says a live search came from ClinicalTrials.gov just now', async () => {
+    const body = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+
+    expect(body.source).toBe('live')
+    expect(body.dataAsOf).toBe(NOW)
+  })
+})
+
+describe('POST /api/search while ClinicalTrials.gov is down', () => {
+  const DOWN: TestOptions = { fetch: mockFetch(() => new Response('down', { status: 503 })) }
+  const FIVE_DAYS_AGO = NOW - 5 * 86_400_000
+
+  async function liveSearchFirst(): Promise<SearchResponse> {
+    const live = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+    // One saved trial was last confirmed five days ago.
+    const oldest = live.results.at(-1)?.nctId
+    if (oldest === undefined) throw new Error('Expected the live search to find trials')
+    await createDb(env.DB)
+      .update(trials)
+      .set({ checked_at: FIVE_DAYS_AGO })
+      .where(eq(trials.nct_id, oldest))
+    return live
+  }
+
+  it('serves saved trials nearby, dated by the oldest check among them', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const live = await liveSearchFirst()
+
+    const response = await post(PUNE_NSCLC, DOWN)
+    expect(response.status).toBe(200)
+    const body = (await response.json()) as SearchResponse
+
+    expect(body.source).toBe('saved')
+    expect(body.dataAsOf).toBe(FIVE_DAYS_AGO)
+    expect(body.location).toEqual({ city: 'Pune', countryCode: 'IN' })
+    expect(body.results.length).toBeGreaterThan(0)
+    const liveIds = new Set(live.results.map((r) => r.nctId))
+    for (const result of body.results) {
+      expect(liveIds.has(result.nctId)).toBe(true)
+      expect(result.url).toBe(`https://clinicaltrials.gov/study/${result.nctId}`)
+    }
+    // Jev answers are cached per trial, so the saved copy is judged the same way.
+    expect(body.checked.cacheHits).toBeGreaterThan(0)
+  })
+
+  it('does not mark the saved trials as checked while serving them', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await liveSearchFirst()
+    const before = await createDb(env.DB)
+      .select({ id: trials.nct_id, checked: trials.checked_at })
+      .from(trials)
+
+    expect((await post(PUNE_NSCLC, DOWN)).status).toBe(200)
+
+    expect(
+      await createDb(env.DB).select({ id: trials.nct_id, checked: trials.checked_at }).from(trials),
+    ).toEqual(before)
+  })
+
+  it('logs the outage without the patient’s condition or place', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await liveSearchFirst()
+
+    await post(PUNE_NSCLC, DOWN)
+
+    expect(warn).toHaveBeenCalled()
+    expect(JSON.stringify(warn.mock.calls)).not.toMatch(/lung|Pune|India|18\.52|73\.85/i)
+  })
+
+  it('answers a calm 502 when no saved trial fits', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await liveSearchFirst()
+
+    const response = await post({ ...PUNE_NSCLC, cancerType: 'glioblastoma' }, DOWN)
+
+    expect(response.status).toBe(502)
+    expect(await detail(response)).toBe('Trial data is unavailable right now. Try again later.')
+  })
+
+  it('reads past saved trials far away until it finds ones nearby', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const site = (city: string, lat: number, lon: number): Trial['sites'][number] => ({
+      facility: `${city} Cancer Centre`,
+      city,
+      state: null,
+      country: null,
+      status: 'RECRUITING',
+      lat,
+      lon,
+    })
+    const saved = (nctId: string, where: Trial['sites'][number]): Trial => ({
+      nctId,
+      title: `Lung study ${nctId}`,
+      phases: ['PHASE2'],
+      sponsor: null,
+      conditions: ['Non-Small Cell Lung Cancer'],
+      status: 'RECRUITING',
+      lastUpdated: '2026-09-01',
+      eligibility: {
+        criteria: 'Inclusion Criteria:\n\n* Age 18+\n\nExclusion Criteria:\n\n* Pregnant',
+        sex: 'ALL',
+        minimumAgeYears: 18,
+        maximumAgeYears: null,
+      },
+      sites: [where],
+    })
+    const db = createDb(env.DB)
+    await new TrialStore(db, () => NOW - 2_000).save([
+      saved('NCT00000009', site('Pune', 18.52, 73.86)),
+    ])
+    await new TrialStore(db, () => NOW - 1_000).save([
+      saved('NCT00000001', site('Ushuaia', -54.8, -68.3)),
+      saved('NCT00000002', site('Ushuaia', -54.8, -68.3)),
+      saved('NCT00000003', site('Ushuaia', -54.8, -68.3)),
+    ])
+
+    // Two saved trials a page: the nearby one is on the second page.
+    const response = await post(PUNE_NSCLC, { ...DOWN, fallback: { batchSize: 2, maxBatches: 5 } })
+
+    expect(response.status).toBe(200)
+    const body = (await response.json()) as SearchResponse
+    expect(body.results.map((r) => r.nctId)).toEqual(['NCT00000009'])
+    expect(body.dataAsOf).toBe(NOW - 2_000)
+  })
+})
+
+describe('POST /api/search saving trials', () => {
+  it('saves every recruiting trial it fetched, not only those that fit this patient', async () => {
+    // Every recorded trial is for adults, so none fits a five-year-old.
+    const body = (await (await post({ ...PUNE_NSCLC, age: 5 })).json()) as SearchResponse
+    const saved = await createDb(env.DB).select({ id: trials.nct_id }).from(trials)
+
+    expect(body.results).toEqual([])
+    expect(body.empty?.reason).toBe('age')
+    // Both recorded pages: five trials each.
+    expect(saved).toHaveLength(10)
   })
 })
 

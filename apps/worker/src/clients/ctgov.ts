@@ -2,7 +2,13 @@ import typia, { type tags } from 'typia'
 import { failedPaths, get, type Http, readJson } from '../http.ts'
 import { UpstreamError } from '../problems.ts'
 import { ageInYears, type Site, type Trial, type TrialSex } from '../trial.ts'
-import { type PageRequest, searchParams, studyParams, type TrialQuery } from './ctgov-query.ts'
+import {
+  idsParams,
+  type PageRequest,
+  searchParams,
+  studyParams,
+  type TrialQuery,
+} from './ctgov-query.ts'
 
 // ClinicalTrials.gov API v2 client. Payloads are validated with Typia: the page envelope
 // must be right, and each study is validated on its own, so one malformed record is
@@ -100,10 +106,11 @@ export class CtGovClient {
     this.#http = http
   }
 
-  /** One page of recruiting interventional trials for the query. */
-  async search(query: TrialQuery, page: PageRequest): Promise<SearchPage> {
-    const what = 'ClinicalTrials.gov search'
-    const response = await get(this.#http, '/studies', searchParams(query, page), what)
+  async #page(
+    params: Record<string, string>,
+    what: string,
+  ): Promise<{ page: RawPage; trials: Trial[]; skipped: number }> {
+    const response = await get(this.#http, '/studies', params, what)
     const result = validatePage(await readJson(response, what))
     if (!result.success) {
       throw new UpstreamError(`${what}: unexpected payload at ${failedPaths(result.errors)}`)
@@ -116,11 +123,31 @@ export class CtGovClient {
       else skipped += 1
     }
     if (skipped > 0) console.warn(`${what}: skipped ${skipped} malformed studies`)
+    return { page: result.data, trials, skipped }
+  }
+
+  /** One page of recruiting interventional trials for the query. */
+  async search(query: TrialQuery, page: PageRequest): Promise<SearchPage> {
+    const found = await this.#page(searchParams(query, page), 'ClinicalTrials.gov search')
     return {
-      trials,
-      nextPageToken: result.data.nextPageToken ?? null,
-      totalCount: result.data.totalCount ?? null,
+      trials: found.trials,
+      nextPageToken: found.page.nextPageToken ?? null,
+      totalCount: found.page.totalCount ?? null,
     }
+  }
+
+  /**
+   * Several interventional trials by NCT number, in one request and in any status. A number
+   * ClinicalTrials.gov does not know, or a study that is not interventional, is left out;
+   * `skipped` counts malformed studies, whose numbers cannot be told apart from left-out ones.
+   */
+  async byIds(ids: string[]): Promise<{ trials: Trial[]; skipped: number }> {
+    for (const id of ids) {
+      if (!typia.is<NctId>(id)) throw new Error(`Not an NCT number: ${id}`)
+    }
+    if (ids.length === 0) return { trials: [], skipped: 0 }
+    const { trials, skipped } = await this.#page(idsParams(ids), 'ClinicalTrials.gov trials')
+    return { trials, skipped }
   }
 
   /** One trial by NCT number, or null when ClinicalTrials.gov does not know it. */

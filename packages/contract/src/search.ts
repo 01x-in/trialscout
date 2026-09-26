@@ -46,7 +46,12 @@ export type SearchResponse = {
   empty: EmptyExplanation | null
   // How much Jev work this search took.
   checked: JudgeWork
-  // Epoch milliseconds the trial data was fetched.
+  // 'live': fetched from ClinicalTrials.gov for this search. 'saved': ClinicalTrials.gov
+  // was down, so the trials come from the copy saved by earlier searches and the daily
+  // refresh; some may have changed or closed since.
+  source: 'live' | 'saved'
+  // Epoch milliseconds the trial data is current as of: now for a live search, and the
+  // oldest check among the trials shown for a saved one.
   dataAsOf: number
 }
 

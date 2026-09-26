@@ -21,14 +21,21 @@ export type SearchSettings = {
   budget: Budget
   // Jev work for one opened trial: every criterion of all but a mis-split trial.
   trialBudget: Budget
+  // The daily refresh: trials per ClinicalTrials.gov request, and requests per run.
+  refresh: { batchSize: number; maxBatches: number }
+  // The outage fallback: saved trials read per page, and pages per search.
+  fallback: { batchSize: number; maxBatches: number }
 }
 
 // Up to 100 trials per search before hard filters; Jev work capped as in docs/jev-budget.md.
+// The refresh re-reads up to 500 saved trials a day, least recently checked first.
 export const SEARCH_SETTINGS: SearchSettings = {
   pageSize: 50,
   maxPages: 2,
   budget: { maxQuestions: 300, maxRequests: 30 },
   trialBudget: { maxQuestions: 200, maxRequests: 6 },
+  refresh: { batchSize: 100, maxBatches: 5 },
+  fallback: { batchSize: 300, maxBatches: 5 },
 }
 
 export type Services = {

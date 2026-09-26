@@ -41,12 +41,17 @@ function result(nctId: string, overrides: Partial<TrialResult> = {}): TrialResul
   }
 }
 
-function response(results: TrialResult[], empty: SearchResponse['empty'] = null): SearchResponse {
+function response(
+  results: TrialResult[],
+  empty: SearchResponse['empty'] = null,
+  source: SearchResponse['source'] = 'live',
+): SearchResponse {
   return {
     location: { city: 'Mumbai', countryCode: 'IN' },
     results,
     empty,
     checked: { questions: 40, requests: 4, cacheHits: 0, model: 'jev-1.13.0' },
+    source,
     dataAsOf: Date.UTC(2026, 8, 26),
   }
 }
@@ -221,6 +226,31 @@ describe('App', () => {
       'within 100 km of Mumbai',
     )
     expect(screen.getByText(/try a larger travel distance/i)).toBeInTheDocument()
+  })
+
+  it('dates live results as fetched from ClinicalTrials.gov', async () => {
+    renderWith({ kind: 'results', response: response([result('NCT00000001')]) })
+    fillProfile()
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+
+    expect(
+      await screen.findByText('Trial details from ClinicalTrials.gov, 26 September 2026.'),
+    ).toBeInTheDocument()
+  })
+
+  it('says when ClinicalTrials.gov is down and the trials come from a saved copy', async () => {
+    renderWith({
+      kind: 'results',
+      response: response([result('NCT00000001')], null, 'saved'),
+    })
+    fillProfile()
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+
+    const note = await screen.findByText(/is not answering right now/)
+    expect(note).toHaveTextContent('ClinicalTrials.gov is not answering right now')
+    expect(note).toHaveTextContent('our saved copy, last checked on 26 September 2026')
+    expect(note).toHaveTextContent('Some may have changed or closed since.')
+    expect(screen.queryByText(/Trial details from ClinicalTrials.gov/)).toBeNull()
   })
 
   it('shows a calm try-again-later message when searches are limited', async () => {

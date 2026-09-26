@@ -1,0 +1,60 @@
+/// <reference types="node" />
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import type { Profile } from '@trialscout/contract'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { searchTrials } from './api.ts'
+import { App } from './App.tsx'
+
+// The privacy audit (docs/privacy.md), browser side: the profile stays in this tab's
+// sessionStorage, goes only to our own /api in a request body, and the page loads nothing
+// from anyone else.
+
+const PROFILE: Profile = {
+  cancerType: 'breast cancer',
+  stage: 'II',
+  age: 47,
+  sex: 'female',
+  country: 'India',
+  city: 'Mumbai',
+  maxDistanceKm: 100,
+  notes: 'Marker zebra-7f3a',
+}
+
+describe('privacy (browser)', () => {
+  it('loads no script, style, font or image from another site', () => {
+    const html = readFileSync(resolve(import.meta.dirname, '../index.html'), 'utf8')
+    const css = readFileSync(resolve(import.meta.dirname, 'index.css'), 'utf8')
+
+    expect(html).not.toMatch(/(src|href)="(https?:)?\/\//i)
+    expect(css).not.toMatch(/@import|url\(/i)
+  })
+
+  it('keeps the profile in sessionStorage only: no localStorage, no cookies', async () => {
+    sessionStorage.setItem('trialscout.profile', JSON.stringify(PROFILE))
+    render(<App search={async () => ({ kind: 'unavailable' })} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+    await screen.findByText(/could not check trials right now/i)
+
+    expect(localStorage.length).toBe(0)
+    expect(document.cookie).toBe('')
+    expect(Object.keys(sessionStorage)).toEqual(['trialscout.profile'])
+  })
+
+  it('sends the profile only to our own API, in the body, never in the URL', async () => {
+    const seen: { url: string; body: string }[] = []
+    await searchTrials(PROFILE, async (input, init) => {
+      seen.push({ url: String(input), body: String(init?.body) })
+      return new Response('{}', { status: 503 })
+    })
+
+    expect(seen).toHaveLength(1)
+    const [sent] = seen
+    const url = new URL(sent?.url ?? '')
+    expect(url.origin).toBe(window.location.origin)
+    expect(url.pathname).toBe('/api/search')
+    expect(sent?.url).not.toMatch(/zebra|breast|Mumbai/i)
+    expect(sent?.body).toContain('zebra-7f3a')
+  })
+})

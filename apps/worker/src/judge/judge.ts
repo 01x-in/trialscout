@@ -62,6 +62,17 @@ type JevResponse = {
 
 const validateResponse = typia.createValidate<JevResponse>()
 
+/**
+ * A Jev failure as only its kind and HTTP status. The SDK's messages quote the API's error
+ * detail, which can echo the request state, and so the patient's profile, into the log.
+ */
+export function redacted(cause: unknown): Error {
+  const name = cause instanceof Error ? cause.name : typeof cause
+  const status =
+    typeof cause === 'object' && cause !== null && 'status' in cause ? cause.status : undefined
+  return new Error(typeof status === 'number' ? `${name} (HTTP ${status})` : name)
+}
+
 export function parseJevResponse(raw: unknown): JevResponse {
   const result = validateResponse(raw)
   if (!result.success) {
@@ -282,7 +293,7 @@ export class Judge {
       try {
         raw = await jev.ask({ state, questions, model: this.#model })
       } catch (cause) {
-        throw new JudgeError('The Jev request failed.', { cause })
+        throw new JudgeError('The Jev request failed.', { cause: redacted(cause) })
       }
       const response = parseJevResponse(raw)
       model = response.model

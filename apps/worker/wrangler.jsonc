@@ -9,7 +9,9 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
   "preview_urls": false,
-  "observability": { "enabled": true },
+  // Console logs only (audited in docs/privacy.md). Invocation logs are off: they record
+  // each request's metadata, including where Cloudflare places the client's IP.
+  "observability": { "enabled": true, "logs": { "invocation_logs": false } },
   // No database_id yet: `wrangler d1 create trialscout` fills it in at M4
   // (docs/deploy-cloudflare.md). Local dev and tests use the name.
   "d1_databases": [
@@ -25,6 +27,8 @@
     "bindings": [{ "name": "SEARCH_LIMITER", "class_name": "SearchLimiter" }]
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SearchLimiter"] }],
+  // Daily refresh of saved trials (src/refresh.ts), at a quiet hour for ClinicalTrials.gov.
+  "triggers": { "crons": ["17 3 * * *"] },
   // Secret: TYPESAFE_API_KEY (apps/worker/.dev.vars locally, `wrangler secret put` in production).
   "vars": {
     // Pinned, not jev-latest: cached verdicts and GATE 1 thresholds belong to one version.

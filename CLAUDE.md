@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 is merged. M2 is complete on `milestone/m2-trial-checklist-and-doctor-sheet`. M2 was started at the user's request before the GATE 1 verdict review was recorded in `docs/gate-1-review.md`, so that review is still owed. Next is M3.
+M1 and M2 are merged. M3 is complete on `milestone/m3-resilience-accessibility-privacy`. The GATE 1 verdict review (`docs/gate-1-review.md`) is still owed, since M2 and M3 were started at the user's request before it. Next is GATE 2, the human wording and safety review, then M4.
 
 ## context-mode (mandatory)
 
@@ -44,7 +44,8 @@ apps/worker/       Hono API Worker, built by Vite + @cloudflare/vite-plugin (src
                    tsconfig.rpc.json emits its declarations for the web app's hc<AppType>)
 apps/web/          Vite + React; worker/index.ts is the web Worker serving dist/ and forwarding /api/*
 packages/contract/ shared plain TS types with Typia tags (Profile)
-docs/              jev-budget.md, gate reviews, deploy-cloudflare.md
+docs/              jev-budget.md, privacy.md (audit; re-run when adding logs, storage or third parties),
+                   gate reviews, deploy-cloudflare.md
 blocked.md         written only when a story is stuck
 ```
 
@@ -69,7 +70,7 @@ Run `make db-local` once before `make -j2 dev`, and put `TYPESAFE_API_KEY` in `a
 - API: Hono on Cloudflare Workers; routes validated with `@hono/typia-validator`; web calls the API through `hc<AppType>` (typed RPC).
 - Client: Vite + React served by a web Worker with static assets, `run_worker_first: ["/api/*"]`, service binding `API` → API Worker. Not Cloudflare Pages.
 - Data: D1 + Drizzle (trials, sites, criteria, GeoNames cities); KV `CACHE` (Jev verdicts). No raw SQL.
-- Rate limit: Durable Object `SEARCH_LIMITER` (per IP). Daily cron refreshes cached trials.
+- Rate limit: Durable Object `SEARCH_LIMITER` (per IP; an alarm deletes its state after the longest window). Daily cron (`src/refresh.ts`) refreshes saved trials; when ClinicalTrials.gov is down, searches serve saved trials (`source: 'saved'`).
 - Data source: ClinicalTrials.gov API v2.
 - AI: Jev via `@typesafe-ai/sdk` (`systemOne`, `Choice` questions) is the only AI component. Env: `TYPESAFE_API_KEY` (secret), `TYPESAFE_MODEL`.
 - Errors: RFC 7807 Problem Details, `application/problem+json`.
@@ -101,6 +102,8 @@ Run `make db-local` once before `make -j2 dev`, and put `TYPESAFE_API_KEY` in `a
 - The pool-workers package pins its own workerd, which caps `compatibility_date` (currently 2026-08-20). Do not raise the date past what it supports.
 - No live network in tests: Jev is faked, and Jev and ClinicalTrials.gov responses are replayed from recorded fixtures.
 - Pure functions (criteria splitter, verdict mapping, ranking) get table-driven tests against real eligibility texts.
+- Accessibility: `apps/web/src/a11y.test.tsx` runs axe (WCAG 2.2 AA) on every page state. jsdom cannot measure contrast, so the test works it out from the `index.css` tokens; add any new colour token to its `PAIRS`.
+- Privacy: `test/privacy.test.ts` (Worker) and `src/privacy.test.tsx` (web) fail if a profile reaches a log, D1, KV, a third-party asset or a URL.
 
 ## Porting from rx-jev
 
