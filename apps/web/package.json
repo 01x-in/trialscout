@@ -11,10 +11,14 @@
     "typecheck": "tsc -b",
     "deploy": "npm run build && wrangler deploy",
     "check:deploy": "npm run build && wrangler deploy --dry-run",
-    "preview:worker": "npm run build && wrangler dev"
+    "preview:worker": "npm run build && wrangler dev",
+    "types": "tsc -b ../worker/tsconfig.rpc.json",
+    "predev": "npm run types",
+    "pretest": "npm run types"
   },
   "dependencies": {
     "@trialscout/contract": "*",
+    "hono": "^4.13.9",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "typia": "15.0.0"
@@ -23,6 +27,7 @@
     "@cloudflare/workers-types": "^5.20260924.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
+    "@ttsc/unplugin": "0.30.4",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
@@ -30,7 +35,6 @@
     "jsdom": "^30.1.0",
     "vite": "^8.3.0",
     "vitest": "^4.1.0",
-    "wrangler": "^4.141.0",
-    "@ttsc/unplugin": "0.30.4"
+    "wrangler": "^4.141.0"
   }
 }

@@ -10,6 +10,10 @@
   --error: #9f1d1d;
   --caution-bg: #b91c1c;
   --caution-fg: #ffffff;
+  --meets: #166534;
+  --fails: #9f1d1d;
+  --ask: #7a4424;
+  --unchecked: #5c554c;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 1.125rem;
   line-height: 1.5;
@@ -28,6 +32,10 @@
     --error: #fca5a5;
     --caution-bg: #7f1d1d;
     --caution-fg: #fee2e2;
+    --meets: #86efac;
+    --fails: #fca5a5;
+    --ask: #e0a47c;
+    --unchecked: #b3aa9e;
   }
 }
 
@@ -67,12 +75,29 @@ h1 {
 
 .profile-form {
   display: grid;
-  gap: 0.35rem;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.3rem;
+  align-content: start;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
 }
 
 .profile-form label {
-  margin-top: 0.9rem;
   font-weight: 600;
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 .profile-form input,
@@ -105,7 +130,7 @@ h1 {
 
 .profile-form button {
   justify-self: start;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   padding: 0.7rem 1.4rem;
   font: inherit;
   font-weight: 600;
@@ -116,9 +141,121 @@ h1 {
   cursor: pointer;
 }
 
+.profile-form button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .status {
   min-height: 1.5em;
   color: var(--muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.results h2 {
+  margin: 2.5rem 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.results-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.trial-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.trial-card {
+  padding: 1.1rem 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+
+.trial-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+.trial-title a {
+  color: var(--fg);
+}
+
+.trial-title a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.trial-meta,
+.trial-site {
+  margin: 0.2rem 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.trial-meta span + span::before {
+  content: ' · ';
+}
+
+.verdict-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.count-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.count-likely_meets {
+  color: var(--meets);
+}
+
+.count-likely_fails {
+  color: var(--fails);
+}
+
+.count-ask_your_doctor {
+  color: var(--ask);
+}
+
+.count-not_checked {
+  color: var(--unchecked);
+  font-weight: 400;
+}
+
+.trial-unsplit {
+  margin: 0.8rem 0 0;
+  color: var(--ask);
 }
 
 /* Printed sheets are black on white, and the disclaimer is always printed. */

@@ -9,7 +9,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [ttsc({ project: './tsconfig.app.json' }), react()],
   server: {
-    port: 5173,
+    // PORT lets a preview tool pick a free port; 5173 otherwise.
+    port: Number(process.env.PORT ?? 5173),
     // The API Worker from `make dev-worker`, unless API_URL points elsewhere.
     proxy: {
       '/api': process.env.API_URL ?? 'http://127.0.0.1:8787',

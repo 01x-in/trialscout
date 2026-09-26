@@ -195,3 +195,6 @@ sketch
 .wrangler/
 # Wrangler local secrets
 .dev.vars
+
+# TypeScript declaration builds (the web app reads the API types from them)
+.tsbuild/

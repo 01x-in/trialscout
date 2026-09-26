@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 in progress on `milestone/m1-profile-to-ranked-list`. See PLAN.md for the next story.
+M1 is complete on `milestone/m1-profile-to-ranked-list`. Next is **GATE 1** (human verdict review, PLAN.md). Do not start M2 before sign-off.
 
 ## context-mode (mandatory)
 
@@ -40,7 +40,8 @@ Always route work through the context-mode MCP tools so raw output never floods 
 ## Layout
 
 ```
-apps/worker/       Hono API Worker, built by Vite + @cloudflare/vite-plugin (src/app.ts exports AppType)
+apps/worker/       Hono API Worker, built by Vite + @cloudflare/vite-plugin (src/app.ts exports AppType;
+                   tsconfig.rpc.json emits its declarations for the web app's hc<AppType>)
 apps/web/          Vite + React; worker/index.ts is the web Worker serving dist/ and forwarding /api/*
 packages/contract/ shared plain TS types with Typia tags (Profile)
 docs/              jev-budget.md, gate reviews, deploy-cloudflare.md
@@ -54,11 +55,13 @@ make -j2 dev       # API Worker (vite dev) :8787 + web Vite :5173 with /api prox
 make test          # worker (workerd pool) then web (jsdom)
 make lint          # biome format:check + oxlint + typecheck (tsc 7)
 make format        # biome format --write
+make db-local      # local D1: migrations + GeoNames cities (downloads ~3 MB once)
+make db-generate   # new Drizzle migration after editing apps/worker/src/db/schema.ts
 make check-deploy  # vite build + wrangler deploy --dry-run for both Workers
 make deploy        # API Worker, then web Worker
 ```
 
-Later stories add `make db-local` (M1.5) and `make smoke URL=…` (M4).
+Run `make db-local` once before `make -j2 dev`, and put `TYPESAFE_API_KEY` in `apps/worker/.dev.vars`. M4 adds `make smoke URL=…`.
 
 ## Stack
 
@@ -80,6 +83,7 @@ Later stories add `make db-local` (M1.5) and `make smoke URL=…` (M4).
   - Typia has no coercion/transforms — normalisation lives in plain functions.
   - Exact pins that must move together: `typescript` 7.0.2 (Go), `typia` 15.0.0, `ttsc` + `@ttsc/unplugin` 0.30.4. `@hono/typia-validator` declares typia ≤12, so the root `overrides` forces it onto typia 15 and `npm ls` reports it as invalid; that is expected.
   - The first Vitest/Vite run compiles typia's Go plugin (about 2 minutes); later runs use the cache.
+  - The API Worker's `vite dev` runs with `server.watch: null`, because with a watcher, `@ttsc/unplugin` deadlocks the Cloudflare dev runner and every request hangs. Restart `make dev` after editing Worker code. The web app keeps hot reload.
 
 ## Workflow
 

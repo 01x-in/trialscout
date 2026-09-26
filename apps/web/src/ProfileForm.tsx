@@ -1,5 +1,5 @@
 import type { CancerStage, Profile } from '@trialscout/contract'
-import { type JSX, type SubmitEvent, useState } from 'react'
+import { type JSX, type ReactNode, type SubmitEvent, useState } from 'react'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
 const MESSAGES: Record<ProfileField, string> = {
@@ -21,21 +21,49 @@ const STAGES: { value: CancerStage; label: string }[] = [
   { value: 'unknown', label: 'Not sure' },
 ]
 
+export type PlaceError = { field: 'city' | 'country'; message: string }
+
 type Props = {
   initial: Profile | null
-  onSaved: (profile: Profile) => void
+  onSubmit: (profile: Profile) => void
+  busy: boolean
+  // The server could not find the city or country.
+  placeError: PlaceError | null
 }
 
-function FieldError({ id, show }: { id: ProfileField; show: boolean }): JSX.Element | null {
-  return show ? (
-    <p id={`${id}-error`} className="field-error">
-      {MESSAGES[id]}
-    </p>
-  ) : null
+type FieldProps = {
+  id: ProfileField
+  label: string
+  hint?: string
+  error: string | null
+  children: (aria: { 'aria-invalid': boolean; 'aria-describedby': string | undefined }) => ReactNode
 }
 
-// The guided profile form. M1.11 adds the search call and the rest of the guidance.
-export function ProfileForm({ initial, onSaved }: Props): JSX.Element {
+function Field({ id, label, hint, error, children }: FieldProps): JSX.Element {
+  const described = [hint ? `${id}-hint` : null, error ? `${id}-error` : null].filter(Boolean)
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      {hint && (
+        <p id={`${id}-hint`} className="field-hint">
+          {hint}
+        </p>
+      )}
+      {children({
+        'aria-invalid': error !== null,
+        'aria-describedby': described.length > 0 ? described.join(' ') : undefined,
+      })}
+      {error && (
+        <p id={`${id}-error`} className="field-error">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+// The guided profile form. The profile is kept only in this browser tab (sessionStorage).
+export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX.Element {
   const [invalid, setInvalid] = useState<Set<ProfileField>>(new Set())
 
   function submit(event: SubmitEvent<HTMLFormElement>): void {
@@ -47,111 +75,116 @@ export function ProfileForm({ initial, onSaved }: Props): JSX.Element {
     }
     setInvalid(new Set())
     saveProfile(result.profile)
-    onSaved(result.profile)
+    onSubmit(result.profile)
   }
 
-  const describedBy = (field: ProfileField): string | undefined =>
-    invalid.has(field) ? `${field}-error` : undefined
+  const error = (field: ProfileField): string | null => {
+    if (invalid.has(field)) return MESSAGES[field]
+    if (placeError?.field === field) return placeError.message
+    return null
+  }
 
   return (
-    <form className="profile-form" onSubmit={submit} noValidate>
-      <label htmlFor="cancerType">Cancer type</label>
-      <input
+    <form className="profile-form" onSubmit={submit} noValidate aria-label="Your profile">
+      <Field
         id="cancerType"
-        name="cancerType"
-        defaultValue={initial?.cancerType}
-        aria-invalid={invalid.has('cancerType')}
-        aria-describedby={describedBy('cancerType')}
-      />
-      <FieldError id="cancerType" show={invalid.has('cancerType')} />
-
-      <label htmlFor="stage">Stage</label>
-      <select
-        id="stage"
-        name="stage"
-        defaultValue={initial?.stage ?? ''}
-        aria-invalid={invalid.has('stage')}
-        aria-describedby={describedBy('stage')}
+        label="Cancer type"
+        hint='As your doctor or report names it, for example "non-small cell lung cancer".'
+        error={error('cancerType')}
       >
-        <option value="">Choose…</option>
-        {STAGES.map((stage) => (
-          <option key={stage.value} value={stage.value}>
-            {stage.label}
-          </option>
-        ))}
-      </select>
-      <FieldError id="stage" show={invalid.has('stage')} />
+        {(aria) => (
+          <input id="cancerType" name="cancerType" defaultValue={initial?.cancerType} {...aria} />
+        )}
+      </Field>
 
-      <label htmlFor="age">Age</label>
-      <input
-        id="age"
-        name="age"
-        inputMode="numeric"
-        defaultValue={initial?.age}
-        aria-invalid={invalid.has('age')}
-        aria-describedby={describedBy('age')}
-      />
-      <FieldError id="age" show={invalid.has('age')} />
+      <Field id="stage" label="Stage" error={error('stage')}>
+        {(aria) => (
+          <select id="stage" name="stage" defaultValue={initial?.stage ?? ''} {...aria}>
+            <option value="">Choose…</option>
+            {STAGES.map((stage) => (
+              <option key={stage.value} value={stage.value}>
+                {stage.label}
+              </option>
+            ))}
+          </select>
+        )}
+      </Field>
 
-      <label htmlFor="sex">Sex</label>
-      <select
-        id="sex"
-        name="sex"
-        defaultValue={initial?.sex ?? ''}
-        aria-invalid={invalid.has('sex')}
-        aria-describedby={describedBy('sex')}
-      >
-        <option value="">Choose…</option>
-        <option value="female">Female</option>
-        <option value="male">Male</option>
-      </select>
-      <FieldError id="sex" show={invalid.has('sex')} />
+      <div className="field-row">
+        <Field id="age" label="Age" error={error('age')}>
+          {(aria) => (
+            <input id="age" name="age" inputMode="numeric" defaultValue={initial?.age} {...aria} />
+          )}
+        </Field>
 
-      <label htmlFor="country">Country</label>
-      <input
-        id="country"
-        name="country"
-        autoComplete="country-name"
-        defaultValue={initial?.country}
-        aria-invalid={invalid.has('country')}
-        aria-describedby={describedBy('country')}
-      />
-      <FieldError id="country" show={invalid.has('country')} />
+        <Field id="sex" label="Sex" error={error('sex')}>
+          {(aria) => (
+            <select id="sex" name="sex" defaultValue={initial?.sex ?? ''} {...aria}>
+              <option value="">Choose…</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+            </select>
+          )}
+        </Field>
+      </div>
 
-      <label htmlFor="city">City</label>
-      <input
-        id="city"
-        name="city"
-        autoComplete="address-level2"
-        defaultValue={initial?.city}
-        aria-invalid={invalid.has('city')}
-        aria-describedby={describedBy('city')}
-      />
-      <FieldError id="city" show={invalid.has('city')} />
+      <div className="field-row">
+        <Field id="country" label="Country" error={error('country')}>
+          {(aria) => (
+            <input
+              id="country"
+              name="country"
+              autoComplete="country-name"
+              defaultValue={initial?.country}
+              {...aria}
+            />
+          )}
+        </Field>
 
-      <label htmlFor="maxDistanceKm">How far can you travel? (km)</label>
-      <input
+        <Field id="city" label="City" error={error('city')}>
+          {(aria) => (
+            <input
+              id="city"
+              name="city"
+              autoComplete="address-level2"
+              defaultValue={initial?.city}
+              {...aria}
+            />
+          )}
+        </Field>
+      </div>
+
+      <Field
         id="maxDistanceKm"
-        name="maxDistanceKm"
-        inputMode="numeric"
-        defaultValue={initial?.maxDistanceKm}
-        aria-invalid={invalid.has('maxDistanceKm')}
-        aria-describedby={describedBy('maxDistanceKm')}
-      />
-      <FieldError id="maxDistanceKm" show={invalid.has('maxDistanceKm')} />
+        label="How far can you travel? (km)"
+        hint="We look for trial sites within this distance of your city."
+        error={error('maxDistanceKm')}
+      >
+        {(aria) => (
+          <input
+            id="maxDistanceKm"
+            name="maxDistanceKm"
+            inputMode="numeric"
+            defaultValue={initial?.maxDistanceKm}
+            {...aria}
+          />
+        )}
+      </Field>
 
-      <label htmlFor="notes">Past treatments, medicines and other conditions (optional)</label>
-      <textarea
+      <Field
         id="notes"
-        name="notes"
-        rows={5}
-        defaultValue={initial?.notes}
-        aria-invalid={invalid.has('notes')}
-        aria-describedby={describedBy('notes')}
-      />
-      <FieldError id="notes" show={invalid.has('notes')} />
+        label="Past treatments, medicines and other conditions (optional)"
+        hint="In your own words. The more you tell us, the fewer rules we have to leave for your doctor."
+        error={error('notes')}
+      >
+        {(aria) => (
+          <textarea id="notes" name="notes" rows={5} defaultValue={initial?.notes} {...aria} />
+        )}
+      </Field>
 
-      <button type="submit">Save profile</button>
+      <button type="submit" disabled={busy}>
+        Find trials
+      </button>
     </form>
   )
 }

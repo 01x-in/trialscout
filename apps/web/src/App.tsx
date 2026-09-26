@@ -1,11 +1,46 @@
+import type { Profile } from '@trialscout/contract'
 import { type JSX, useState } from 'react'
+import { type SearchOutcome, searchTrials } from './api.ts'
 import { DemoCaution } from './DemoCaution.tsx'
-import { ProfileForm } from './ProfileForm.tsx'
+import { type PlaceError, ProfileForm } from './ProfileForm.tsx'
 import { loadProfile } from './profile.ts'
+import { Results } from './Results.tsx'
 
-export function App(): JSX.Element {
+type Search = (profile: Profile) => Promise<SearchOutcome>
+
+type State =
+  | { kind: 'idle' }
+  | { kind: 'searching' }
+  | { kind: 'done'; outcome: SearchOutcome; profile: Profile }
+
+function statusText(state: State): string {
+  if (state.kind === 'searching') {
+    return 'Checking trials against your profile. This can take up to a minute.'
+  }
+  if (state.kind !== 'done') return ''
+  switch (state.outcome.kind) {
+    case 'rate_limited':
+      return 'You have searched a lot in a short time. Please try again in a few minutes.'
+    case 'unavailable':
+      return 'We could not check trials right now. Please try again later.'
+    default:
+      return ''
+  }
+}
+
+export function App({ search = searchTrials }: { search?: Search }): JSX.Element {
   const [initial] = useState(loadProfile)
-  const [saved, setSaved] = useState(false)
+  const [state, setState] = useState<State>({ kind: 'idle' })
+
+  async function run(profile: Profile): Promise<void> {
+    setState({ kind: 'searching' })
+    setState({ kind: 'done', outcome: await search(profile), profile })
+  }
+
+  const placeError: PlaceError | null =
+    state.kind === 'done' && state.outcome.kind === 'unknown_place'
+      ? { field: state.outcome.field, message: state.outcome.message }
+      : null
 
   return (
     <>
@@ -13,12 +48,21 @@ export function App(): JSX.Element {
       <main className="page">
         <h1>TrialScout</h1>
         <p className="lede">
-          Tell us about your cancer, and see recruiting trials worth discussing with your doctor.
+          Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule,
+          and show which ones are worth discussing with your doctor.
         </p>
-        <ProfileForm initial={initial} onSaved={() => setSaved(true)} />
+        <ProfileForm
+          initial={initial}
+          onSubmit={(profile) => void run(profile)}
+          busy={state.kind === 'searching'}
+          placeError={placeError}
+        />
         <p role="status" className="status">
-          {saved ? 'Profile saved in this browser tab.' : ''}
+          {statusText(state)}
         </p>
+        {state.kind === 'done' && state.outcome.kind === 'results' && (
+          <Results response={state.outcome.response} profile={state.profile} />
+        )}
       </main>
     </>
   )

@@ -27,5 +27,7 @@
     /* Typia, run by ttsc through @ttsc/unplugin in vite.config.ts */
     "plugins": [{ "transform": "typia/lib/transform" }]
   },
-  "include": ["src"]
+  "include": ["src"],
+  // The API route types for hc<AppType>, from declarations of the worker source.
+  "references": [{ "path": "../worker/tsconfig.rpc.json" }]
 }
