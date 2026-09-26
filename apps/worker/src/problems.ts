@@ -31,12 +31,19 @@ export class ProblemError extends Error {
   readonly status: number
   readonly detail: string
   readonly headers: Record<string, string>
+  readonly type: string
 
-  constructor(status: number, detail: string, headers: Record<string, string> = {}) {
+  constructor(
+    status: number,
+    detail: string,
+    headers: Record<string, string> = {},
+    type = 'about:blank',
+  ) {
     super(detail)
     this.status = status
     this.detail = detail
     this.headers = headers
+    this.type = type
   }
 }
 
@@ -108,7 +115,9 @@ function causes(error: unknown): string {
 export function registerProblemHandlers<E extends HonoEnv>(app: Hono<E>): void {
   app.notFound(() => problem(404, 'Not Found'))
   app.onError((error, c) => {
-    if (error instanceof ProblemError) return problem(error.status, error.detail, error.headers)
+    if (error instanceof ProblemError) {
+      return problem(error.status, error.detail, error.headers, error.type)
+    }
     if (error instanceof UpstreamError) {
       console.warn(`Upstream failure on ${describe(c)}`, causes(error))
       return problem(502, 'Trial data is unavailable right now. Try again later.')

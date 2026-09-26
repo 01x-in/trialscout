@@ -1,4 +1,5 @@
 import { index, integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import type { Site } from '../trial.ts'
 
 // Cached ClinicalTrials.gov data and the GeoNames place tables. No patient data is ever
 // stored here: profiles are used for scoring and discarded.
@@ -17,6 +18,8 @@ export const trials = sqliteTable('trial', {
   sex: text('sex', { enum: ['ALL', 'FEMALE', 'MALE'] }).notNull(),
   min_age_years: real('min_age_years'),
   max_age_years: real('max_age_years'),
+  // Every site, as one JSON value: one row per trial keeps each search's writes small.
+  sites: text('sites', { mode: 'json' }).notNull().$type<Site[]>().default([]),
   // The version the criteria rows belong to; null until split. A newer version is re-split.
   split_version: text('split_version'),
   // False when the eligibility text could not be split: show it raw with "ask your doctor".
@@ -24,24 +27,6 @@ export const trials = sqliteTable('trial', {
   // Epoch milliseconds; shown as "data as of" when ClinicalTrials.gov is down.
   fetched_at: integer('fetched_at').notNull(),
 })
-
-export const sites = sqliteTable(
-  'site',
-  {
-    id: integer('id').primaryKey({ autoIncrement: true }),
-    nct_id: text('nct_id')
-      .notNull()
-      .references(() => trials.nct_id, { onDelete: 'cascade' }),
-    facility: text('facility'),
-    city: text('city'),
-    state: text('state'),
-    country: text('country'),
-    status: text('status'),
-    lat: real('lat'),
-    lon: real('lon'),
-  },
-  (t) => [index('site_nct_id').on(t.nct_id)],
-)
 
 // One row per inclusion or exclusion line, split once per trial version for all users.
 export const criteria = sqliteTable(
@@ -102,4 +87,4 @@ export const cityNames = sqliteTable(
   (t) => [primaryKey({ columns: [t.key, t.geonameid] })],
 )
 
-export const schema = { trials, sites, criteria, countries, cities, cityNames }
+export const schema = { trials, criteria, countries, cities, cityNames }

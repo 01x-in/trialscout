@@ -6,11 +6,15 @@ import { CTGOV_BASE_URL } from './clients/ctgov-query.ts'
 
 // Not blank: at least one non-space character.
 type NotBlank = tags.Pattern<'\\S'>
+// A whole number from 1 up, as Wrangler vars are strings.
+type Count = string & tags.Pattern<'^\\s*[1-9][0-9]*\\s*$'>
 
 type Vars = {
   TYPESAFE_API_KEY?: string
   TYPESAFE_MODEL?: string & NotBlank
   CTGOV_BASE_URL?: string & tags.Format<'uri'>
+  SEARCH_PER_MINUTE?: Count
+  SEARCH_PER_DAY?: Count
 }
 
 export type Config = {
@@ -18,6 +22,9 @@ export type Config = {
   typesafeApiKey: string | null
   typesafeModel: string
   ctgovBaseUrl: string
+  // Searches each client may make; every search calls ClinicalTrials.gov and Jev live.
+  searchPerMinute: number
+  searchPerDay: number
 }
 
 const validateVars = typia.createValidate<Vars>()
@@ -35,5 +42,7 @@ export function readConfig(bindings: object): Config {
     typesafeApiKey: key === '' ? null : key,
     typesafeModel: vars.TYPESAFE_MODEL?.trim() ?? 'jev-latest',
     ctgovBaseUrl: vars.CTGOV_BASE_URL ?? CTGOV_BASE_URL,
+    searchPerMinute: Number(vars.SEARCH_PER_MINUTE ?? 5),
+    searchPerDay: Number(vars.SEARCH_PER_DAY ?? 50),
   }
 }

@@ -15,6 +15,13 @@
       "when": 1790423865802,
       "tag": "0001_criterion_group",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1790424483147,
+      "tag": "0002_trial_sites_json",
+      "breakpoints": true
     }
   ]
 }

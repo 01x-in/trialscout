@@ -8,6 +8,8 @@ describe('readConfig (Typia)', () => {
       typesafeApiKey: null,
       typesafeModel: 'jev-latest',
       ctgovBaseUrl: CTGOV_BASE_URL,
+      searchPerMinute: 5,
+      searchPerDay: 50,
     })
   })
 
@@ -40,6 +42,19 @@ describe('readConfig (Typia)', () => {
     )
     expect(() => readConfig({ CTGOV_BASE_URL: 'not a url' })).toThrow(
       'Invalid Worker config: CTGOV_BASE_URL',
+    )
+  })
+
+  it('reads search limits and rejects one that is not a whole number from 1', () => {
+    expect(readConfig({ SEARCH_PER_MINUTE: '3', SEARCH_PER_DAY: ' 20 ' })).toMatchObject({
+      searchPerMinute: 3,
+      searchPerDay: 20,
+    })
+    expect(() => readConfig({ SEARCH_PER_MINUTE: '0' })).toThrow(
+      'Invalid Worker config: SEARCH_PER_MINUTE',
+    )
+    expect(() => readConfig({ SEARCH_PER_DAY: 'lots' })).toThrow(
+      'Invalid Worker config: SEARCH_PER_DAY',
     )
   })
 

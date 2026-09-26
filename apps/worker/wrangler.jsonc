@@ -21,9 +21,15 @@
   ],
   // No id yet: created at M4 (docs/deploy-cloudflare.md). Local dev and tests need none.
   "kv_namespaces": [{ "binding": "CACHE" }],
+  "durable_objects": {
+    "bindings": [{ "name": "SEARCH_LIMITER", "class_name": "SearchLimiter" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SearchLimiter"] }],
   // Secret: TYPESAFE_API_KEY (apps/worker/.dev.vars locally, `wrangler secret put` in production).
   "vars": {
     // Pinned, not jev-latest: cached verdicts and GATE 1 thresholds belong to one version.
-    "TYPESAFE_MODEL": "jev-1.13.0"
+    "TYPESAFE_MODEL": "jev-1.13.0",
+    "SEARCH_PER_MINUTE": "5",
+    "SEARCH_PER_DAY": "50"
   }
 }

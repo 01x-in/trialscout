@@ -1,3 +1,4 @@
+import type { EmptyExplanation, EmptyReason } from '@trialscout/contract'
 import { haversineKm, type Point } from './geo/distance.ts'
 import type { Site, Trial } from './trial.ts'
 
@@ -70,11 +71,8 @@ export function applyHardFilters(trials: Trial[], input: HardFilterInput): HardF
   return { kept, removed }
 }
 
-export type EmptyReason = 'none_nearby' | 'age' | 'sex' | 'no_open_site_nearby'
-
 // Only distance can be relaxed: age and sex are facts, and cancer stage is not a hard filter
 // (Jev judges stage criteria), so it never empties the list.
-export type EmptyExplanation = { reason: EmptyReason; relax: 'distance' }
 
 /** Why no trial survived: the filter that removed the most, and what to widen. */
 export function explainEmpty(fetched: number, removed: RemovedCounts): EmptyExplanation {

@@ -1,10 +1,14 @@
-import type { JevClient, JevRequest } from '../src/judge/jev.ts'
+import type { JevClient, JevRequest, JevState } from '../src/judge/jev.ts'
 
 // A fake Jev: answers every Choice question by a rule over its instructions, and records
 // each request. No network.
 
 export type FakeAnswer = { choice: string; confidence: number }
-export type Rule = (instructions: string, options: string[]) => FakeAnswer | undefined
+export type Rule = (
+  instructions: string,
+  options: string[],
+  state: JevState,
+) => FakeAnswer | undefined
 
 // With no matching rule, Jev says the profile does not say enough.
 const UNKNOWN: FakeAnswer = { choice: 'not_enough_information', confidence: 0.9 }
@@ -28,7 +32,7 @@ export class FakeJev implements JevClient {
     const answers: Record<string, unknown> = {}
     for (const [id, question] of Object.entries(request.questions)) {
       const options = Object.keys(question.criteria)
-      const answer = this.#rule(String(question.instructions), options) ?? UNKNOWN
+      const answer = this.#rule(String(question.instructions), options, request.state) ?? UNKNOWN
       const rest = (1 - answer.confidence) / Math.max(1, options.length - 1)
       answers[id] = {
         type: 'choice',
@@ -49,9 +53,9 @@ export function when(text: string, choice: string, confidence = 0.95): Rule {
 }
 
 export function rules(...all: Rule[]): Rule {
-  return (instructions, options) => {
+  return (instructions, options, state) => {
     for (const rule of all) {
-      const answer = rule(instructions, options)
+      const answer = rule(instructions, options, state)
       if (answer !== undefined) return answer
     }
     return undefined
