@@ -1,0 +1,7 @@
+// The API Worker's bindings, as declared in wrangler.jsonc. Validated by readConfig.
+export interface Env {
+  // Secrets.
+  TYPESAFE_API_KEY?: string
+  // Vars; see config.ts for defaults.
+  TYPESAFE_MODEL?: string
+}
