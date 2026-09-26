@@ -9,6 +9,34 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 M1 in progress on `milestone/m1-profile-to-ranked-list`. See PLAN.md for the next story.
 
+## context-mode (mandatory)
+
+Always route work through the context-mode MCP tools so raw output never floods the context window. This follows [context-mode's Claude Code rules](https://github.com/mksglu/context-mode/blob/main/configs/claude-code/CLAUDE.md).
+
+- **Think in code.** To analyse, count, filter, compare or parse data, write a script with `ctx_execute(language, code)` and `console.log()` only the answer. Use JavaScript with Node built-ins, wrap it in `try/catch`, and handle `null`.
+- **Blocked:**
+  - `curl`, `wget`, WebFetch and inline HTTP in Bash. Use `ctx_fetch_and_index(url, source)` then `ctx_search`, or `fetch()` inside `ctx_execute`. This includes ClinicalTrials.gov and the TypeSafe docs.
+- **Bash only for** `git`, `mkdir`, `rm`, `mv`, `cd`, `ls` and `npm install`. Anything that can print more than 20 lines goes through `ctx_batch_execute` or `ctx_execute`. In this repo that means:
+  - `make test`, `make lint` and `make check-deploy`
+  - `vitest`, `wrangler` and `npm ls` / `npm audit`
+  - Filter these to the pass/fail lines.
+- **Read only to Edit.** To explore or summarise a file, use `ctx_execute_file(path, language, code)`. This applies especially to `fixtures/jev/*.json`, `fixtures/ctgov/*.json` and `package-lock.json`, which are large.
+- **Grep** through `ctx_execute` when results may be large.
+- **Tool order:**
+  1. On resume, check memory with `ctx_search(sort: "timeline")` before asking the user.
+  2. Gather with `ctx_batch_execute(commands, queries)`.
+  3. Follow up with `ctx_search(queries: [...])` in one call.
+  4. Process with `ctx_execute` / `ctx_execute_file`.
+  5. Fetch web pages with `ctx_fetch_and_index`.
+  6. Store notes with `ctx_index`.
+- **Parallel I/O:** pass `concurrency: 4–8` for network batches, such as several docs pages or several `npm view` or `gh` calls, and cap `gh` at 4. Keep `concurrency: 1` for CPU-bound or stateful commands (`make test`, builds, lint).
+- **Output:** write artifacts to files, never inline, and reply with the path plus one line. Give indexed content descriptive `source` labels.
+- **Files are written** with Write/Edit, never with `ctx_execute` or Bash.
+- **Commands:**
+  - `ctx stats` calls `ctx_stats`.
+  - `ctx doctor` and `ctx upgrade` call their tool and run the returned command.
+  - `ctx purge` wipes the knowledge base, so confirm before running it.
+
 ## Layout
 
 ```
