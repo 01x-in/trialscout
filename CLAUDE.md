@@ -97,10 +97,12 @@ These are the safety mechanism. Every change must preserve them.
 ## Jev call budget
 
 - Hard filters (condition, recruiting status, age, sex, distance) run before Jev sees a trial.
-- At most ~300 Jev calls per search; exclusions judged first; after a confident fail, remaining criteria are "not checked yet" and judged when the trial is opened.
+- One `systemOne` request per trial, with every criterion as a Choice question. Cap each search at 300 questions and 30 requests. Exclusions are judged first. After a confident fail, the remaining criteria are "not checked yet" and are judged when the trial is opened.
+- Billing is per input token (about $0.003 per search). The real limit is the account rate limit of 1,200 requests/min. See [docs/jev-budget.md](docs/jev-budget.md) for the measured costs, the exact question wording, the `not_applicable` option and the starting thresholds.
+- Jev cannot generate text. Never use it to write copy, and never ask it to do arithmetic or compare dates.
 - Criteria splitting is deterministic (no AI), runs once per trial version and is cached in D1.
-- Jev verdicts are cached in KV keyed by hash(model, criterion text, normalised profile).
-- M1.3 confirms Jev's API shape, batching, pricing and billing unit from live TypeSafe docs (use the `typesafe-ai` skill) and records them in `docs/jev-budget.md`.
+- Jev verdicts are cached in KV keyed by hash(the model version Jev reports, criterion text, normalised profile). `TYPESAFE_MODEL` is pinned (`jev-1.13.0`). Changing it means re-running the GATE 1 sample.
+- Re-run the spike with `cd apps/worker && node --env-file-if-exists=.dev.vars scripts/jev-spike.ts`. It sends only synthetic profiles to Jev.
 
 ## Edge cases to handle
 

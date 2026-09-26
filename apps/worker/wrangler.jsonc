@@ -12,6 +12,7 @@
   "observability": { "enabled": true },
   // Secret: TYPESAFE_API_KEY (apps/worker/.dev.vars locally, `wrangler secret put` in production).
   "vars": {
-    "TYPESAFE_MODEL": "jev-latest"
+    // Pinned, not jev-latest: cached verdicts and GATE 1 thresholds belong to one version.
+    "TYPESAFE_MODEL": "jev-1.13.0"
   }
 }

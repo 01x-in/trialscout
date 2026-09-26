@@ -43,8 +43,9 @@ profile (browser session only)
 
 - Use one `systemOne` request per trial, split by whole questions if a request is too large (the rx-jev pattern).
 - `state` holds the normalised profile plus trial context (condition, phase).
-- Each criterion is a `Choice` question with the options `meets`, `does_not_meet` and `not_enough_information`.
-- Phrase exclusion criteria as "does the patient have X?" and invert them in the mapping, so a "yes" becomes `likely fails`.
+- Each inclusion criterion is a `Choice` question with the options `meets`, `does_not_meet`, `not_enough_information` and `not_applicable`. `not_applicable` is for criteria that only cover another cohort, such as another cancer type or the other sex.
+- Phrase exclusion criteria positively ("does it describe this patient?"), with the options `applies`, `does_not_apply`, `not_enough_information` and `not_applicable`. The mapping inverts them, so `applies` becomes `likely fails`.
+- The exact wording, the measured costs and the starting thresholds are in [docs/jev-budget.md](docs/jev-budget.md).
 
 ### Verdict mapping
 
@@ -52,10 +53,11 @@ profile (browser session only)
 |---|---|---|
 | `meets` (inclusion) / absent (exclusion) | ≥ threshold | likely meets |
 | `does_not_meet` (inclusion) / present (exclusion) | ≥ threshold | likely fails |
+| `not_applicable` | ≥ threshold | not counted |
 | `not_enough_information` | any | ask your doctor |
 | any | < threshold | ask your doctor |
 
-Missing information never produces a guessed pass or fail. GATE 1 sets the threshold.
+Missing information never produces a guessed pass or fail. The starting thresholds are asymmetric: 0.90 for fails, 0.80 otherwise. GATE 1 sets the real ones.
 
 ### Ranking
 
@@ -68,9 +70,9 @@ This is a pure function.
 ### Budget
 
 - Hard filters run before Jev sees any trial.
-- A search makes at most about 300 Jev questions. M1.3 confirms the billing unit.
+- A search makes at most 300 Jev questions and 30 requests. Billing is per input token, and the real limit is the account's 1,200 requests per minute (M1.3).
 - Exclusion criteria are judged first. After a confident `likely fails`, the trial's remaining criteria are marked "not checked yet" and judged only when the user opens that trial.
-- The KV cache key is a hash of (model, criterion text, normalised profile). The stored value is the verdict only, never raw profile content.
+- The KV cache key is a hash of (the model version Jev reports, criterion text, normalised profile). `TYPESAFE_MODEL` is pinned to `jev-1.13.0` in production. The stored value is the verdict only, never raw profile content.
 - A Durable Object rate limiter applies a per-IP limit.
 
 ### Wording
@@ -136,7 +138,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 
 - M2.1 `GET /api/trials/:nctId/verdicts` returns every criterion with its verdict, confidence and verbatim text. It judges "not checked yet" criteria on demand.
 - M2.2 Checklist UI: verdicts shown with icon and label, readable without colour. Motion is used only for expanding.
-- M2.3 "Ask your doctor" criteria become plain questions. Use templates unless M1.3 shows Jev can do the rewriting.
+- M2.3 "Ask your doctor" criteria become plain questions, written from templates in code. M1.3 confirmed Jev cannot generate text.
 - M2.4 Printable "Questions for your doctor" sheet with a `@media print` stylesheet: black and white, disclaimer printed, trial ID and official link.
 - M2.5 Edit the profile and re-run the search without re-entering it. Every trial links to its official ClinicalTrials.gov page.
 
@@ -164,8 +166,10 @@ Record the result in `docs/gate-2-review.md`.
 
 ## Open questions
 
-- What billing unit does the 300-per-search Jev budget count: requests or questions? (M1.3)
-- Can Jev produce plain-language text for M2.3, or only typed judgements? (M1.3)
+- ~~What billing unit does the 300-per-search Jev budget count?~~ Answered in M1.3 ([docs/jev-budget.md](docs/jev-budget.md)): billing is per input token (jev-1.13: $0.042/Mtok, output free), so a search costs about $0.003. The binding limit is the account rate limit (1,200 requests/min), so M1.8 caps each search at 300 questions and 30 requests.
+- ~~Can Jev produce plain-language text for M2.3?~~ No, Jev returns typed answers only. M2.3 uses templates.
+- How should multi-cohort trials be handled? `not_applicable` fixes "For melanoma: …" criteria, but "NSCLC and cutaneous melanoma" is still read literally as a false `likely fails` (0.98). Review at GATE 1.
+- Do criteria with numeric thresholds or date windows need to be forced to `ask your doctor`? Jev is weak at math and dates. Review at GATE 1.
 - Should KV cache keys be narrowed to only the profile fields relevant to each criterion, to raise the hit rate?
 - Is cancer stage a hard filter, or only a criterion for Jev?
 - Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue?

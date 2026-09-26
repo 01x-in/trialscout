@@ -1,0 +1,660 @@
+{
+  "request": {
+    "state": {
+      "patient": {
+        "cancer": "non-small cell lung cancer",
+        "stage": "Stage IV",
+        "age": 58,
+        "sex": "female",
+        "notes": "EGFR exon 19 deletion. Took osimertinib for 14 months, then the cancer grew. No brain metastases on my last MRI. I can walk and do light housework but not heavy work. Type 2 diabetes, controlled with metformin. Never had any other cancer. Not pregnant."
+      },
+      "trial": {
+        "title": "Efficacy And Safety Of Anti-PD-1/PD-L1 Antibodies In Combination With Bevacizumab And Metronomic Cyclophosphamide In Patients With Non-Small Cell Lung Cancer And Cutaneous Melanoma Previously Treated With Immune Checkpoint Blockade",
+        "conditions": [
+          "Metastatic Non-small Cell Lung Cancer (NSCLC)",
+          "Metastatic Cutaneous Melanoma"
+        ]
+      }
+    },
+    "questions": {
+      "inc_0": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"Eastern Cooperative Oncology Group (ECOG) performance status of 0-2\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_1": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"Provide written informed consent\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_2": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"Age ≥ 18 years\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_3": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"Histologically confirmed diagnosis of NSCLC and cutaneous melanoma with distant metastases.\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_4": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"No mutations in the EGFR gene, ALK, ROS1, RET gene translocations (in case of NSCLC).\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_5": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"For NSCLC: the individuals had previously received anti-PD-(L)1 antibodies in combination with platinum-containing chemotherapy either in the first line or sequentially in the first and second lines for the treatment of metastatic disease.\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_6": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"For NSCLC: the individuals had previously received anti-PD-(L)1 antibodies for \\>6 months and experienced disease progression.\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_7": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"For cutaneous melanoma: the individuals had previously received anti-PD-1 antibodies either in combination with or without anti-CTLA4 therapy for metastatic disease. If the patient had the BRAF V600 mutation, they were also treated with BRAF and MEK inhibitors.\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "inc_8": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"For cutaneous melanoma: the patient has previously received anti-PD-1 antibodies with or without anti-CTLA4 therapy for metastatic disease for \\>6 months and experienced disease progression\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_9": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Presence of clinically significant cardiovascular disease: severe or unstable ischemic heart disease, history of myocardial infarction, New York Heart Association Class III/IV congestive heart failure, ventricular arrhythmias.\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_10": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Stroke and/or transient ischemic attack within 6 months prior to screening;\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_11": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Uncontrolled hypertension\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_12": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"History of previous malignancies except non-melanoma skin cancers, or in situ cervical or breast cancer unless a complete remission was achieved at least 2 years prior to randomization AND no additional therapy is required during the study period. Patients having hepatic involvement of cancer should be excluded as per investigator assessment.\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_13": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Patients with CNS metastases are eligible only if the metastases are adequately treated.\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_14": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Absolute neutrophil count (ANC) \\<1.5×109/L, platelet count \\<100×109/L, or hemoglobin \\<9.0 g/dL.\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_15": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Serum total bilirubin \\>1.5 × the upper limit of normal (ULN). Participants with Gilbert syndrome, bilirubin \\<2 X ULN, and normal AST/ALT are eligible;\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_16": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Alanine aminotransferase (ALT) or aspartate aminotransferase (AST) \\>3 × ULN;\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_17": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Serum creatinine \\>1.5 × ULN.\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_18": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"History of a thromboembolic event\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_19": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Presence of any allergic reactions to components of the study drugs\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_20": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Concomitant medications with a known risk of causing QT prolongation and/or Torsades de Pointes.\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_21": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Any parallel anti-cancer systemic therapy, radiation therapy\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_22": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Women who are pregnant or lactating;\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_23": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Presence of unresolved adverse events of grade 2 or higher toxicity, according to CTCAE v5.0 criteria, from prior therapy (except for alopecia or neurotoxicity grade≤2).\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      },
+      "exc_24": {
+        "type": "choice",
+        "instructions": "A clinical trial turns away anyone this describes: \"Any other serious or uncontrolled medical disorder, active infection, physical examination finding, laboratory finding, altered mental status, or psychiatric condition that, in the opinion of the investigator, would limit a patient's ability to comply with the study requirements, substantially increase risk to the patient, or impact the interpretability of study results.\". Going only by what `patient` says, does it describe this patient?",
+        "criteria": {
+          "applies": "The patient information shows this describes the patient.",
+          "does_not_apply": "The patient information shows this does not describe the patient.",
+          "not_enough_information": "The patient information does not say enough to tell either way.",
+          "not_applicable": "The requirement only covers a different group of patients, such as another cancer type or the other sex, so it does not apply to this patient."
+        }
+      }
+    },
+    "model": "jev-latest"
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "inc_0": {
+        "type": "choice",
+        "choice": "meets",
+        "confidence": 0.75,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_meet": 0.01,
+          "not_enough_information": 0.18,
+          "meets": 0.81
+        }
+      },
+      "inc_1": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.99,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_meet": 0,
+          "not_enough_information": 1,
+          "meets": 0
+        }
+      },
+      "inc_2": {
+        "type": "choice",
+        "choice": "meets",
+        "confidence": 1,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_meet": 0,
+          "not_enough_information": 0,
+          "meets": 1
+        }
+      },
+      "inc_3": {
+        "type": "choice",
+        "choice": "does_not_meet",
+        "confidence": 0.96,
+        "probabilities": {
+          "not_applicable": 0.01,
+          "does_not_meet": 0.97,
+          "not_enough_information": 0.02,
+          "meets": 0
+        }
+      },
+      "inc_4": {
+        "type": "choice",
+        "choice": "does_not_meet",
+        "confidence": 1,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_meet": 1,
+          "not_enough_information": 0,
+          "meets": 0
+        }
+      },
+      "inc_5": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.37,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_meet": 0.47,
+          "not_enough_information": 0.53,
+          "meets": 0
+        }
+      },
+      "inc_6": {
+        "type": "choice",
+        "choice": "does_not_meet",
+        "confidence": 0.68,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_meet": 0.76,
+          "not_enough_information": 0.24,
+          "meets": 0
+        }
+      },
+      "inc_7": {
+        "type": "choice",
+        "choice": "not_applicable",
+        "confidence": 0.88,
+        "probabilities": {
+          "not_applicable": 0.92,
+          "does_not_meet": 0.07,
+          "not_enough_information": 0.01,
+          "meets": 0
+        }
+      },
+      "inc_8": {
+        "type": "choice",
+        "choice": "not_applicable",
+        "confidence": 0.87,
+        "probabilities": {
+          "not_applicable": 0.9,
+          "does_not_meet": 0.08,
+          "not_enough_information": 0.02,
+          "meets": 0
+        }
+      },
+      "exc_9": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.56,
+        "probabilities": {
+          "does_not_apply": 0.33,
+          "not_applicable": 0,
+          "not_enough_information": 0.67,
+          "applies": 0
+        }
+      },
+      "exc_10": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.74,
+        "probabilities": {
+          "does_not_apply": 0.19,
+          "not_applicable": 0,
+          "not_enough_information": 0.81,
+          "applies": 0
+        }
+      },
+      "exc_11": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.75,
+        "probabilities": {
+          "does_not_apply": 0.19,
+          "not_applicable": 0,
+          "not_enough_information": 0.81,
+          "applies": 0
+        }
+      },
+      "exc_12": {
+        "type": "choice",
+        "choice": "does_not_apply",
+        "confidence": 0.69,
+        "probabilities": {
+          "not_applicable": 0.01,
+          "does_not_apply": 0.77,
+          "not_enough_information": 0.06,
+          "applies": 0.16
+        }
+      },
+      "exc_13": {
+        "type": "choice",
+        "choice": "does_not_apply",
+        "confidence": 0.74,
+        "probabilities": {
+          "does_not_apply": 0.79,
+          "not_applicable": 0.03,
+          "not_enough_information": 0.03,
+          "applies": 0.15
+        }
+      },
+      "exc_14": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.97,
+        "probabilities": {
+          "does_not_apply": 0.02,
+          "not_applicable": 0,
+          "not_enough_information": 0.98,
+          "applies": 0
+        }
+      },
+      "exc_15": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.84,
+        "probabilities": {
+          "does_not_apply": 0.1,
+          "not_applicable": 0.01,
+          "not_enough_information": 0.88,
+          "applies": 0.01
+        }
+      },
+      "exc_16": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.94,
+        "probabilities": {
+          "does_not_apply": 0.05,
+          "not_applicable": 0,
+          "not_enough_information": 0.95,
+          "applies": 0
+        }
+      },
+      "exc_17": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.97,
+        "probabilities": {
+          "does_not_apply": 0.02,
+          "not_applicable": 0,
+          "not_enough_information": 0.98,
+          "applies": 0
+        }
+      },
+      "exc_18": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.71,
+        "probabilities": {
+          "does_not_apply": 0.21,
+          "not_applicable": 0,
+          "not_enough_information": 0.79,
+          "applies": 0
+        }
+      },
+      "exc_19": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.79,
+        "probabilities": {
+          "does_not_apply": 0.15,
+          "not_applicable": 0,
+          "not_enough_information": 0.85,
+          "applies": 0
+        }
+      },
+      "exc_20": {
+        "type": "choice",
+        "choice": "does_not_apply",
+        "confidence": 0.36,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_apply": 0.52,
+          "not_enough_information": 0.47,
+          "applies": 0.01
+        }
+      },
+      "exc_21": {
+        "type": "choice",
+        "choice": "applies",
+        "confidence": 0.38,
+        "probabilities": {
+          "does_not_apply": 0.31,
+          "not_applicable": 0,
+          "not_enough_information": 0.15,
+          "applies": 0.54
+        }
+      },
+      "exc_22": {
+        "type": "choice",
+        "choice": "does_not_apply",
+        "confidence": 0.98,
+        "probabilities": {
+          "does_not_apply": 0.99,
+          "not_applicable": 0,
+          "not_enough_information": 0.01,
+          "applies": 0
+        }
+      },
+      "exc_23": {
+        "type": "choice",
+        "choice": "not_enough_information",
+        "confidence": 0.64,
+        "probabilities": {
+          "does_not_apply": 0.27,
+          "not_applicable": 0,
+          "not_enough_information": 0.73,
+          "applies": 0
+        }
+      },
+      "exc_24": {
+        "type": "choice",
+        "choice": "does_not_apply",
+        "confidence": 0.78,
+        "probabilities": {
+          "not_applicable": 0,
+          "does_not_apply": 0.84,
+          "not_enough_information": 0.13,
+          "applies": 0.03
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 5158,
+      "output_tokens": 1433
+    }
+  },
+  "latencyMs": 432,
+  "criteria": [
+    {
+      "kind": "inclusion",
+      "text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0-2"
+    },
+    {
+      "kind": "inclusion",
+      "text": "Provide written informed consent"
+    },
+    {
+      "kind": "inclusion",
+      "text": "Age ≥ 18 years"
+    },
+    {
+      "kind": "inclusion",
+      "text": "Histologically confirmed diagnosis of NSCLC and cutaneous melanoma with distant metastases."
+    },
+    {
+      "kind": "inclusion",
+      "text": "No mutations in the EGFR gene, ALK, ROS1, RET gene translocations (in case of NSCLC)."
+    },
+    {
+      "kind": "inclusion",
+      "text": "For NSCLC: the individuals had previously received anti-PD-(L)1 antibodies in combination with platinum-containing chemotherapy either in the first line or sequentially in the first and second lines for the treatment of metastatic disease."
+    },
+    {
+      "kind": "inclusion",
+      "text": "For NSCLC: the individuals had previously received anti-PD-(L)1 antibodies for \\>6 months and experienced disease progression."
+    },
+    {
+      "kind": "inclusion",
+      "text": "For cutaneous melanoma: the individuals had previously received anti-PD-1 antibodies either in combination with or without anti-CTLA4 therapy for metastatic disease. If the patient had the BRAF V600 mutation, they were also treated with BRAF and MEK inhibitors."
+    },
+    {
+      "kind": "inclusion",
+      "text": "For cutaneous melanoma: the patient has previously received anti-PD-1 antibodies with or without anti-CTLA4 therapy for metastatic disease for \\>6 months and experienced disease progression"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Presence of clinically significant cardiovascular disease: severe or unstable ischemic heart disease, history of myocardial infarction, New York Heart Association Class III/IV congestive heart failure, ventricular arrhythmias."
+    },
+    {
+      "kind": "exclusion",
+      "text": "Stroke and/or transient ischemic attack within 6 months prior to screening;"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Uncontrolled hypertension"
+    },
+    {
+      "kind": "exclusion",
+      "text": "History of previous malignancies except non-melanoma skin cancers, or in situ cervical or breast cancer unless a complete remission was achieved at least 2 years prior to randomization AND no additional therapy is required during the study period. Patients having hepatic involvement of cancer should be excluded as per investigator assessment."
+    },
+    {
+      "kind": "exclusion",
+      "text": "Patients with CNS metastases are eligible only if the metastases are adequately treated."
+    },
+    {
+      "kind": "exclusion",
+      "text": "Absolute neutrophil count (ANC) \\<1.5×109/L, platelet count \\<100×109/L, or hemoglobin \\<9.0 g/dL."
+    },
+    {
+      "kind": "exclusion",
+      "text": "Serum total bilirubin \\>1.5 × the upper limit of normal (ULN). Participants with Gilbert syndrome, bilirubin \\<2 X ULN, and normal AST/ALT are eligible;"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Alanine aminotransferase (ALT) or aspartate aminotransferase (AST) \\>3 × ULN;"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Serum creatinine \\>1.5 × ULN."
+    },
+    {
+      "kind": "exclusion",
+      "text": "History of a thromboembolic event"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Presence of any allergic reactions to components of the study drugs"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Concomitant medications with a known risk of causing QT prolongation and/or Torsades de Pointes."
+    },
+    {
+      "kind": "exclusion",
+      "text": "Any parallel anti-cancer systemic therapy, radiation therapy"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Women who are pregnant or lactating;"
+    },
+    {
+      "kind": "exclusion",
+      "text": "Presence of unresolved adverse events of grade 2 or higher toxicity, according to CTCAE v5.0 criteria, from prior therapy (except for alopecia or neurotoxicity grade≤2)."
+    },
+    {
+      "kind": "exclusion",
+      "text": "Any other serious or uncontrolled medical disorder, active infection, physical examination finding, laboratory finding, altered mental status, or psychiatric condition that, in the opinion of the investigator, would limit a patient's ability to comply with the study requirements, substantially increase risk to the patient, or impact the interpretability of study results."
+    }
+  ]
+}
