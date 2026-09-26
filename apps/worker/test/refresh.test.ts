@@ -188,6 +188,7 @@ describe('scheduledRefresh', () => {
     await handler(createScheduledController({ cron: '17 3 * * *' }), env, ctx)
     await waitOnExecutionContext(ctx)
 
+    expect(log).toHaveBeenCalledTimes(1)
     expect(log).toHaveBeenCalledWith('Trial refresh: checked 5, changed 0, removed 0')
   })
 })

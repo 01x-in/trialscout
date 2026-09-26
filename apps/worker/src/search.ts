@@ -5,7 +5,7 @@ import {
   type TrialResult,
 } from '@trialscout/contract'
 import { studyUrl, type Trial } from './trial.ts'
-import { conditionTerms, FALLBACK_LIMIT } from './fallback.ts'
+import { conditionTerms } from './fallback.ts'
 import { applyHardFilters, type Candidate, explainEmpty, type HardFilterInput } from './filters.ts'
 import { locate } from './geo/locate.ts'
 import type { JudgeTrial } from './judge/judge.ts'
@@ -13,6 +13,7 @@ import { countVerdicts, UNSPLITTABLE_COUNTS } from './judge/verdict.ts'
 import { ProblemError, UpstreamError } from './problems.ts'
 import { rankTrials } from './ranking.ts'
 import type { Services } from './services.ts'
+import type { RefreshCursor } from './store.ts'
 
 // One search: the patient's place, recruiting trials near it, hard filters, criteria
 // (split once per trial version), Jev verdicts within the budget, and the ranked list.
@@ -44,15 +45,31 @@ async function savedTrials(
   condition: string,
   filters: HardFilterInput,
 ): Promise<Found | null> {
-  const saved = await services.store.recruiting(conditionTerms(condition), FALLBACK_LIMIT)
-  const { kept } = applyHardFilters(
-    saved.map((s) => s.trial),
-    filters,
-  )
+  const { batchSize, maxBatches } = services.settings.fallback
+  // As many as a live search could bring back.
+  const enough = services.settings.pageSize * services.settings.maxPages
+  const terms = conditionTerms(condition)
+  const kept: Candidate[] = []
+  const checkedAt = new Map<string, number>()
+  let after: RefreshCursor | null = null
+  // The hard filters run on each page, so trials far away cannot crowd out near ones.
+  for (let batch = 0; batch < maxBatches && kept.length < enough; batch++) {
+    const page = await services.store.recruiting(terms, { limit: batchSize, after })
+    for (const s of page) checkedAt.set(s.trial.nctId, s.checkedAt)
+    kept.push(
+      ...applyHardFilters(
+        page.map((s) => s.trial),
+        filters,
+      ).kept,
+    )
+    const last = page.at(-1)
+    if (last === undefined || page.length < batchSize) break
+    after = { nctId: last.trial.nctId, checkedAt: last.checkedAt }
+  }
   if (kept.length === 0) return null
-  const checkedAt = new Map(saved.map((s) => [s.trial.nctId, s.checkedAt]))
-  const dataAsOf = Math.min(...kept.map((c) => checkedAt.get(c.trial.nctId) ?? 0))
-  return { source: 'saved', kept, dataAsOf }
+  const shown = kept.slice(0, enough)
+  const dataAsOf = Math.min(...shown.map((c) => checkedAt.get(c.trial.nctId) ?? 0))
+  return { source: 'saved', kept: shown, dataAsOf }
 }
 
 function byDistance(a: Candidate, b: Candidate): number {
@@ -95,6 +112,9 @@ export async function search(services: Services, profile: Profile): Promise<Sear
       ...origin,
       distanceKm: profile.maxDistanceKm,
     })
+    // Every recruiting trial is saved, not only those that fit this patient, so the copy
+    // served during an outage covers other patients too.
+    await services.store.save(fetched.filter((t) => t.status === 'RECRUITING'))
     const { kept, removed } = applyHardFilters(fetched, filters)
     if (kept.length === 0) {
       return {
@@ -119,8 +139,6 @@ export async function search(services: Services, profile: Profile): Promise<Sear
 
   // Nearest first, so the Jev budget goes to the trials the patient can most easily reach.
   const candidates = [...found.kept].sort(byDistance)
-  // A saved trial served during an outage was not checked now, so it is not saved again.
-  if (found.source === 'live') await services.store.save(candidates.map((c) => c.trial))
   const splits = await services.store.criteriaFor(candidates.map((c) => c.trial))
   const toJudge: JudgeTrial[] = []
   for (const { trial } of candidates) {

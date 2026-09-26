@@ -17,6 +17,12 @@ import { mockFetch } from './recorded.ts'
 const MARKER = 'zebra-7f3a'
 const PROFILE: Profile = { ...PUNE_NSCLC, notes: `Marker ${MARKER}: had surgery on my left lung.` }
 const LEAKS = new RegExp(`${MARKER}|had surgery on my left`, 'i')
+// Every other field: in a log, any of these means the profile leaked.
+const LOGGED_FIELDS =
+  /non-small|lung|Pune|India|"(cancerType|stage|age|sex|country|city|maxDistanceKm|notes)"|\b58\b|\bIV\b|female|300 ?km/i
+// Stored trials legitimately name cities and cancers, so storage is checked for the
+// profile's shape: its field names, as a serialised profile would carry them.
+const STORED_FIELDS = /"(cancerType|stage|age|maxDistanceKm|notes)"\s*:/
 
 // Jev rejecting a request the way the TypeSafe SDK reports it: an APIError whose message
 // quotes the API's error detail, which can echo the submitted state.
@@ -63,6 +69,7 @@ describe('privacy', () => {
     expect((await request(`/api/trials/${first}/verdicts`, PROFILE)).status).toBe(200)
 
     expect(logged()).not.toMatch(LEAKS)
+    expect(logged()).not.toMatch(LOGGED_FIELDS)
   })
 
   it('logs only the kind and status of a Jev failure, never its message', async () => {
@@ -71,7 +78,7 @@ describe('privacy', () => {
     expect(response.status).toBe(503)
     expect(logged()).toContain('UnprocessableEntityError (HTTP 422)')
     expect(logged()).not.toMatch(LEAKS)
-    expect(logged()).not.toMatch(/Pune|non-small/i)
+    expect(logged()).not.toMatch(LOGGED_FIELDS)
   })
 
   it('logs nothing from the profile when ClinicalTrials.gov is down or the body is invalid', async () => {
@@ -81,6 +88,7 @@ describe('privacy', () => {
     expect((await request('/api/trials/NCT00000000/verdicts', PROFILE, down)).status).toBe(502)
 
     expect(logged()).not.toMatch(LEAKS)
+    expect(logged()).not.toMatch(LOGGED_FIELDS)
   })
 
   it('stores nothing from the profile in D1 or KV', async () => {
@@ -95,12 +103,16 @@ describe('privacy', () => {
     ])
     expect(stored.length).toBeGreaterThan(1000)
     expect(stored).not.toMatch(LEAKS)
+    expect(stored).not.toMatch(STORED_FIELDS)
 
     const { keys } = await env.CACHE.list()
     expect(keys.length).toBeGreaterThan(0)
     for (const { name } of keys) {
       expect(name).toMatch(/^jev:[0-9a-f]{64}$/)
-      expect((await env.CACHE.get(name)) ?? '').not.toMatch(/zebra|surgery|Pune|India/i)
+      const value = (await env.CACHE.get(name)) ?? ''
+      expect(value).not.toMatch(LEAKS)
+      expect(value).not.toMatch(/non-small|lung|Pune|India|female/i)
+      expect(value).not.toMatch(STORED_FIELDS)
     }
   })
 })

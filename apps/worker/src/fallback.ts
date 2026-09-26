@@ -4,9 +4,6 @@
 // title contain every telling word the patient typed. Jev still judges every criterion,
 // including the diagnosis, so a loose candidate shows as a likely fail, never a promise.
 
-// Saved trials read per fallback search, before the hard filters.
-export const FALLBACK_LIMIT = 300
-
 // Words that say nothing about which cancer it is, or are written differently in trial
 // conditions ("cancer" vs "carcinoma"), and joining words.
 const GENERIC = new Set([

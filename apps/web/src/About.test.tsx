@@ -8,7 +8,7 @@ describe('About this demo', () => {
     render(<Root pathname="/about" />)
 
     expect(screen.getByRole('heading', { level: 1, name: 'About this demo' })).toBeInTheDocument()
-    expect(screen.getByRole('note', { name: 'Caution' })).toHaveTextContent(DISCLAIMER)
+    expect(screen.getByRole('note', { name: 'Caution' }).textContent).toBe(DISCLAIMER)
     expect(document.title).toBe('About this demo · TrialScout')
   })
 

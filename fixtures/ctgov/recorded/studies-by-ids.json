@@ -3,6 +3,7 @@
  "params": {
   "format": "json",
   "filter.ids": "NCT06563999|NCT09999999",
+  "filter.advanced": "AREA[StudyType]INTERVENTIONAL",
   "fields": "NCTId,BriefTitle,OverallStatus,LastUpdatePostDate,LeadSponsorName,Condition,Phase,StudyType,EligibilityCriteria,Sex,MinimumAge,MaximumAge,LocationFacility,LocationCity,LocationState,LocationCountry,LocationStatus,LocationGeoPoint",
   "pageSize": "2"
  },

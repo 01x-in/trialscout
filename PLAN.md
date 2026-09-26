@@ -147,6 +147,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 - M3.1 Daily cron refreshes cached trials with a cursor and re-splits trials that changed.
 - M3.2 When ClinicalTrials.gov is unavailable, serve cached trials with a "data as of" date.
   - Saved recruiting trials are matched offline by the telling words of the condition as typed ("non-small cell lung" of "non-small cell lung cancer"), since ClinicalTrials.gov's synonym expansion is not available. The hard filters and Jev then run as usual, so a loose candidate shows as a likely fail, never a promise.
+  - A live search saves every recruiting trial it fetches, not only those that fit its patient, so the saved copy serves other patients too. The fallback reads saved matches in pages of 300 (up to 5) and applies the hard filters to each page, so trials far away cannot crowd out near ones.
   - "Data as of" is the oldest `checked_at` among the trials shown. If nothing saved fits, the search still answers a calm 502 rather than an empty list that would suggest nothing recruits nearby.
 - M3.3 "About this demo" page: how matching works, what Jev is, the method's limits, and why no clinician has verified the results. Credit GeoNames (CC BY 4.0) for city data.
 - M3.4 WCAG AA pass: axe in tests, keyboard navigation, contrast, phone layout.

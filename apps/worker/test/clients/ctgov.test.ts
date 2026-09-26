@@ -155,6 +155,8 @@ describe('CtGovClient.byIds', () => {
     expect(seen).toHaveLength(1)
     expect(seen[0]?.searchParams.get('filter.ids')).toBe('NCT06563999|NCT09999999')
     expect(seen[0]?.searchParams.has('filter.overallStatus')).toBe(false)
+    // As a search asks: a study that stopped being interventional is left out.
+    expect(seen[0]?.searchParams.get('filter.advanced')).toBe('AREA[StudyType]INTERVENTIONAL')
     expect(page.skipped).toBe(0)
     expect(page.trials.map((t) => t.nctId)).toEqual(['NCT06563999'])
     expect(page.trials[0]).toEqual(await client().study('NCT06563999'))

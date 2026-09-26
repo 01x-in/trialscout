@@ -137,9 +137,9 @@ export class CtGovClient {
   }
 
   /**
-   * Several trials by NCT number, in one request and in any status. A number
-   * ClinicalTrials.gov does not know is left out; `skipped` counts malformed studies, whose
-   * numbers cannot be told apart from unknown ones.
+   * Several interventional trials by NCT number, in one request and in any status. A number
+   * ClinicalTrials.gov does not know, or a study that is not interventional, is left out;
+   * `skipped` counts malformed studies, whose numbers cannot be told apart from left-out ones.
    */
   async byIds(ids: string[]): Promise<{ trials: Trial[]; skipped: number }> {
     for (const id of ids) {

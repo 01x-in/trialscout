@@ -4,7 +4,8 @@ import type { RefreshCursor } from './store.ts'
 
 // The daily cron: re-reads saved trials from ClinicalTrials.gov, least recently checked
 // first, so the cache served during an outage stays current. A trial with a new version is
-// saved and re-split; one no longer recruiting, or no longer listed, is removed. Unchanged
+// saved and re-split; one no longer recruiting, no longer interventional or no longer
+// listed is removed. Unchanged
 // trials are only marked as checked. What a run does not reach, the next run starts with.
 
 const RECRUITING = 'RECRUITING'
@@ -31,7 +32,7 @@ export async function refreshTrials(
 
     const written = await services.store.save(trials.filter((t) => t.status === RECRUITING))
     await services.store.criteriaFor(written)
-    await services.store.remove([...closed, ...unlisted])
+    await services.store.remove([...closed, ...unlisted], startedAt)
 
     report.checked += trials.length + unlisted.length
     report.changed += written.length

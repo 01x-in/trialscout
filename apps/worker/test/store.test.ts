@@ -165,7 +165,7 @@ describe('TrialStore', () => {
     await store(2_000).save([trial('NCT00000004', { conditions: ['NON-SMALL CELL LUNG CANCER'] })])
     const s = store()
 
-    const lung = await s.recruiting(['non', 'small', 'lung'], 10)
+    const lung = await s.recruiting(['non', 'small', 'lung'], { limit: 10, after: null })
     expect(lung.map((r) => [r.trial.nctId, r.checkedAt])).toEqual([
       ['NCT00000004', 2_000],
       ['NCT00000001', 1_000],
@@ -174,13 +174,22 @@ describe('TrialStore', () => {
       trial('NCT00000001', { conditions: ['Non-Small-Cell Lung Carcinoma'] }),
     )
     // The title counts too.
-    expect((await s.recruiting(['lung'], 10)).map((r) => r.trial.nctId)).toEqual([
+    expect(
+      (await s.recruiting(['lung'], { limit: 10, after: null })).map((r) => r.trial.nctId),
+    ).toEqual(['NCT00000004', 'NCT00000001', 'NCT00000002'])
+    expect(await s.recruiting([], { limit: 10, after: null })).toHaveLength(3)
+    // In pages, after the last row of the one before.
+    const first = await s.recruiting(['lung'], { limit: 2, after: null })
+    const last = first.at(-1)
+    const next = await s.recruiting(['lung'], {
+      limit: 2,
+      after: last === undefined ? null : { nctId: last.trial.nctId, checkedAt: last.checkedAt },
+    })
+    expect([...first, ...next].map((r) => r.trial.nctId)).toEqual([
       'NCT00000004',
       'NCT00000001',
       'NCT00000002',
     ])
-    expect(await s.recruiting(['lung'], 1)).toHaveLength(1)
-    expect(await s.recruiting([], 10)).toHaveLength(3)
   })
 
   it('removes trials and their criteria', async () => {
@@ -188,12 +197,41 @@ describe('TrialStore', () => {
     await s.save([trial('NCT00000001'), trial('NCT00000002')])
     await s.criteriaFor([trial('NCT00000001'), trial('NCT00000002')])
 
-    await s.remove(['NCT00000001'])
+    await s.remove(['NCT00000001'], 2_000)
 
     expect(await s.find('NCT00000001')).toBeNull()
     expect(await s.find('NCT00000002')).not.toBeNull()
     const left = await createDb(env.DB).select({ id: criteria.nct_id }).from(criteria)
     expect(new Set(left.map((r) => r.id))).toEqual(new Set(['NCT00000002']))
+  })
+
+  it('keeps a trial checked since the refresh read it', async () => {
+    await store(1_000).save([trial('NCT00000001'), trial('NCT00000002')])
+    await store(1_000).criteriaFor([trial('NCT00000001'), trial('NCT00000002')])
+    // A search saw NCT00000002 recruiting after the refresh started at 1_500.
+    await store(2_000).save([trial('NCT00000002')])
+
+    await store().remove(['NCT00000001', 'NCT00000002'], 1_500)
+
+    expect(await store().find('NCT00000001')).toBeNull()
+    expect(await store().find('NCT00000002')).not.toBeNull()
+    const left = await createDb(env.DB).select({ id: criteria.nct_id }).from(criteria)
+    expect(new Set(left.map((r) => r.id))).toEqual(new Set(['NCT00000002']))
+  })
+
+  it('never replaces a saved trial with an older version of it', async () => {
+    await store(1_000).save([trial('NCT00000001', { lastUpdated: '2026-09-20' })])
+
+    const written = await store(2_000).save([
+      trial('NCT00000001', { lastUpdated: '2026-09-01', title: 'A slow, older read' }),
+    ])
+
+    expect(written).toEqual([])
+    const row = await createDb(env.DB).query.trials.findFirst({
+      where: eq(trials.nct_id, 'NCT00000001'),
+    })
+    expect(row).toMatchObject({ version: '2026-09-20', title: 'Trial NCT00000001' })
+    expect(row?.checked_at).toBe(1_000)
   })
 
   it('reports a trial that cannot be split', async () => {

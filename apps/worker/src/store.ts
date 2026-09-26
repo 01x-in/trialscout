@@ -92,8 +92,13 @@ export class TrialStore {
   /**
    * Saved recruiting trials whose conditions or title contain every term, most recently
    * checked first, for when ClinicalTrials.gov is down. No terms matches every saved trial.
+   * Read in pages: `after` is the last row of the previous page.
    */
-  async recruiting(terms: string[], limit: number): Promise<{ trial: Trial; checkedAt: number }[]> {
+  async recruiting(
+    terms: string[],
+    options: { limit: number; after: RefreshCursor | null },
+  ): Promise<{ trial: Trial; checkedAt: number }[]> {
+    const { after } = options
     const rows = await this.#db
       .select()
       .from(trials)
@@ -105,16 +110,23 @@ export class TrialStore {
           ...terms.map((term) =>
             or(like(trials.conditions, `%${term}%`), like(trials.title, `%${term}%`)),
           ),
+          after === null
+            ? undefined
+            : or(
+                lt(trials.checked_at, after.checkedAt),
+                and(eq(trials.checked_at, after.checkedAt), gt(trials.nct_id, after.nctId)),
+              ),
         ),
       )
       .orderBy(desc(trials.checked_at), trials.nct_id)
-      .limit(limit)
+      .limit(options.limit)
     return rows.map((row) => ({ trial: toTrial(row), checkedAt: row.checked_at }))
   }
 
   /**
    * Writes trials whose version is new, and returns them; an unchanged trial is only marked
-   * as checked now.
+   * as checked now. A trial older than the saved version (a slow read racing a newer one)
+   * is left alone.
    */
   async save(list: Trial[]): Promise<Trial[]> {
     const known = await this.#versions(list.map((t) => t.nctId))
@@ -123,10 +135,13 @@ export class TrialStore {
     const written: Trial[] = []
     const unchanged: string[] = []
     for (const trial of list) {
-      if (known.get(trial.nctId)?.version === version(trial)) {
+      const saved = known.get(trial.nctId)?.version
+      if (saved === version(trial)) {
         unchanged.push(trial.nctId)
         continue
       }
+      // Versions are ISO dates, so they compare as strings.
+      if (saved !== undefined && saved > version(trial)) continue
       written.push(trial)
       const row = {
         nct_id: trial.nctId,
@@ -196,12 +211,27 @@ export class TrialStore {
       .limit(options.limit)
   }
 
-  /** Deletes trials and their criteria, e.g. ones no longer recruiting. */
-  async remove(ids: string[]): Promise<void> {
+  /**
+   * Deletes trials and their criteria, e.g. ones no longer recruiting, unless they were
+   * checked at or after `checkedBefore`: a search that saw a trial recruiting since the
+   * refresh read it keeps it.
+   */
+  async remove(ids: string[], checkedBefore: number): Promise<void> {
     const statements: BatchItem<'sqlite'>[] = []
     for (const part of chunk(ids, IN_CHUNK)) {
-      statements.push(this.#db.delete(criteria).where(inArray(criteria.nct_id, part)))
-      statements.push(this.#db.delete(trials).where(inArray(trials.nct_id, part)))
+      const due = and(inArray(trials.nct_id, part), lt(trials.checked_at, checkedBefore))
+      // Both statements go in one batch, which D1 runs as one transaction.
+      statements.push(
+        this.#db
+          .delete(criteria)
+          .where(
+            inArray(
+              criteria.nct_id,
+              this.#db.select({ id: trials.nct_id }).from(trials).where(due),
+            ),
+          ),
+        this.#db.delete(trials).where(due),
+      )
     }
     await this.#run(statements)
   }
