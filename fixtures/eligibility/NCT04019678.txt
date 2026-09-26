@@ -1,0 +1,20 @@
+Inclusion Criteria:
+
+1. Age: 18 ≤75 years
+2. Breast carcinoma with infiltrating histotype
+3. Tumor size: cT1 - cT2 - cT3
+4. Positive axillary lymph nodes (cN +) at the initial diagnosis by clinical, ultrasound and cyto-microhistology evaluation
+5. Neoadjuvant chemotherapy performed
+6. Negative axillary lymph nodes (cN-) from the NAC by clinical and ultrasound assessment
+7. Absence of distant metastases (M0)
+8. Negative medical history for previous infiltrating breast cancer
+
+Exclusion Criteria:
+
+1. Current pregnancy or lactation status
+2. Inflammatory breast cancer
+3. In situ breast cancer
+4. Synchronous contralateral breast cancer
+5. Co-morbidity and/or medical disorder precluding any adjuvant therapy
+6. Co-morbidity and/or medical/mental disorder making impossible making a regular follow-up
+7. Other cancers in the previous 3 years (except forcarcinoma in situ of the uterine cervix, basalioma, squamous cell carcinoma or non-melanoma skin cancer)

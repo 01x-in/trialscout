@@ -1,0 +1,18 @@
+{
+ "path": "/studies",
+ "params": {
+  "format": "json",
+  "query.cond": "glioblastoma",
+  "filter.overallStatus": "RECRUITING",
+  "filter.geo": "distance(-54.8019,-68.3030,50km)",
+  "filter.advanced": "AREA[StudyType]INTERVENTIONAL",
+  "fields": "NCTId,BriefTitle,OverallStatus,LastUpdatePostDate,LeadSponsorName,Condition,Phase,StudyType,EligibilityCriteria,Sex,MinimumAge,MaximumAge,LocationFacility,LocationCity,LocationState,LocationCountry,LocationStatus,LocationGeoPoint",
+  "countTotal": "true",
+  "pageSize": "5"
+ },
+ "status": 200,
+ "body": {
+  "totalCount": 0,
+  "studies": []
+ }
+}

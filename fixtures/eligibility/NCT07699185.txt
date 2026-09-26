@@ -1,0 +1,59 @@
+Inclusion Criteria:
+
+* Sign a written informed consent before implementing any procedures related to the trial;
+* Male or female, 18 years old ≤75 years old;
+* Patients with histologically proven ESCC with a pathological stage of cT1N2M0 or cT2-3N0-2M0 according to AJCC Version 8 TNM stage and eligible for R0 surgical resection prior to treatment;
+* Have not received systematic treatment for the current disease, including surgical treatment, anti-tumor chemoradiotherapy/immunotherapy, etc.;
+* Patients who agree to radical surgical treatment and are judged by the surgeon to have no surgical contraindications;
+* ECOG score 0-1;
+* Expected survival time \>6 months;
+* For adequate organ function, subjects must meet the following laboratory criteria:
+* For adequate organ function, subjects must meet the following laboratory criteria:
+
+  1. The absolute value of neutrophil (ANC) ≥1.5x109/L in the past 14 days without the use of granulocyte colony-stimulating factor;
+  2. Platelets ≥100×109/L without blood transfusion in the past 14 days;
+  3. Hemoglobin \>9g/dL in the last 14 days without blood transfusion or use of erythropoietin;
+  4. Total bilirubin ≤1.5× upper limit of normal (ULN);
+  5. Aspartate aminotransferase (AST) and alanine aminotransferase (ALT) are ≤2.5×ULN
+  6. Serum creatinine ≤1.5×ULN and creatinine clearance (calculated by Cockcroft-Gault formula) ≥60 ml/min;
+  7. Good coagulation function, defined as International standardized ratio (INR) or prothrombin time (PT) ≤1.5 times ULN;
+  8. Normal thyroid function, defined as thyroid stimulating hormone (TSH) within the normal range. If baseline TSH is outside the normal range, subjects with total T3 (or FT3) and FT4 within the normal range can also be enrolled;
+  9. The myocardial enzyme profile was within the normal range (if the researcher comprehensively judged that the simple laboratory abnormality was not clinically significant, it was also allowed to be included);
+* For female subjects of reproductive age, a urine or serum pregnancy test should be performed within 3 days prior to receiving the first study drug administration (day 1 of cycle 1) and the results are negative. If the urine pregnancy test results cannot be confirmed as negative, a blood pregnancy test is requested. Women of non-reproductive age were defined as at least one year after menopause or having undergone surgical sterilization or hysterectomy;
+* If there is a risk of conception, all subjects (male or female) are required to use contraception with an annual failure rate of less than 1% for the entire duration of treatment up to 120 days after the last study drug administration (or 180 days after the last chemotherapy drug administration).
+
+Exclusion Criteria:
+
+* Diagnosis of other malignant diseases (excluding radical basal cell carcinoma of the skin, squamous epithelial carcinoma of the skin, and/or carcinoma in situ after radical resection) within 1.5 years;
+* Known endoscopic signs of active bleeding;
+* Is currently participating in an interventional clinical study, or has received other investigational drugs or used investigational devices within 4 weeks prior to initial dosing;
+* Previous treatment with anti-PD-1, anti-PD-L1 or anti-PD-L2 drugs or drugs that respond to another stimulus or synergistic inhibition of T cell receptors (including but not limited to CTLA-4, OX-40, CD137, etc.);
+* Received systemic systemic treatment with Chinese patent drugs with anti-tumor indications or immunomodulatory drugs (including thymosin, interferon, interleukin, except for local use to control pleural fluid) within 2 weeks before the first administration;
+* An active autoimmune disease requiring systemic treatment (e.g. with disease-modifying drugs, glucocorticoids, or immunosuppressants) has occurred within 2 years prior to first administration. Replacement therapies (such as thyroxine, insulin, or physiologic glucocorticoids for adrenal or pituitary insufficiency) are not considered systemic therapy;
+* Was receiving systemic glucocorticoid therapy (excluding topical glucocorticoids by nasal spray, inhalation, or other route) or any other form of immunosuppressive therapy within 7 days prior to the study's initial administration; Note: The use of physiological doses of glucocorticoids (≤10 mg/ day of prednisone or equivalent) is permitted;
+* Known allogeneic organ transplantation (except corneal transplantation) or allogeneic hematopoietic stem cell transplantation;
+* Known allergy to the drugs used in this study;
+* Has not fully recovered from toxicity and/or complications caused by any intervention before starting treatment (i.e., ≤ grade 1 or baseline, excluding weakness or hair loss);
+* Known history of human immunodeficiency virus (HIV) infection (i.e. HIV 1/2 antibody positive);
+* Untreated active hepatitis B (defined as HBsAg positive and HBV-DNA copy number detected greater than the upper limit of normal value in the laboratory of the study center); Note: Hepatitis B subjects who meet the following criteria can also be enrolled:
+
+  1. HBV viral load \<2500 copies /ml (500 IU/ml) prior to initial dosing, subjects should receive anti-HBV therapy throughout study chemotherapy therapy to avoid viral reactivation
+  2. For subjects with anti-HBC (+), HBsAg (-), anti-HBS (-) and HBV viral load (-), prophylactic anti-HBV therapy is not required, but close monitoring of viral reactivation is required
+* Active HCV-infected subjects (HCV antibody positive and HCV-RNA levels above the lower limit of detection);
+* Received live vaccine within 30 days prior to the first dose (cycle 1, day 1);
+* Note: It is permissible to receive injectable inactivated virus vaccine against seasonal influenza within 30 days prior to initial administration; However, live attenuated influenza vaccines administered intranasally are not permitted
+* Pregnant or lactating women;
+* The presence of any serious or uncontrolled systemic disease, such as:
+
+  1. The resting electrocardiogram has major abnormal rhythm, conduction or morphology, such as complete left bundle branch block, heart block above Ⅱ degree, ventricular arrhythmia or atrial fibrillation;
+  2. Unstable angina pectoris, congestive heart failure, New York Heart Association (NYHA) grade ≥ 2 chronic heart failure;
+  3. Any arterial thrombosis, embolism or ischemia occurred within 6 months before treatment, such as myocardial infarction, unstable angina pectoris, cerebrovascular accident or transient ischemic attack;
+  4. Poor blood pressure control (systolic \> 140 mmHg, diastolic \> 90 mmHg);
+  5. There is a history of non-infectious pneumonia requiring glucocorticoid therapy within 1 year prior to first administration, or there is currently clinically active interstitial lung disease;
+  6. Active pulmonary tuberculosis;
+  7. There is an active or uncontrolled infection that requires systemic treatment;
+  8. Clinically active diverticulitis, abdominal abscess, gastrointestinal obstruction;
+  9. Liver diseases such as cirrhosis, decompensated liver disease, acute or chronic active hepatitis;
+  10. Poor diabetes control (fasting blood glucose (FBG) \> 10mmol/L);
+  11. Urine routine indicated urine protein ≥++, and confirmed 24-hour urine protein quantity \> 1.0 g;
+  12. Patients with mental disorders who cannot cooperate with treatment; Evidence of medical history or disease that might interfere with the test results, prevent participants from fully participating in the study, abnormal treatment or laboratory test values, or other conditions that the investigator considers unsuitable for enrollment The Investigator considers other potential risks unsuitable for participation in the study.

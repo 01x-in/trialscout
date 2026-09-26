@@ -1,0 +1,18 @@
+Inclusion Criteria:
+
+* Prostate cancer with localized, very-high risk, lymph-node positive, and/or metastatic (Stage IV) disease.
+* Being treated with ARPI therapy with intended duration ≥ 18 months.
+* Age \> 65 years old and at least one CV risk factor, or age 45-65 years with at least two CV risk factors:
+
+  * Hypertension
+  * Hyperlipidemia
+  * Diabetes mellitus
+  * Family history of early CAD (male first-degree relative (father or brother) with CAD before age 55; female first-degree relative (mother or sister) with CAD before age 65)
+  * Presence of coronary artery calcium (CAC) on chest CT imaging
+* ECOG 0-2
+* Written informed consent obtained from subject and ability for subject to comply with the requirements of the study.
+
+Exclusion Criteria:
+
+* Prior ARPI therapy exposure \> 6 months duration.
+* Established care with cardio-oncologist (cardiologist with expertise in CV risks of cancer and cardiotoxic cancer therapies).

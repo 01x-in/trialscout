@@ -1,0 +1,20 @@
+Inclusion Criteria:
+
+* Age: Patients must be \>1 year old at the time of study consent.
+* Diagnosis: Patients with a new diagnosis of Ewing sarcoma treated with interval-compressed chemotherapy as per AEWS0031, AEWS1221, or AEWS1031.
+* Informed Consent: All patients and/or their parents or legally authorized representatives must sign a written informed consent. Assent, when appropriate, will be obtained according to institutional guidelines.
+
+Exclusion Criteria:
+
+* Marrow disease: Patients with metastatic Ewing sarcoma to the bone marrow are not eligible. Marrow staging is not required for this study but should be performed if clinically indicated.
+* Concomitant therapy, cancer directed: Patients receiving whole lung radiation, \>50% of pelvic irradiation, other substantial bone marrow radiation (i.e. ≥ 50% of vertebral marrow space), or patients undergoing pneumonectomy as a component of local control before cycle 14, are not eligible. These therapies are not an exclusion if instituted during or after cycle 14.
+* Concomitant therapy, non-cancer directed:
+
+  * Patients requiring hematopoietic stem cell rescue are not eligible.
+  * Previous use of romiplostim, eltrombopag or any other platelet-producing agent is not allowed.
+  * Previous therapy for immune thrombocytopenia and related conditions, including rituximab, mycophenolic acid, protracted systemic steroids, and/or IVIG, is prohibited.
+  * Treatment with erythropoietin-stimulating agents is prohibited.
+  * Patients receiving another investigational drug are not eligible.
+  * Patients who are receiving prophylactic dosing of heparin (i.e. enoxaparin) or oral anticoagulants (i.e. rivaroxaban) for thrombosis prevention may be considered for enrollment but will be excluded from secondary aim 'a' analysis (efficacy measured as the median platelet count and transfusion dependency) given shift in transfusion thresholds.
+* Concurrent Illnesses: Patients with a history of or current diagnosis of bone marrow failure, hematologic malignancy, pro-thrombotic condition, or platelet disorder (including immune or heparin induced thrombocytopenia) are not eligible.
+* Patients who in the opinion of the investigator may not be able to comply with the study (including safety monitoring requirements of the study) are not eligible.

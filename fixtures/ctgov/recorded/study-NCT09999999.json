@@ -1,0 +1,9 @@
+{
+ "path": "/studies/NCT09999999",
+ "params": {
+  "format": "json",
+  "fields": "NCTId,BriefTitle,OverallStatus,LastUpdatePostDate,LeadSponsorName,Condition,Phase,StudyType,EligibilityCriteria,Sex,MinimumAge,MaximumAge,LocationFacility,LocationCity,LocationState,LocationCountry,LocationStatus,LocationGeoPoint"
+ },
+ "status": 404,
+ "body": "NCT number NCT09999999 not found"
+}

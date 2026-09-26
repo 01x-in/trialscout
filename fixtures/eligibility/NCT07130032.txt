@@ -1,0 +1,30 @@
+Inclusion Criteria:
+
+* Eastern Cooperative Oncology Group (ECOG) performance status of 0-2
+* Provide written informed consent
+* Age ≥ 18 years
+* Histologically confirmed diagnosis of NSCLC and cutaneous melanoma with distant metastases.
+* No mutations in the EGFR gene, ALK, ROS1, RET gene translocations (in case of NSCLC).
+* For NSCLC: the individuals had previously received anti-PD-(L)1 antibodies in combination with platinum-containing chemotherapy either in the first line or sequentially in the first and second lines for the treatment of metastatic disease.
+* For NSCLC: the individuals had previously received anti-PD-(L)1 antibodies for \>6 months and experienced disease progression.
+* For cutaneous melanoma: the individuals had previously received anti-PD-1 antibodies either in combination with or without anti-CTLA4 therapy for metastatic disease. If the patient had the BRAF V600 mutation, they were also treated with BRAF and MEK inhibitors.
+* For cutaneous melanoma: the patient has previously received anti-PD-1 antibodies with or without anti-CTLA4 therapy for metastatic disease for \>6 months and experienced disease progression
+
+Exclusion Criteria:
+
+* Presence of clinically significant cardiovascular disease: severe or unstable ischemic heart disease, history of myocardial infarction, New York Heart Association Class III/IV congestive heart failure, ventricular arrhythmias.
+* Stroke and/or transient ischemic attack within 6 months prior to screening;
+* Uncontrolled hypertension
+* History of previous malignancies except non-melanoma skin cancers, or in situ cervical or breast cancer unless a complete remission was achieved at least 2 years prior to randomization AND no additional therapy is required during the study period. Patients having hepatic involvement of cancer should be excluded as per investigator assessment.
+* Patients with CNS metastases are eligible only if the metastases are adequately treated.
+* Absolute neutrophil count (ANC) \<1.5×109/L, platelet count \<100×109/L, or hemoglobin \<9.0 g/dL.
+* Serum total bilirubin \>1.5 × the upper limit of normal (ULN). Participants with Gilbert syndrome, bilirubin \<2 X ULN, and normal AST/ALT are eligible;
+* Alanine aminotransferase (ALT) or aspartate aminotransferase (AST) \>3 × ULN;
+* Serum creatinine \>1.5 × ULN.
+* History of a thromboembolic event
+* Presence of any allergic reactions to components of the study drugs
+* Concomitant medications with a known risk of causing QT prolongation and/or Torsades de Pointes.
+* Any parallel anti-cancer systemic therapy, radiation therapy
+* Women who are pregnant or lactating;
+* Presence of unresolved adverse events of grade 2 or higher toxicity, according to CTCAE v5.0 criteria, from prior therapy (except for alopecia or neurotoxicity grade≤2).
+* Any other serious or uncontrolled medical disorder, active infection, physical examination finding, laboratory finding, altered mental status, or psychiatric condition that, in the opinion of the investigator, would limit a patient's ability to comply with the study requirements, substantially increase risk to the patient, or impact the interpretability of study results.

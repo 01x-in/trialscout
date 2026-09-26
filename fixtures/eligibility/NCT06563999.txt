@@ -1,0 +1,29 @@
+Inclusion Criteria:
+
+* Subjects must have treatment-naive unresectable stage III NSCLC according to the AJCC 8th edition staging;
+* Squamous or non-squamous NSCLC histology;
+* Subjects should have a rare mutation based on NGS, including mutations of EGFR exon20ins, ROS1 fusion, RET fusion, NTRK fusion, MET 14 exon, HER2, BRAF V600E, KRAS G12C, and ALK fusion.
+* Subjects should be without EGFR exon 19 deletions or exon 21 L858R activating mutation;
+* Male and female, aged 18-75 years;
+* Blood and specimens before and after treatment must be provided;
+* Eastern Cooperative Oncology Group (ECOG) performance status of 0-1;
+* Adequate hematological function: Absolute neutrophil count (ANC) ≥2.0 x 109/L, and Platelet count ≥100 x 109/L, and Hemoglobin ≥9 g/dL (may be transfused to maintain or exceed this level);
+* Adequate liver function: Total bilirubin ≤ 1.5 x upper limit of normal (ULN), Aspartate aminotransferase (AST), alanine aminotransferase (ALT) ≤ 2.5 x ULN;
+* Adequate renal function: Serum creatinine ≤ 1.25 x ULN, or ≥ 60 ml/min;
+* Female subjects should not be pregnant or breast-feeding;
+* Written informed consent provided. Being willing and able to comply with the visits, treatment plan, laboratory examinations and other study procedures scheduled in the study.
+
+Exclusion Criteria:
+
+* Not unresectable stage III disease according to the investigator;
+* Subjects with known EGFR sensitive mutations;
+* Previous treatment with systemic antitumor therapy for NSCLC;
+* Eye inflammation or eye infection not fully treated or conditions predisposing the subject to this.
+* History of another malignancy in the last 5 years with the exception of the following: other malignancies cured by surgery alone and having a continuous disease-free interval of 5 years are permitted. Cured basal cell carcinoma of the skin and cured in situ carcinoma of the uterine cervix are permitted.
+* Evidence of clinically active interstitial lung disease;
+* Known history of testing positive for human immunodeficiency virus (HIV) or known acquired immunodeficiency syndrome (AIDS);
+* Inability to comply with protocol or study procedures;
+* Any unstable systemic disease (including active infection, active tuberculosis uncontrolled hypertension, unstable angina, congestive heart failure, myocardial infarction within the previous year, serious cardiac arrhythmia requiring medication, hepatic, renal, or metabolic disease);
+* A serious concomitant systemic disorder that, in the opinion of the investigator, would compromise the patient's ability to complete the study and may confuse the study results;
+* Women who are pregnant or nursing.
+* Ingredients mixed with small cell lung cancer patients.

@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "trialscout",
+      "runtimeExecutable": "make",
+      "runtimeArgs": ["-j2", "dev"],
+      "port": 5173,
+      "autoPort": true
+    }
+  ]
+}

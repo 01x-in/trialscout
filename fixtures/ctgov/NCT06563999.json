@@ -1,0 +1,456 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT06563999",
+      "orgStudyIdInfo": {
+        "id": "GASTO-10117"
+      },
+      "organization": {
+        "fullName": "Sun Yat-sen University",
+        "class": "OTHER"
+      },
+      "briefTitle": "Neoadjuvant Umbrella Trial for Patients With Unresectable Stage III NSCLC Harboring Rare Mutations.",
+      "officialTitle": "Neoadjuvant Umbrella Trial Directed by Next Generation Sequencing for Patients With Unresectable Stage III NSCLC Harboring Rare Mutations (Without EGFR Sensitizing Mutations)",
+      "acronym": "NUMER"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-04",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2024-11-01",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2027-11-01",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2029-11-01",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2024-08-19",
+      "studyFirstSubmitQcDate": "2024-08-19",
+      "studyFirstPostDateStruct": {
+        "date": "2024-08-21",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-04-19",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-04-21",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "PRINCIPAL_INVESTIGATOR",
+        "investigatorFullName": "Si-Yu Wang",
+        "investigatorTitle": "Professor",
+        "investigatorAffiliation": "Sun Yat-sen University"
+      },
+      "leadSponsor": {
+        "name": "Sun Yat-sen University",
+        "class": "OTHER"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "This umbrella trial directed by next generation sequencing (NGS) includes patients with treatment-naive unresectable stage III non-small-cell lung cancer (NSCLC). The aim of the umbrella study is to evaluate the efficacy of induction NGS-directed targeted therapies followed by surgery for stage III NSCLC patients whose tumor harbors a rare mutation.",
+      "detailedDescription": "Stage III non-small-cell lung cancer (NSCLC) patients account for about one-third of newly diagnosed NSCLC, with a large population and strong heterogeneity, posing significant challenges for clinical treatment. Concurrent chemoradiotherapy plus immune checkpoint inhibitors is the recommended therapeutic approach for patients with unresectable stage III non-small cell lung cancer (NSCLC), although surgery offers the chance of cure. However, existing evidence suggests that patients with driver mutation positive NSCLC have limited benefits from immunotherapy. There is still controversy over the definition of 'unresectable', and some stage IIIA and specific stage IIIB-N2 patients may also benefit from comprehensive surgical treatment. Emerging data supports the use of targeted therapies in NSCLC patients with a rare mutation. The aim of this umbrella study is to explore the efficacy of induction next generation sequencing (NGS)-directed targeted therapies followed by surgery for unresectable stage III NSCLC patients whose tumor harbors a rare mutation (Without EGFR Sensitizing Mutations)."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Lung Cancer Stage III",
+        "Mutation"
+      ],
+      "keywords": [
+        "stage III NSCLC",
+        "rare mutations",
+        "umbrella trial",
+        "neoadjuvant"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "NON_RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 120,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Treatment 1-Sunvozertinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with EGFR exon20ins mutation receive Sunvozertinib 300 mg orally once a day, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Sunvozertinib"
+          ]
+        },
+        {
+          "label": "Treatment 2-Crizotinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with ROS1 fusion mutation receive Crizotinib 250mg orally once a day, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Crizotinib"
+          ]
+        },
+        {
+          "label": "Treatment 3-Pralsetinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with RET fusion mutation receive Pralsetinib 400mg orally once a day, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Pralsetinib"
+          ]
+        },
+        {
+          "label": "Treatment 4-Larotrectinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with NTRK fusion mutation receive Larotrectinib 100 mg orally twice daily, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Larotrectinib"
+          ]
+        },
+        {
+          "label": "Treatment 5-Savolitinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with MET 14 exon mutation receive Savolitinib 600 mg or 400 mg (weight \\<50 kg) orally once a day, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Savolitinib"
+          ]
+        },
+        {
+          "label": "Treatment 6-Pyrotinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with HER2 mutation receive Pyrotinib 400 mg orally once a day, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Pyrotinib"
+          ]
+        },
+        {
+          "label": "Treatment 7-Dabrafenib+Trametinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with BRAF V600E mutation receive Dabrafenib plus Trametinib, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Dabrafenib+Trametinib"
+          ]
+        },
+        {
+          "label": "Treatment 8-Glecirasib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with KRAS G12C mutation receive Glecirasib 800 mg daily orally, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Glecirasib"
+          ]
+        },
+        {
+          "label": "Treatment 9-Ensartinib",
+          "type": "EXPERIMENTAL",
+          "description": "Patients with ALK fusion mutation receive Ensartinib 225 mg daily orally, 28 days as one cycle for 3 cycle.",
+          "interventionNames": [
+            "Drug: Ensartinib"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "Sunvozertinib",
+          "description": "300 mg orally once a day, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 1-Sunvozertinib"
+          ],
+          "otherNames": [
+            "DZD9008"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Crizotinib",
+          "description": "300 mg orally once a day, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 2-Crizotinib"
+          ],
+          "otherNames": [
+            "Xalkori"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Pralsetinib",
+          "description": "400 mg orally once a day, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 3-Pralsetinib"
+          ],
+          "otherNames": [
+            "GAVRETO"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Larotrectinib",
+          "description": "100 mg orally twice daily, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 4-Larotrectinib"
+          ],
+          "otherNames": [
+            "VITRAKVI"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Savolitinib",
+          "description": "600 mg or 400 mg (weight \\<50 kg) orally once a day, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 5-Savolitinib"
+          ],
+          "otherNames": [
+            "ORPATHYS"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Pyrotinib",
+          "description": "400 mg orally once a day, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 6-Pyrotinib"
+          ],
+          "otherNames": [
+            "SHR1258"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Dabrafenib+Trametinib",
+          "description": "Dabrafenib 150 mg orally twice daily, 28 days as one cycle. Trametinib 150 mg orally twice daily, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 7-Dabrafenib+Trametinib"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Glecirasib",
+          "description": "800 mg daily orally, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 8-Glecirasib"
+          ],
+          "otherNames": [
+            "JAB-21822"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Ensartinib",
+          "description": "225 mg daily orally, 28 days as one cycle.",
+          "armGroupLabels": [
+            "Treatment 9-Ensartinib"
+          ],
+          "otherNames": [
+            "X-396"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Resectability rate",
+          "timeFrame": "Baseline to 6 months"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Adverse Events",
+          "description": "Adverse Events were monitored according to the National Cancer Institute Common Terminology Criteria for Adverse Events, version 4.0.",
+          "timeFrame": "Baseline to 24 months"
+        },
+        {
+          "measure": "Two-year disease-free survival",
+          "description": "Disease-free survival was assessed from randomization to disease recurrence or death as a result of any cause.",
+          "timeFrame": "2 years after the last patient is randomized"
+        },
+        {
+          "measure": "Two-year overall survival",
+          "description": "Overall survival was assessed from randomization to death as a result of any cause.",
+          "timeFrame": "2 years after the last patient is randomized"
+        },
+        {
+          "measure": "Number of participants with perioperative complications",
+          "timeFrame": "Baseline to 12 months"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Subjects must have treatment-naive unresectable stage III NSCLC according to the AJCC 8th edition staging;\n* Squamous or non-squamous NSCLC histology;\n* Subjects should have a rare mutation based on NGS, including mutations of EGFR exon20ins, ROS1 fusion, RET fusion, NTRK fusion, MET 14 exon, HER2, BRAF V600E, KRAS G12C, and ALK fusion.\n* Subjects should be without EGFR exon 19 deletions or exon 21 L858R activating mutation;\n* Male and female, aged 18-75 years;\n* Blood and specimens before and after treatment must be provided;\n* Eastern Cooperative Oncology Group (ECOG) performance status of 0-1;\n* Adequate hematological function: Absolute neutrophil count (ANC) ≥2.0 x 109/L, and Platelet count ≥100 x 109/L, and Hemoglobin ≥9 g/dL (may be transfused to maintain or exceed this level);\n* Adequate liver function: Total bilirubin ≤ 1.5 x upper limit of normal (ULN), Aspartate aminotransferase (AST), alanine aminotransferase (ALT) ≤ 2.5 x ULN;\n* Adequate renal function: Serum creatinine ≤ 1.25 x ULN, or ≥ 60 ml/min;\n* Female subjects should not be pregnant or breast-feeding;\n* Written informed consent provided. Being willing and able to comply with the visits, treatment plan, laboratory examinations and other study procedures scheduled in the study.\n\nExclusion Criteria:\n\n* Not unresectable stage III disease according to the investigator;\n* Subjects with known EGFR sensitive mutations;\n* Previous treatment with systemic antitumor therapy for NSCLC;\n* Eye inflammation or eye infection not fully treated or conditions predisposing the subject to this.\n* History of another malignancy in the last 5 years with the exception of the following: other malignancies cured by surgery alone and having a continuous disease-free interval of 5 years are permitted. Cured basal cell carcinoma of the skin and cured in situ carcinoma of the uterine cervix are permitted.\n* Evidence of clinically active interstitial lung disease;\n* Known history of testing positive for human immunodeficiency virus (HIV) or known acquired immunodeficiency syndrome (AIDS);\n* Inability to comply with protocol or study procedures;\n* Any unstable systemic disease (including active infection, active tuberculosis uncontrolled hypertension, unstable angina, congestive heart failure, myocardial infarction within the previous year, serious cardiac arrhythmia requiring medication, hepatic, renal, or metabolic disease);\n* A serious concomitant systemic disorder that, in the opinion of the investigator, would compromise the patient's ability to complete the study and may confuse the study results;\n* Women who are pregnant or nursing.\n* Ingredients mixed with small cell lung cancer patients.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "75 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Si-Yu Wang, MD",
+          "role": "CONTACT",
+          "phone": "+86 20 87343439",
+          "email": "wangsy@sysucc.org.cn"
+        }
+      ],
+      "overallOfficials": [
+        {
+          "name": "Si-Yu Wang, MD",
+          "affiliation": "Sun Yat-Sen University Cancer Center",
+          "role": "PRINCIPAL_INVESTIGATOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Sun Yat-sen University Cancer Center",
+          "status": "RECRUITING",
+          "city": "Guangzhou",
+          "state": "Guangdong",
+          "zip": "510060",
+          "country": "China",
+          "contacts": [
+            {
+              "name": "Si-Yu Wang, Doctor",
+              "role": "CONTACT",
+              "phone": "+86 20 87343439",
+              "email": "wsysums@163.net"
+            }
+          ],
+          "geoPoint": {
+            "lat": 23.11667,
+            "lon": 113.25
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "UNDECIDED"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-09-25"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D008175",
+          "term": "Lung Neoplasms"
+        },
+        {
+          "id": "D002289",
+          "term": "Carcinoma, Non-Small-Cell Lung"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D012142",
+          "term": "Respiratory Tract Neoplasms"
+        },
+        {
+          "id": "D013899",
+          "term": "Thoracic Neoplasms"
+        },
+        {
+          "id": "D009371",
+          "term": "Neoplasms by Site"
+        },
+        {
+          "id": "D009369",
+          "term": "Neoplasms"
+        },
+        {
+          "id": "D008171",
+          "term": "Lung Diseases"
+        },
+        {
+          "id": "D012140",
+          "term": "Respiratory Tract Diseases"
+        },
+        {
+          "id": "D002283",
+          "term": "Carcinoma, Bronchogenic"
+        },
+        {
+          "id": "D001984",
+          "term": "Bronchial Neoplasms"
+        }
+      ]
+    },
+    "interventionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D000077547",
+          "term": "Crizotinib"
+        },
+        {
+          "id": "C000655704",
+          "term": "pralsetinib"
+        },
+        {
+          "id": "C000609083",
+          "term": "larotrectinib"
+        },
+        {
+          "id": "C000593259",
+          "term": "1-(1-(imidazo(1,2-a)pyridin-6-yl)ethyl)-6-(1-methyl-1H-pyrazol-4-yl)-1H-(1,2,3)triazolo(4,5-b)pyrazine"
+        },
+        {
+          "id": "C000622954",
+          "term": "pyrotinib"
+        },
+        {
+          "id": "C000629294",
+          "term": "ensartinib"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D010880",
+          "term": "Piperidines"
+        },
+        {
+          "id": "D006573",
+          "term": "Heterocyclic Compounds, 1-Ring"
+        },
+        {
+          "id": "D006571",
+          "term": "Heterocyclic Compounds"
+        },
+        {
+          "id": "D000631",
+          "term": "Aminopyridines"
+        },
+        {
+          "id": "D011725",
+          "term": "Pyridines"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

@@ -190,3 +190,11 @@ sketch
 /.mf
 
 # End of https://www.toptal.com/developers/gitignore/api/react,node,nextjs,remix+cloudflareworkers
+### TrialScout ###
+# Wrangler local state and generated deploy config
+.wrangler/
+# Wrangler local secrets
+.dev.vars
+
+# TypeScript declaration builds (the web app reads the API types from them)
+.tsbuild/

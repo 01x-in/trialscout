@@ -1,0 +1,24 @@
+Inclusion Criteria:
+
+* Patient group:
+* Patients from the maxillofacial surgery department treated for a histologically confirmed squamous cell carcinoma of the oral cavity
+* Patients whose first-line treatment decision at the multidisciplinary meeting in the service of Maxillofacial Surgery is surgery
+* Patients who have not yet been treated surgically or by neoadjuvant treatment
+* Patients over 18 years old
+* Patients who have provided free and informed consent in writing
+* Patients benefiting from a social security scheme
+
+Control group:
+
+* Patients in the maxillofacial surgery department not covered for head and neck cancer
+* Patients over 18 years old
+* Patients who have provided free and informed consent in writing
+* Patients benefiting from a social security scheme
+* Control group homogeneous with the patient group according to age, sex, tobacco and alcohol consumption
+
+Exclusion Criteria:
+
+* Patients with other types of cancer
+* Patients under the age of 18
+* Pregnant or breastfeeding women
+* Patients under guardianship, curators, legal protection or deprived of liberty

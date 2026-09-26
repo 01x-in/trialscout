@@ -1,0 +1,34 @@
+Inclusion Criteria:
+
+1. Written informed consent signed before any trial-related procedures are carried out.
+2. Histologically confirmed osteosarcoma, with a diagnosis of pulmonary metastases without the existence of local recurrence (previous re-resection of local recurrence with wide margin is allowed).
+3. Resectable pulmonary nodule(s), defined as nodule(s) that are removable by wedge resection/ segmentectomy/lobectomy without necessitating a total pneumonectomy (e.g., nodules immediately adjacent to the main stem bronchus or main pulmonary vessels), and no evidences of malignant pleural effusion.
+4. Participants have received at least one standardized systemic treatment regimen at the time of enrollment, and have not received gemcitabine in the past.
+5. Patient has adequate pulmonary function eligible for one-staged or two-staged thoracic surgery.
+6. Aged no less than 10 years old and no more than 65 years old;
+7. For patients ≥16 years old, ECOG score is between 0 and 2 (for patients with amputations, if they can basically take care of themselves and can move freely for more than 50% of their waking hours with the assistance of stretchers, walkers, wheelchairs, etc.) still included);
+8. For patients under 16 years old, Lansky score is at least 70 or above (for patients with amputations who are unable to participate in active recreational activities due to amputation, if they can participate in most active recreational activities with the assistance of walkers, wheelchairs, etc., they are still eligible included).
+9. The expected survival time is greater than 24 weeks;
+10. The majority of the recurrent lesions with an established radiological diagnosis could receive SBRT;
+11. Major organ functions meet basic safety standards within 7-14 days before treatment.
+12. Women of childbearing age should agree that they must use contraceptive measures (such as intrauterine devices, birth control pills or condoms) during the study and within 6 months after the end of the study; if in doubt, serum or urine tests within 7 days before study enrollment The pregnancy test is negative and the patient must be non-lactating; the male should agree that contraceptive measures must be used during the study period and within 6 months after the end of the study period;
+13. If there are recurrent lesions previously treated by surgery, radiofrequency ablation or radiotherapy:
+
+    1. If the image of the metastatic lesion is stable, enrollment is allowed and SBRT is not required for that lesion;
+    2. If the metastatic lesion has image progression, if it was previously treated with surgery and SBRT can be performed, enrollment is allowed; if it was previously treated with radiofrequency ablation or radiotherapy, if repeat SBRT can be considered, enrollment is still allowed.
+
+Exclusion Criteria:
+
+1. Diagnosed with malignant diseases other than tumors within 5 years before the first dose;
+2. Currently participating in interventional clinical research treatment, or have received other research drugs or used research equipment within 4 weeks before the first dose;
+3. Previously received the following therapies: anti-PD-1, anti-PD-L1, or anti-PD-L2 drugs or drugs targeting another stimulating or synergistic inhibition of T cell receptors (e.g., CTLA-4, OX-40, CD137) drug and secondary resistance to the drug (i.e., the best efficacy evaluation is CR, PR or SD lasting more than 4 months, but secondary tumor resistance develops after treatment).
+4. Received systemic systemic treatment with Chinese patent medicines with anti-tumor indications or drugs with immunomodulatory effects (including thymosin, interferon, interleukin, except local use to control pleural effusion) within 2 weeks before the first dose;
+5. Active autoimmune disease requiring systemic treatment (such as use of disease-modifying drugs, glucocorticoids, or immunosuppressants) within 2 years before the first dose. Replacement therapies (such as thyroxine, insulin, or physiological glucocorticoids for adrenal or pituitary insufficiency, etc.) are not considered systemic treatments;
+6. Are receiving systemic glucocorticoid treatment (excluding nasal spray, inhaled or other route of topical glucocorticoids) or any other form of immunosuppressive therapy within 7 days before the first dose of the study;
+7. Known allogeneic organ transplantation (except corneal transplantation) or allogeneic hematopoietic stem cell transplantation;
+8. Known to be allergic to any components of monoclonal antibody preparations (have experienced grade 3 or above allergic reactions);
+9. Have not fully recovered from toxicity and/or complications caused by any intervention before initiating treatment (i.e., ≤Grade 1 or reaching baseline, excluding fatigue or alopecia);
+10. Known history of human immunodeficiency virus (HIV) infection (i.e. HIV1/2 antibody positive);
+11. Get live vaccine within 30 days before the first dose (cycle 1, day 1);
+12. Pregnant or lactating women;
+13. Any serious or uncontrollable systemic disease

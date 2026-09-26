@@ -1,0 +1,33 @@
+Inclusion Criteria:
+
+1. Signed informed consent and willingness/compliance with study procedures.
+2. Age ≥18 years.
+3. Histologically confirmed colorectal adenocarcinoma.
+4. ECOG performance status 0-1.
+5. Locally advanced primary tumor (T3/T4 and/or N+) confirmed by CT/MRI (pelvic MRI for rectal cancer).
+6. dMMR (IHC) or MSI-H (PCR) status.
+7. No prior anti-cancer therapy for colonrectal cancer (surgery/chemotherapy/targeted therapy/radiation).
+8. Adequate organ function
+9. For women of childbearing potential: negative pregnancy test and contraception use during and for 3 months post-treatment. Male participants with fertile partners must use contraception.
+10. Willingness to adhere to study requirements.
+
+Exclusion Criteria:
+
+1. Presence of distant metastases (M1) confirmed by CT/MRI or PET-CT (at least covering the chest, abdomen, and pelvis).
+2. Complete intestinal obstruction, active bleeding, or perforation requiring emergency surgery.
+3. Inability to achieve complete resection of the primary colorectal tumor.
+4. History or concurrent active malignancy (except malignancies cured ≥5 years ago or adequately treated carcinoma in situ).
+5. Prior treatment with anti-PD-1/PD-L1 antibodies, anti-CTLA-4 antibodies, or other drugs/antibodies targeting T-cell co-stimulation or checkpoint pathways.
+6. Major surgery (e.g., laparotomy, thoracotomy, organ resection via laparoscopy) or severe trauma within 4 weeks before enrollment (surgical incision must be fully healed).
+7. Thromboembolic events (e.g., cerebrovascular accident, transient ischemic attack, pulmonary embolism, deep vein thrombosis) within 12 months before enrollment.
+8. Active coronary artery disease, severe/unstable angina, or newly diagnosed angina/myocardial infarction within 12 months before enrollment.
+9. New York Heart Association (NYHA) Class II or higher congestive heart failure (see Appendix 3).
+10. HIV infection, AIDS, or untreated active hepatitis (HBV-DNA ≥500 IU/mL; HCV-RNA above detection limit).
+11. Active inflammatory bowel disease or other colorectal disorders causing chronic diarrhea.
+12. Active, known, or suspected autoimmune disease (exceptions: stable conditions like type 1 diabetes, hypothyroidism on hormone replacement, or skin disorders without systemic treatment, e.g., vitiligo, psoriasis, alopecia).
+13. Interstitial lung disease, non-infectious pneumonitis, or uncontrolled systemic diseases (e.g., diabetes, hypertension, pulmonary fibrosis, acute pneumonia).
+14. Residual toxicity ≥Grade 2 (per CTCAE v5.0) from prior therapies (except anemia, alopecia, skin pigmentation).
+15. Known or suspected hypersensitivity to any study-related drugs.
+16. Pregnancy or lactation.
+17. Women of childbearing potential (last menstruation \<2 years ago) or fertile men unwilling to use effective non-hormonal contraception.
+18. Any unstable medical condition compromising safety or protocol compliance.

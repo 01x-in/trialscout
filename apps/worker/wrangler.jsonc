@@ -1,0 +1,35 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  // The API Worker. Not public: the web Worker reaches it through a service binding, so it
+  // has no workers.dev or preview URL of its own. Built by Vite (vite.config.ts) so Typia's
+  // transform runs; `wrangler deploy` then uses the config Vite writes into dist/.
+  "name": "trialscout-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  // No database_id yet: `wrangler d1 create trialscout` fills it in at M4
+  // (docs/deploy-cloudflare.md). Local dev and tests use the name.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "trialscout",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // No id yet: created at M4 (docs/deploy-cloudflare.md). Local dev and tests need none.
+  "kv_namespaces": [{ "binding": "CACHE" }],
+  "durable_objects": {
+    "bindings": [{ "name": "SEARCH_LIMITER", "class_name": "SearchLimiter" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SearchLimiter"] }],
+  // Secret: TYPESAFE_API_KEY (apps/worker/.dev.vars locally, `wrangler secret put` in production).
+  "vars": {
+    // Pinned, not jev-latest: cached verdicts and GATE 1 thresholds belong to one version.
+    "TYPESAFE_MODEL": "jev-1.13.0",
+    "SEARCH_PER_MINUTE": "5",
+    "SEARCH_PER_DAY": "50"
+  }
+}

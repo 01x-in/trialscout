@@ -1,0 +1,48 @@
+Inclusion Criteria:
+
+The main inclusion criteria include but are not limited to the following:
+
+* Histologically or cytologically confirmed diagnosis of Stage IV nonsquamous non-small cell lung cancer (NSCLC)
+* Documented disease progression per RECIST 1.1 after receiving an anti-programmed cell death 1 protein (PD-1)/programmed cell death ligand 1 (PD-L1) treatment and platinum-based chemotherapy
+* Confirmation per local test report that epidermal growth factor receptor negative (EGFR-), anaplastic lymphoma kinase negative (ALK-), c ros oncogene 1 negative (ROS1-), or other directed therapy is not indicated as primary therapy
+* Measurable disease per RECIST 1.1 as assessed by investigator and verified by BICR
+* Life expectancy of at least 3 months
+* An Eastern Cooperative Oncology Group (ECOG) performance status of 0 to 1 assessed within 7 days before randomization
+* Is an individual of any sex/gender who is at least 18 years of age at the time of providing the informed consent
+* Has adequate organ function
+* If capable of producing sperm refrains from donating sperm plus either abstains from penile-vaginal intercourse or uses a penile/external condom, with contraceptive use consistent with local regulations
+* Participant/participants of childbearing potential (POCBP) is not pregnant and has a negative highly sensitive pregnancy test; and is not breastfeeding and uses a highly effective contraceptive method
+* Archival tumor tissue sample of a tumor lesion not previously irradiated has been provided
+* Has provided tissue prior to treatment randomization from a newly obtained formalin-fixed sample from a new biopsy
+* Human Immunodeficiency Virus (HIV)-infected participants must have well controlled HIV on antiretroviral therapy (ART)
+* Participants who are hepatitis B surface antigen (HBsAg) positive have received hepatitis B virus (HBV) antiviral therapy for at least 4 weeks and have undetectable HBV viral load prior to randomization
+* Participants with history of hepatitis C virus (HCV) infection are eligible if HCV viral load is undetectable at screening
+
+Exclusion Criteria:
+
+The main exclusion criteria include but are not limited to the following:
+
+* Diagnosis of small cell lung cancer or, for mixed tumors, presence of small cell elements
+* Received radiation therapy to the lung
+* Has uncontrolled or significant cardiovascular disorder prior to randomization
+* Has clinically severe pulmonary compromise resulting from intercurrent pulmonary illnesses
+* Participants who have adverse events (AEs) (other than alopecia) due to previous anticancer therapies must have recovered to ≤Grade 1 or baseline
+* Has known severe hypersensitivity (≥Grade 3) to study intervention and/or any of its excipients
+* Has clinically significant corneal disease
+* Has received prior radiotherapy within 2 weeks of start of study intervention, or radiation related toxicities, requiring corticosteroids
+* Has inadequate washout period prior to randomization
+* Has received a live or live-attenuated vaccine within 30 days before the first dose of study intervention
+* Has diagnosis of immunodeficiency or is receiving chronic systemic steroid therapy
+* Has previously received docetaxel as monotherapy or in combination with other therapies
+* Has received an investigational agent or has used an investigational device within 4 weeks prior to study intervention administration
+* Has known additional malignancy that is progressing or has required active treatment within the past 3 years
+* Has known untreated central nervous system (CNS) metastases and/or carcinomatous meningitis
+* Has evidence of any leptomeningeal disease
+* Has history of interstitial lung disease (ILD)/pneumonitis, current diagnosis of ILD, and/or suspected ILD
+* Has active autoimmune disease that has required systemic treatment in the past 2 years
+* Has active infection requiring systemic therapy
+* HIV-infected participants with a history of Kaposi's sarcoma and/or Multicentric Castleman's Disease
+* Has active inflammatory bowel disease requiring immunosuppressive medication or previous clear history of inflammatory bowel disease
+* Has known history of, or active, neurologic paraneoplastic syndrome
+* Has history of allogeneic tissue/solid organ transplant
+* Have not adequately recovered from major surgery or have ongoing surgical complications

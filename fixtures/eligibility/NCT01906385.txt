@@ -1,0 +1,56 @@
+Inclusion Criteria:
+
+1. At least 18 years of age.
+2. Ability to understand the purposes and risks of the study and has signed a written informed consent form approved by the investigator's IRB/Ethics Committee.
+3. Histologically confirmed Grade III/IV recurrent Glioma (following 2021 WHO CNS5 glioma nomenclature, e.g., Astrocytoma, IDH-mutant grade 3 or 4; Glioblastoma, IDH-wildtype grade 4).
+4. Progression by RANO criteria or other clinically accepted neurooncology evaluation, following standard treatment options with known survival benefit for any recurrence (e.g., surgery, temozolomide, radiation, and tumor treating fields). Patient may be included in study if medically unable or unwilling to follow standard treatment options for any recurrence.
+5. Patients who receive treatment with antiepileptic medications must have a two-week history of stable dose of antiepileptic without seizures prior to study start (dosing).
+6. Patients with corticosteroid requirements to control cerebral edema must be maintained at a stable or decreasing dose for a minimum of two weeks without progression of clinical symptoms prior to study start (dosing).
+7. Patients with Grade III/IV Glioma (following 2021 WHO CNS5 glioma nomenclature, e.g., Astrocytoma, IDH-mutant grade 3 or 4; Glioblastoma, IDH-wildtype grade 4) which falls within the treatment field volume.
+8. ECOG performance status of 0 to 2; Karnofsky Performance Status ≥ 60.
+9. Life expectancy of at least 2 months.
+10. Acceptable liver function:
+
+    1. Bilirubin ≤ 1.5 times upper limit of normal
+    2. AST (SGOT) and ALT (SGPT) ≤ 3.0 times upper limit of normal (ULN)
+11. Acceptable renal function:
+
+    a. Serum creatinine ≤1.5xULN
+12. Acceptable hematologic status (without hematologic support):
+
+    1. ANC ≥1000 cells/uL
+    2. Platelet count ≥100,000/uL
+    3. Hemoglobin ≥9.0 g/dL
+13. All women of childbearing potential must have a negative serum pregnancy test and male and female subjects must agree to use effective means of contraception (for example, surgical sterilization or the use of barrier contraception with either a condom or diaphragm in conjunction with spermicidal gel or an IUD) with their partner from entry into the study through 6 months after the last dose.
+
+Exclusion Criteria:
+
+1. The subject has evidence of acute intracranial or intratumoral hemorrhage either by magnetic resonance imaging (MRI) or computerized tomography (CT) scan. Subjects with resolving hemorrhage changes, punctate hemorrhage, or hemosiderin are eligible.
+2. The subject is unable or contraindicated to undergo MRI scan (e.g., has pacemaker or medically unstable).
+3. The subject has not recovered to CTCAE v4.0 Grade ≤1 from AEs (except alopecia, anemia, and lymphopenia) due to antineoplastic agents, investigational drugs, or other medications that were administered prior to study.
+4. The subject is pregnant or breast-feeding.
+5. The subject has serious intercurrent illness, as determined by the treating physician, which would compromise either patient safety or study outcomes such as:
+
+   * hypertension (two or more blood pressure readings performed at screening of \>150 mmHg systolic or \>100 mmHg diastolic) despite optimal treatment
+   * active medically significant infection unresponsive to antibiotics (e.g., non- healing wound, ulcer), uncontrolled systemic infection, or bone fracture
+   * clinically significant cardiac arrhythmias not controlled by appropriate medications
+   * untreated hypothyroidism
+   * symptomatic congestive heart failure or unstable angina pectoris within 3 months prior to study drug
+   * myocardial infarction, stroke, or transient ischemic attack within 6 months prior to study drug
+   * known active malignancy (other than glioma) except non-melanoma skin cancer or carcinoma in-situ in the cervix unless PI determines it would not impact patient safety or efficacy determinations
+6. The subject has inherited bleeding diathesis or coagulopathy with the risk of bleeding.
+7. The subject has received any of the following prior anticancer therapy:
+
+   * Prior treatment with Bevacizumab
+   * Non-standard radiation therapy such as brachytherapy, systemic radioisotope therapy, or intra-operative radiotherapy (IORT) to the target site
+   * Radiation therapy within 12 weeks of screening
+   * Systemic therapy (including investigational agents and small-molecule kinase inhibitors) or non-cytotoxic hormonal therapy (e.g., tamoxifen) within 14 days or 5 half-lives, whichever is shorter, prior to study start (dosing)
+   * Biologic agents (antibodies, immune modulators, vaccines, cytokines) within 21 days prior to study start (dosing)
+   * Nitrosoureas or mitomycin C within 42 days, or metronomic/protracted low- dose chemotherapy within 14 days, or other cytotoxic chemotherapy within 28 days, prior to study start (dosing)
+   * Prior treatment with carmustine wafers
+   * Patients who are currently receiving any other investigational agents and/or who have received an investigational agent in 28 days prior to study start (dosing)
+8. Multifocal progression or involvement of the leptomeninges.
+9. Psychiatric illness/social situations that would limit compliance with the study requirements
+10. Infratentorial disease
+11. The subject has a tumor located within 1-2 cm of a ventricle AND it is determined by the surgeon, PI, and sponsor to be a risk for drug extravasation to the subarachnoid space if given catheter placement and drug administration.
+12. Phase 2 only: The subject should have a tumor volume of ≤20 cm3 to be included in the Phase 2 portion of the study. Subjects with tumor volumes of greater than 20 cm3 are excluded from the Phase 2 portion of the study.

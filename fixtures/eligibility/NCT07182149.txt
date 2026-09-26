@@ -1,0 +1,13 @@
+Inclusion Criteria:
+
+* Have histologically- or cytologically-diagnosed NSCLC (squamous or adenocarcinoma), TNBC, HNSCC, ESCC, esophageal adenocarcinoma, gastric/GEJ adenocarcinoma, cervical, endometrial, or ovarian cancer which is advanced or metastatic.
+* Have an Eastern Cooperative Oncology Group (ECOG) Performance Status of 0 or 1.
+* Adequate liver, renal, pulmonary, and cardiac function.
+* Adequate hematologic function.
+
+Exclusion Criteria:
+
+* Has received cytotoxic chemotherapy, biologic anticancer agents, checkpoint inhibitors, or radiation therapy (excluding bone-only radiation therapy) ≤3 weeks or 5 half-lives (whichever is shorter) prior to the first dose of NRM-823
+* History of Grade 2 pneumonitis requiring steroids or any Grade 3 or 4 pneumonitis from any prior therapy.
+* Has received an investigational therapy \<4 weeks or 5 half-lives prior to the first dose of NRM823, whichever is shorter prior to the first dose of NRM-823.
+* With the exception of alopecia and Grade ≤2 neuropathy, any unresolved toxicities from prior therapy greater than CTCAE Grade 1 at the time of starting study drug.

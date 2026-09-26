@@ -1,0 +1,91 @@
+import { PROBLEM_TYPES, type Profile, type SearchResponse } from '@trialscout/contract'
+import { describe, expect, it } from 'vitest'
+import { searchTrials } from './api.ts'
+
+const PROFILE: Profile = {
+  cancerType: 'breast cancer',
+  stage: 'II',
+  age: 47,
+  sex: 'female',
+  country: 'India',
+  city: 'Mumbai',
+  maxDistanceKm: 100,
+}
+
+const RESPONSE: SearchResponse = {
+  location: { city: 'Mumbai', countryCode: 'IN' },
+  results: [],
+  empty: { reason: 'none_nearby', relax: 'distance' },
+  checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
+  dataAsOf: 1_790_000_000_000,
+}
+
+function problem(status: number, type: string, headers: Record<string, string> = {}): Response {
+  return new Response(JSON.stringify({ type, title: 'x', status, detail: 'Something.' }), {
+    status,
+    headers: { 'Content-Type': 'application/problem+json', ...headers },
+  })
+}
+
+function fetching(reply: () => Response | Promise<Response>, seen: Request[] = []): typeof fetch {
+  return async (input, init) => {
+    seen.push(new Request(input, init))
+    return reply()
+  }
+}
+
+describe('searchTrials', () => {
+  it('posts the profile to /api/search and returns the results', async () => {
+    const seen: Request[] = []
+    const outcome = await searchTrials(
+      PROFILE,
+      fetching(() => Response.json(RESPONSE), seen),
+    )
+
+    expect(outcome).toEqual({ kind: 'results', response: RESPONSE })
+    expect(seen[0]?.method).toBe('POST')
+    expect(new URL(seen[0]?.url ?? '').pathname).toBe('/api/search')
+    expect(await seen[0]?.json()).toEqual(PROFILE)
+  })
+
+  it.each([
+    [PROBLEM_TYPES.unknownCity, 'city'],
+    [PROBLEM_TYPES.unknownCountry, 'country'],
+  ] as const)('reports an unknown place (%s) against its field', async (type, field) => {
+    const outcome = await searchTrials(
+      PROFILE,
+      fetching(() => problem(422, type)),
+    )
+
+    expect(outcome).toEqual({ kind: 'unknown_place', field, message: 'Something.' })
+  })
+
+  it('reports a rate limit with how long to wait', async () => {
+    const outcome = await searchTrials(
+      PROFILE,
+      fetching(() => problem(429, PROBLEM_TYPES.rateLimited, { 'Retry-After': '42' })),
+    )
+
+    expect(outcome).toEqual({ kind: 'rate_limited', retryAfterSeconds: 42 })
+  })
+
+  it.each([500, 502, 503])('reports HTTP %d as unavailable', async (status) => {
+    const outcome = await searchTrials(
+      PROFILE,
+      fetching(() => problem(status, 'about:blank')),
+    )
+
+    expect(outcome).toEqual({ kind: 'unavailable' })
+  })
+
+  it('reports a network failure as unavailable', async () => {
+    const outcome = await searchTrials(
+      PROFILE,
+      fetching(() => {
+        throw new TypeError('Failed to fetch')
+      }),
+    )
+
+    expect(outcome).toEqual({ kind: 'unavailable' })
+  })
+})

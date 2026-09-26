@@ -1,0 +1,58 @@
+{
+  "request": {
+    "state": {
+      "patient": {
+        "cancer": "non-small cell lung cancer",
+        "stage": "Stage IV",
+        "age": 58,
+        "sex": "female",
+        "notes": "EGFR exon 19 deletion. Took osimertinib for 14 months, then the cancer grew. No brain metastases on my last MRI. I can walk and do light housework but not heavy work. Type 2 diabetes, controlled with metformin. Never had any other cancer. Not pregnant."
+      },
+      "trial": {
+        "title": "Neoadjuvant Umbrella Trial for Patients With Unresectable Stage III NSCLC Harboring Rare Mutations.",
+        "conditions": [
+          "Lung Cancer Stage III",
+          "Mutation"
+        ]
+      }
+    },
+    "questions": {
+      "inc_0": {
+        "type": "choice",
+        "instructions": "A clinical trial requires this of every participant: \"Subjects must have treatment-naive unresectable stage III NSCLC according to the AJCC 8th edition staging;\". Going only by what `patient` says, does this patient meet the requirement?",
+        "criteria": {
+          "meets": "The patient information shows the patient meets this requirement.",
+          "does_not_meet": "The patient information shows the patient does not meet this requirement.",
+          "not_enough_information": "The patient information does not say enough to tell either way."
+        }
+      }
+    },
+    "model": "jev-latest"
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "inc_0": {
+        "type": "choice",
+        "choice": "does_not_meet",
+        "confidence": 1,
+        "probabilities": {
+          "does_not_meet": 1,
+          "meets": 0,
+          "not_enough_information": 0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 576,
+      "output_tokens": 50
+    }
+  },
+  "latencyMs": 318,
+  "criteria": [
+    {
+      "kind": "inclusion",
+      "text": "Subjects must have treatment-naive unresectable stage III NSCLC according to the AJCC 8th edition staging;"
+    }
+  ]
+}

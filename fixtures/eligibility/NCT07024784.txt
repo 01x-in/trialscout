@@ -1,0 +1,16 @@
+Inclusion Criteria:
+
+* ECOG performance status of 0 or 1
+* Participants (except for platinum-sensitive ovarian, fallopian tube, and primary peritoneal cancer (PSOC) participants without disease progression after platinum combination standard of care therapy in Arms B and D) will have ≥ 1 lesion that meets the definition of measurable disease by RECIST v1.1 (radiographically measured by the investigator).
+* Participants will have high-grade serous epithelial ovarian, fallopian tube, and primary peritoneal cancers (EOC).
+* Participant has completed prior therapy within the specified times below:
+
+  * Systemic antineoplastic therapy within 5 half-lives or 4 weeks (whichever is shorter) prior to the first dose of IMGN151.
+  * Focal radiation completed ≥ 2 weeks prior to the first dose of study treatment.
+
+Exclusion Criteria:
+
+* Participants with ovarian cancer with histologies including: endometrioid, clear cell, mucinous, or sarcomatous histology, mixed tumors containing any of the above histologies, as well a low-grade or borderline ovarian tumor.
+* History of clinically significant medical conditions or any other reason that the investigator determines would interfere with the participant's participation in this study or would make the participant an unsuitable candidate to receive study treatment.
+* Prior treatment with FRα-targeting therapy.
+* Prior wide-field radiotherapy affecting more than 20% of the bone marrow.

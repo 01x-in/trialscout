@@ -1,0 +1,153 @@
+import {
+  PROBLEM_TYPES,
+  type Profile,
+  type SearchResponse,
+  type TrialResult,
+  type VerdictCounts,
+} from '@trialscout/contract'
+import type { Trial } from './trial.ts'
+import { applyHardFilters, type Candidate, explainEmpty } from './filters.ts'
+import { locate } from './geo/locate.ts'
+import type { JudgeTrial } from './judge/judge.ts'
+import { countVerdicts } from './judge/verdict.ts'
+import { ProblemError } from './problems.ts'
+import { rankTrials } from './ranking.ts'
+import type { Services } from './services.ts'
+
+// One search: the patient's place, recruiting trials near it, hard filters, criteria
+// (split once per trial version), Jev verdicts within the budget, and the ranked list.
+// The profile is used here and discarded; nothing about it is stored or logged.
+
+const STUDY_URL = 'https://clinicaltrials.gov/study/'
+
+// An unsplittable trial counts as one "ask your doctor": its raw text is shown instead.
+const UNSPLITTABLE: VerdictCounts = {
+  likely_meets: 0,
+  likely_fails: 0,
+  ask_your_doctor: 1,
+  not_checked: 0,
+}
+
+async function fetchTrials(
+  services: Services,
+  query: Parameters<Services['ctgov']['search']>[0],
+): Promise<Trial[]> {
+  const found: Trial[] = []
+  let pageToken: string | undefined
+  for (let page = 0; page < services.settings.maxPages; page++) {
+    const result = await services.ctgov.search(query, {
+      pageSize: services.settings.pageSize,
+      ...(pageToken === undefined ? {} : { pageToken }),
+    })
+    found.push(...result.trials)
+    if (result.nextPageToken === null) break
+    pageToken = result.nextPageToken
+  }
+  return found
+}
+
+function byDistance(a: Candidate, b: Candidate): number {
+  const da = a.nearestSite?.distanceKm ?? Number.POSITIVE_INFINITY
+  const db = b.nearestSite?.distanceKm ?? Number.POSITIVE_INFINITY
+  return da - db
+}
+
+export async function search(services: Services, profile: Profile): Promise<SearchResponse> {
+  const located = await locate(services.db, profile.city, profile.country)
+  if (!located.ok) {
+    throw located.reason === 'unknown_country'
+      ? new ProblemError(
+          422,
+          'We do not recognise that country. Try its full English name, such as "India" or "United States".',
+          {},
+          PROBLEM_TYPES.unknownCountry,
+        )
+      : new ProblemError(
+          422,
+          'We could not find that city. Check the spelling, or try the nearest large city.',
+          {},
+          PROBLEM_TYPES.unknownCity,
+        )
+  }
+  const { place } = located
+  const origin = { lat: place.lat, lon: place.lon }
+  const dataAsOf = services.now()
+
+  const fetched = await fetchTrials(services, {
+    condition: profile.cancerType,
+    ...origin,
+    distanceKm: profile.maxDistanceKm,
+  })
+  const { kept, removed } = applyHardFilters(fetched, {
+    age: profile.age,
+    sex: profile.sex,
+    origin,
+    maxDistanceKm: profile.maxDistanceKm,
+  })
+  const location = { city: place.name, countryCode: place.countryCode }
+  if (kept.length === 0) {
+    return {
+      location,
+      results: [],
+      empty: explainEmpty(fetched.length, removed),
+      checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
+      dataAsOf,
+    }
+  }
+
+  // Nearest first, so the Jev budget goes to the trials the patient can most easily reach.
+  const candidates = [...kept].sort(byDistance)
+  await services.store.save(candidates.map((c) => c.trial))
+  const splits = await services.store.criteriaFor(candidates.map((c) => c.trial))
+  const toJudge: JudgeTrial[] = []
+  for (const { trial } of candidates) {
+    const split = splits.get(trial.nctId)
+    if (split?.ok) {
+      toJudge.push({
+        nctId: trial.nctId,
+        title: trial.title,
+        conditions: trial.conditions,
+        criteria: split.criteria,
+      })
+    }
+  }
+  const report = await services.judge.judgeSearch(profile, toJudge, services.settings.budget)
+
+  const results: TrialResult[] = candidates.map(({ trial, nearestSite }) => {
+    const verdicts = report.trials.get(trial.nctId)
+    return {
+      nctId: trial.nctId,
+      title: trial.title,
+      phases: trial.phases,
+      sponsor: trial.sponsor,
+      url: `${STUDY_URL}${trial.nctId}`,
+      nearestSite:
+        nearestSite === null
+          ? null
+          : {
+              facility: nearestSite.facility,
+              city: nearestSite.city,
+              country: nearestSite.country,
+              distanceKm: Math.round(nearestSite.distanceKm),
+            },
+      eligibility: verdicts === undefined ? 'unsplittable' : 'split',
+      counts: verdicts === undefined ? UNSPLITTABLE : countVerdicts(verdicts.map((v) => v.verdict)),
+    }
+  })
+  const ranked = rankTrials(
+    results.map((r) => ({ ...r, distanceKm: r.nearestSite?.distanceKm ?? null })),
+  ).map(({ distanceKm: _distance, ...result }) => result)
+
+  return {
+    location,
+    results: ranked,
+    empty: null,
+    checked: {
+      questions: report.questionsAsked,
+      requests: report.requests,
+      cacheHits: report.cacheHits,
+      model: report.model,
+    },
+    dataAsOf,
+  }
+}

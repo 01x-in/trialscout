@@ -7,28 +7,61 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-No code and no git repo yet. Next story: M1.1 (workspace scaffold + Typia proof). When M1.1 lands, replace the "planned" Layout and Commands below with the real ones.
+M1 is complete on `milestone/m1-profile-to-ranked-list`. Next is **GATE 1** (human verdict review, PLAN.md). Do not start M2 before sign-off.
 
-## Layout (planned)
+## context-mode (mandatory)
+
+Always route work through the context-mode MCP tools so raw output never floods the context window. This follows [context-mode's Claude Code rules](https://github.com/mksglu/context-mode/blob/main/configs/claude-code/CLAUDE.md).
+
+- **Think in code.** To analyse, count, filter, compare or parse data, write a script with `ctx_execute(language, code)` and `console.log()` only the answer. Use JavaScript with Node built-ins, wrap it in `try/catch`, and handle `null`.
+- **Blocked:**
+  - `curl`, `wget`, WebFetch and inline HTTP in Bash. Use `ctx_fetch_and_index(url, source)` then `ctx_search`, or `fetch()` inside `ctx_execute`. This includes ClinicalTrials.gov and the TypeSafe docs.
+- **Bash only for** `git`, `mkdir`, `rm`, `mv`, `cd`, `ls` and `npm install`. Anything that can print more than 20 lines goes through `ctx_batch_execute` or `ctx_execute`. In this repo that means:
+  - `make test`, `make lint` and `make check-deploy`
+  - `vitest`, `wrangler` and `npm ls` / `npm audit`
+  - Filter these to the pass/fail lines.
+- **Read only to Edit.** To explore or summarise a file, use `ctx_execute_file(path, language, code)`. This applies especially to `fixtures/jev/*.json`, `fixtures/ctgov/*.json` and `package-lock.json`, which are large.
+- **Grep** through `ctx_execute` when results may be large.
+- **Tool order:**
+  1. On resume, check memory with `ctx_search(sort: "timeline")` before asking the user.
+  2. Gather with `ctx_batch_execute(commands, queries)`.
+  3. Follow up with `ctx_search(queries: [...])` in one call.
+  4. Process with `ctx_execute` / `ctx_execute_file`.
+  5. Fetch web pages with `ctx_fetch_and_index`.
+  6. Store notes with `ctx_index`.
+- **Parallel I/O:** pass `concurrency: 4–8` for network batches, such as several docs pages or several `npm view` or `gh` calls, and cap `gh` at 4. Keep `concurrency: 1` for CPU-bound or stateful commands (`make test`, builds, lint).
+- **Output:** write artifacts to files, never inline, and reply with the path plus one line. Give indexed content descriptive `source` labels.
+- **Files are written** with Write/Edit, never with `ctx_execute` or Bash.
+- **Commands:**
+  - `ctx stats` calls `ctx_stats`.
+  - `ctx doctor` and `ctx upgrade` call their tool and run the returned command.
+  - `ctx purge` wipes the knowledge base, so confirm before running it.
+
+## Layout
 
 ```
-apps/worker/       Hono API Worker (D1, KV, cron, rate-limit DO, Jev client)
-apps/web/          Vite + React, served by a web Worker with static assets
-packages/contract/ shared plain TS types with Typia tags
+apps/worker/       Hono API Worker, built by Vite + @cloudflare/vite-plugin (src/app.ts exports AppType;
+                   tsconfig.rpc.json emits its declarations for the web app's hc<AppType>)
+apps/web/          Vite + React; worker/index.ts is the web Worker serving dist/ and forwarding /api/*
+packages/contract/ shared plain TS types with Typia tags (Profile)
 docs/              jev-budget.md, gate reviews, deploy-cloudflare.md
 blocked.md         written only when a story is stuck
 ```
 
-## Commands (planned, mirror rx-jev — not yet created)
+## Commands
 
 ```bash
-make -j2 dev    # worker :8787 + Vite :5173 with /api proxied
-make test       # npm test --workspaces
-make lint       # biome format:check + oxlint + typecheck
-make db-local   # wrangler d1 migrations apply DB --local
-make deploy     # API Worker, then web Worker
-make smoke URL=https://trialscout.cc
+make -j2 dev       # API Worker (vite dev) :8787 + web Vite :5173 with /api proxied
+make test          # worker (workerd pool) then web (jsdom)
+make lint          # biome format:check + oxlint + typecheck (tsc 7)
+make format        # biome format --write
+make db-local      # local D1: migrations + GeoNames cities (downloads ~3 MB once)
+make db-generate   # new Drizzle migration after editing apps/worker/src/db/schema.ts
+make check-deploy  # vite build + wrangler deploy --dry-run for both Workers
+make deploy        # API Worker, then web Worker
 ```
+
+Run `make db-local` once before `make -j2 dev`, and put `TYPESAFE_API_KEY` in `apps/worker/.dev.vars`. M4 adds `make smoke URL=…`.
 
 ## Stack
 
@@ -46,13 +79,15 @@ make smoke URL=https://trialscout.cc
 
 - **Typia, not Zod — everywhere.** This deliberately overrides the global "Zod for all external data" rule. Do not introduce Zod or revert this. Typia validates ClinicalTrials.gov responses, Jev responses, request bodies, the profile form and env vars, on both client and Worker.
   - Constraints are Typia type tags on plain TS types; validators are generated at compile time.
-  - `unplugin-typia` must run in the web Vite build, the Worker build and Vitest. M1.1 must prove this before anything else.
+  - The transform runs through `ttsc` + `@ttsc/unplugin` (not the deprecated `@ryoppippi/unplugin-typia`) in the web Vite build, the Worker Vite build and both Vitest configs. The plugin is declared in `tsconfig.json` / `tsconfig.app.json` `compilerOptions.plugins`; a file outside that tsconfig's `include` is left untransformed.
   - Typia has no coercion/transforms — normalisation lives in plain functions.
-  - Typia versions are tied to TypeScript versions; pin both together.
+  - Exact pins that must move together: `typescript` 7.0.2 (Go), `typia` 15.0.0, `ttsc` + `@ttsc/unplugin` 0.30.4. `@hono/typia-validator` declares typia ≤12, so the root `overrides` forces it onto typia 15 and `npm ls` reports it as invalid; that is expected.
+  - The first Vitest/Vite run compiles typia's Go plugin (about 2 minutes); later runs use the cache.
+  - The API Worker's `vite dev` runs with `server.watch: null`, because with a watcher, `@ttsc/unplugin` deadlocks the Cloudflare dev runner and every request hangs. Restart `make dev` after editing Worker code. The web app keeps hot reload.
 
 ## Workflow
 
-- `git init` before M1.1. Work on `task/<slug>`, `milestone/<slug>` or `gate/<slug>` branches, never `main`.
+- Work on `task/<slug>`, `milestone/<slug>` or `gate/<slug>` branches, never `main`.
 - One commit per passing story, prefixed with its ID: `M1.6: criteria splitter`.
 - Max 3 fix cycles per story, then write `blocked.md` and stop.
 - Stop at every `GATE` in PLAN.md until a human signs off.
@@ -62,7 +97,8 @@ make smoke URL=https://trialscout.cc
 
 - TDD: write tests first; never change assertions to make them pass.
 - Vitest: `@cloudflare/vitest-pool-workers` for the Worker, jsdom + Testing Library for web.
-- Vitest must load `unplugin-typia`; without the transform, `typia.*` calls throw at runtime.
+- Vitest must load `@ttsc/unplugin`; without the transform, `typia.*` calls throw at runtime.
+- The pool-workers package pins its own workerd, which caps `compatibility_date` (currently 2026-08-20). Do not raise the date past what it supports.
 - No live network in tests: Jev is faked, and Jev and ClinicalTrials.gov responses are replayed from recorded fixtures.
 - Pure functions (criteria splitter, verdict mapping, ranking) get table-driven tests against real eligibility texts.
 
@@ -93,10 +129,12 @@ These are the safety mechanism. Every change must preserve them.
 ## Jev call budget
 
 - Hard filters (condition, recruiting status, age, sex, distance) run before Jev sees a trial.
-- At most ~300 Jev calls per search; exclusions judged first; after a confident fail, remaining criteria are "not checked yet" and judged when the trial is opened.
+- One `systemOne` request per trial, with every criterion as a Choice question. Cap each search at 300 questions and 30 requests. Exclusions are judged first. After a confident fail, the remaining criteria are "not checked yet" and are judged when the trial is opened.
+- Billing is per input token (about $0.003 per search). The real limit is the account rate limit of 1,200 requests/min. See [docs/jev-budget.md](docs/jev-budget.md) for the measured costs, the exact question wording, the `not_applicable` option and the starting thresholds.
+- Jev cannot generate text. Never use it to write copy, and never ask it to do arithmetic or compare dates.
 - Criteria splitting is deterministic (no AI), runs once per trial version and is cached in D1.
-- Jev verdicts are cached in KV keyed by hash(model, criterion text, normalised profile).
-- M1.3 confirms Jev's API shape, batching, pricing and billing unit from live TypeSafe docs (use the `typesafe-ai` skill) and records them in `docs/jev-budget.md`.
+- Jev answers are cached in KV per trial and phase. The key is a SHA-256 of the model, `QUESTION_VERSION`, the trial context, the criteria, and the normalised profile without location; the value holds no profile content. Bump `QUESTION_VERSION` (`apps/worker/src/judge/questions.ts`) whenever the wording changes. `TYPESAFE_MODEL` is pinned (`jev-1.13.0`), and changing it means re-running the GATE 1 sample.
+- Re-run the spike with `cd apps/worker && node --env-file-if-exists=.dev.vars scripts/jev-spike.ts`. It sends only synthetic profiles to Jev.
 
 ## Edge cases to handle
 
