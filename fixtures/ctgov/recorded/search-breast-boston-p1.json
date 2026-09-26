@@ -1,0 +1,1862 @@
+{
+ "path": "/studies",
+ "params": {
+  "format": "json",
+  "query.cond": "breast cancer",
+  "filter.overallStatus": "RECRUITING",
+  "filter.geo": "distance(42.3601,-71.0589,50km)",
+  "filter.advanced": "AREA[StudyType]INTERVENTIONAL",
+  "fields": "NCTId,BriefTitle,OverallStatus,LastUpdatePostDate,LeadSponsorName,Condition,Phase,StudyType,EligibilityCriteria,Sex,MinimumAge,MaximumAge,LocationFacility,LocationCity,LocationState,LocationCountry,LocationStatus,LocationGeoPoint",
+  "countTotal": "true",
+  "pageSize": "5"
+ },
+ "status": 200,
+ "body": {
+  "totalCount": 152,
+  "studies": [
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07182149",
+      "briefTitle": "A Phase 1 Study of NRM-823 in Participants With Locally Advanced or Metastatic Refractory Solid Tumors"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "lastUpdatePostDateStruct": {
+       "date": "2026-08-18"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Normunity AccelCo, Inc."
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "HNSCC",
+       "ESCC",
+       "Esophageal Adenocarcinoma",
+       "Gastric Adenocarcinoma",
+       "GEJ Adenocarcinoma",
+       "Ovarian Cancer",
+       "NSCLC",
+       "Cervical Cancer",
+       "Endometrial Cancer",
+       "Triple Negative Breast Cancer (TNBC)"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ]
+     },
+     "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Have histologically- or cytologically-diagnosed NSCLC (squamous or adenocarcinoma), TNBC, HNSCC, ESCC, esophageal adenocarcinoma, gastric/GEJ adenocarcinoma, cervical, endometrial, or ovarian cancer which is advanced or metastatic.\n* Have an Eastern Cooperative Oncology Group (ECOG) Performance Status of 0 or 1.\n* Adequate liver, renal, pulmonary, and cardiac function.\n* Adequate hematologic function.\n\nExclusion Criteria:\n\n* Has received cytotoxic chemotherapy, biologic anticancer agents, checkpoint inhibitors, or radiation therapy (excluding bone-only radiation therapy) ≤3 weeks or 5 half-lives (whichever is shorter) prior to the first dose of NRM-823\n* History of Grade 2 pneumonitis requiring steroids or any Grade 3 or 4 pneumonitis from any prior therapy.\n* Has received an investigational therapy \\<4 weeks or 5 half-lives prior to the first dose of NRM823, whichever is shorter prior to the first dose of NRM-823.\n* With the exception of alopecia and Grade ≤2 neuropathy, any unresolved toxicities from prior therapy greater than CTCAE Grade 1 at the time of starting study drug.",
+      "sex": "ALL",
+      "minimumAge": "18 Years"
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Denver",
+        "state": "Colorado",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 39.73915,
+         "lon": -104.9847
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "New Haven",
+        "state": "Connecticut",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 41.30815,
+         "lon": -72.92816
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Washington D.C.",
+        "state": "District of Columbia",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 38.89511,
+         "lon": -77.03637
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Boston",
+        "state": "Massachusetts",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.35843,
+         "lon": -71.05977
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Boston",
+        "state": "Massachusetts",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.35843,
+         "lon": -71.05977
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Minneapolis",
+        "state": "Minnesota",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 44.97997,
+         "lon": -93.26384
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "St Louis",
+        "state": "Missouri",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 38.62727,
+         "lon": -90.19789
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Hackensack",
+        "state": "New Jersey",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.88593,
+         "lon": -74.04347
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Maumee",
+        "state": "Ohio",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 41.56283,
+         "lon": -83.65382
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Oklahoma City",
+        "state": "Oklahoma",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 35.46756,
+         "lon": -97.51643
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Philadelphia",
+        "state": "Pennsylvania",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 39.95238,
+         "lon": -75.16362
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Philadelphia",
+        "state": "Pennsylvania",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 39.95238,
+         "lon": -75.16362
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Charleston",
+        "state": "South Carolina",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 32.77632,
+         "lon": -79.93275
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Nashville",
+        "state": "Tennessee",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 36.16589,
+         "lon": -86.78444
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Dallas",
+        "state": "Texas",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 32.78306,
+         "lon": -96.80667
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Houston",
+        "state": "Texas",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 29.76328,
+         "lon": -95.36327
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "San Antonio",
+        "state": "Texas",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 29.42412,
+         "lon": -98.49363
+        }
+       },
+       {
+        "facility": "Normunity Investigational Site",
+        "status": "RECRUITING",
+        "city": "Fairfax",
+        "state": "Virginia",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 38.84622,
+         "lon": -77.30637
+        }
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT04890613",
+      "briefTitle": "Study of CX-5461 in Patients With Solid Tumours and BRCA1/2, PALB2 or Homologous Recombination Deficiency (HRD) Mutation"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "lastUpdatePostDateStruct": {
+       "date": "2026-06-08"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Senhwa Biosciences, Inc."
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Advanced Solid Tumor"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ]
+     },
+     "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\nMain study cohort:\n\n1. Histologically or cytologically confirmed malignancy of the pancreas, prostate, breast, or ovary.\n2. Documented evidence of pathogenic or likely pathogenic somatic or germline mutation in BRCA1/2 and/or PALB2, and/or any genetic alterations listed below as indicated in a Clinical Laboratory Improvement Amendments (CLIA)-certified laboratory report. The report must be submitted to and approved by study sponsor prior to registration. Other HRD-associated mutations could be eligible if prior approval by the sponsor is granted.\n\nATM, ATR, BARD1, BRCA1, BRCA2, BRIP1, CCNE1, CHEK1, CHEK2, CDK12, CREBBP, FANCA, FANCI, FANCL, FANC2, FANCB, FANCC, FANCD2, FANC family\\*, MRE11A, MYC, NBN, NCL, PALB2, RAD50, RAD51B, RAD51C, RAD51D, RAD54L, SLFN11, PTIP, MLL3, MLL4, EZH2, CtIP(RBBP8), MUS81, CDH4, DYNLL11, TOPBP1, NBS1, CDC25A, CDC25C, RAD17, WEE1\n\n\\* In addition to the genes already specified, the \"FANC family\" genes may also include the following: FANCE, FANCF, FANCG, FANCM, FANCP, FANCQ/ERCC4/XPF, FANCR/RAD51, FANCT/UBE2T, FANCU/XRCC2, FANCV/REV7/MAD2L2, and FANCW/RFWD3.\n\nExploratory cohort:\n\n1. Histologically confirmed ovarian, fallopian tube or primary peritoneal cancer, with a high grade serous or high grade endometrioid histology subtype.\n2. Documented evidence of pathogenic or likely pathogenic germline mutation or a clinically actionable somatic mutation in BRCA1 and/or other HRD-associated mutation, as indicated in a CLIA-certified laboratory report. The report must be submitted to and approved by study sponsor prior to registration.\n3. Meet one of the following criteria:\n\n   1. Platinum Sensitive with no evidence of disease progression within 6 months of the last dose of platinum-based chemotherapy (n=10 patients); OR\n   2. Platinum Resistant with disease progression within 6 months of the last dose of a platinum-based chemotherapy.\n\nAll participants:\n\n1. Age ≥ 18 years.\n2. Eastern Cooperative Oncology Group (ECOG) performance status ≤ 2 within 14 days of registration.\n3. Radiographically documented disease progression within 28 days of registration and evaluable as per RECIST v1.1.\n4. Patient must have measurable disease as per RECIST v1.1.\n5. Patients must have adequate bone marrow, renal and hepatic function per local laboratory reference ranges as follows within 14 days of registration:\n\n   1. Absolute Neutrophil Count ≥ 1.5 x 10\\^9/L\n   2. Platelets ≥ 100 x 10\\^9/L\n   3. Hemoglobin ≥ 9 g/dL (blood transfusion ≤ 7 days of screening not permitted).\n   4. Calculated creatinine clearance \\> 51mL/min (Cockcroft-Gault formula)\n   5. AST/ALT ≤ 2.5× the upper limit of normal (ULN). Subjects with liver metastasis may have AST, ALP, and ALT ≤ 5.0 X ULN.\n   6. Bilirubin ≤ 1.5×ULN. This will not apply to patients with confirmed Gilbert's syndrome (persistent or recurrent hyperbilirubinemia that is predominantly unconjugated in the absence of haemolysis or hepatic pathology), who will be allowed only at the discretion of the Study Investigator.\n   7. INR/PT and aPTT ≤1.5 X ULN unless patient is receiving anticoagulant therapy as long as PT or PTT is within therapeutic range of intended use of anticoagulants.\n   8. Albumin ≥3.0 g/dL\n6. Patients are willing to undergo tumour biopsy pre-treatment and at time of progression on treatment. If a biopsy at the time of progression on prior therapy is available and can be submitted to the Central Lab for this study, this procedure does not need to be repeated. Patients who consent but have tumour that is not amenable to safe biopsy will be allowed to enter the trial and continue therapy as per protocol if this has been addressed and permission is granted from the sponsor prior to registration.\n7. Life expectancy of greater than 3 months from the date of registration.\n8. Able to provide written informed consent.\n9. Patient is willing and able to comply with the protocol for the duration of the study including undergoing treatment and scheduled visits and examinations including follow up.\n10. Female patients of childbearing potential must have a negative serum pregnancy test within 14 days prior to registration. (Note: a negative urine/serum pregnancy test is required on Cycle 1, Day 1 prior to treatment unless the screening pregnancy test was done within 48hrs of registration).\n11. Female patients of childbearing potential and male patients who are sexually active must agree to practice true abstinence or at least two effective methods of contraception (ie: condoms with spermicide, hormonal methods such as oral contraceptive pills, vaginal ring, injectables, implants and intrauterine devices (IUDs), non-hormonal IUDs, such as ParaGard, bilateral tubal ligation, vasectomy, complete abstinence) within 14 days prior to registration, and agree to continue using such precautions while on treatment with CX-5461 (including dose interruptions) and for 6 months following the last dose of CX-5461.\n12. There is no minimum or maximum number of lines of prior therapy and prior PARP inhibitor therapy is allowed.\n13. Patient is clinically stable at the time of entering the study.\n\nExclusion Criteria:\n\n1. For pancreatic cancer; non-adenocarcinoma histology is excluded from this study.\n2. Patients with malignant bowel obstruction.\n3. Untreated, unstable brain or meningeal metastases or tumor. Patients with radiological evidence of stable brain metastases are eligible provided that they are asymptomatic and either do not require corticosteroids or have been treated with corticosteroids, with clinical and radiological evidence of stabilization at least 10 days after discontinuation of steroids.\n4. Unresolved toxicity \\> CTCAE grade 1 from previous anti-cancer therapy (including radiotherapy) except hematological toxicity, Grade 1 or 2 neuropathy, and alopecia.\n5. Any evidence of severe or uncontrolled diseases such as but not limited to active infection, unstable or uncompensated respiratory, cardiac, neurological, hepatic, renal disease or psychiatric illness/social situations, which in the opinion of the investigator, would limit compliance with study requirements.\n6. Treatment with an investigational (non-registered - other than PARP inhibitor) agent within 30 days and treatment with PARP inhibitor within 14 days prior to the first dose of study medication.\n7. Immuno-compromised patients, e.g., patients who are known to be serologically positive for human immunodeficiency virus (HIV), patients with known active hepatitis (i.e., hepatitis B or C). Note: Patients with a prior history of treated HBV infection who are antigen-negative or patients with a prior history of treated HCV infection who are HCV RNA-undetectable may be enrolled. Patients who are known to be serologically positive for human immunodeficiency virus (HIV) can enroll if their CD4+ T-cell (CD4+) counts ≥ 350 cells/uL.\n8. Patients who have had recent (within 14 days of registration, or until any wound has completely healed) major thoracic or abdominal surgery prior to study start, or a surgical incision that is not fully healed.\n9. No concurrent systemic anti-cancer therapy, biological therapy or other novel agent is to be permitted. Palliative radiotherapy may be allowed. If radiotherapy is required due to disease progression, patient will be considered off study. If radiotherapy is be used to treat non-target lesions and patients may benefit from continuing on study treatment, CX-5461 may re-commence 14 days after completion of radiotherapy. Any continuation on study treatment must be discussed with and approved by study sponsor.\n10. Patients may be potentially eligible where the current tissue diagnosis is confirmed histologically from biopsy of a target lesion, and the patient has had no evidence of active second malignancy which requires treatment or would confound interpretation of safety, tolerability and efficacy of CX-5461. These cases must be discussed with the medical monitor prior to confirm eligibility.\n11. Presence of known photosensitivity disorders (xeroderma pigmentosa, porphyria etc.). Strict adherence to protocol-defined sun-protection measures is essential for the duration of study. Patients who do not agree to follow these measures are not eligible. Patients who do not agree to use sunglasses and sun blocker (with SPF50 to UVB and a high degree of protection against UVA) if exposed to sunlight during the course of the study and for 3 months after the last dose are not eligible. Patients who plan to use sunbeds or tanning booths during the course of the study and within 3 months after the last dose are not eligible.\n12. Female patients who are pregnant or nursing.\n13. Ophthalmological active ocular surface disease at baseline (based on ophthalmological evaluation).\n14. History of cicatricial conjunctivitis (as evaluation by an ophthalmologist).\n15. Has had radiotherapy with a limited field for palliation within 1 week of the first dose of study drug, with the exception of patients receiving radiation to more than 30% of the bone marrow or with a wide field of radiation, which must be completed at least 4 weeks prior to the first dose of study drug.\n16. A marked baseline prolongation of QT/QTc interval (e.g., repeated demonstration of a QTc interval \\>450 ms).\n17. A history of additional risk factors for TdP (e.g., heart failure, hypokalemia, family history of long QT syndrome).\n18. The use of concomitant medications that prolong the QT/QTc interval.\n19. Patients with the use of strong CYP3A4 inhibitor or inducer.\n20. Other malignancies within 5 years except for noninvasive malignancies such as cervical carcinoma in situ, non-melanomatous carcinoma of the skin, or ductal carcinoma in situ of the breast that has been surgically cured. Cancer patients with incidental histologic findings of prostate cancer (tumour/node/metastasis stage T1a or T1b or prostate-specific antigen \\<10 ng/mL) who have not received hormonal treatment may be included, pending a discussion with the Study Sponsor.",
+      "sex": "ALL",
+      "minimumAge": "18 Years"
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "facility": "University of California, Los Angeles",
+        "status": "RECRUITING",
+        "city": "Santa Monica",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 34.01949,
+         "lon": -118.49138
+        }
+       },
+       {
+        "facility": "H. Lee Moffitt Cancer Center and Research Institute Hospital",
+        "status": "RECRUITING",
+        "city": "Tampa",
+        "state": "Florida",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 27.94752,
+         "lon": -82.45843
+        }
+       },
+       {
+        "facility": "Dana Farber Cancer Institute",
+        "status": "RECRUITING",
+        "city": "Boston",
+        "state": "Massachusetts",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.35843,
+         "lon": -71.05977
+        }
+       },
+       {
+        "facility": "Memorial Sloan-Kettering Cancer Center",
+        "status": "WITHDRAWN",
+        "city": "New York",
+        "state": "New York",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.71427,
+         "lon": -74.00597
+        }
+       },
+       {
+        "facility": "Ohio State University-James Cancer Hospital and Solove Research Institute",
+        "status": "RECRUITING",
+        "city": "Columbus",
+        "state": "Ohio",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 39.96118,
+         "lon": -82.99879
+        }
+       },
+       {
+        "facility": "UPMC Hillman Cancer Center",
+        "status": "RECRUITING",
+        "city": "Pittsburgh",
+        "state": "Pennsylvania",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.44062,
+         "lon": -79.99589
+        }
+       },
+       {
+        "facility": "Princess Margaret Cancer Centre",
+        "status": "RECRUITING",
+        "city": "Toronto",
+        "state": "Ontario",
+        "country": "Canada",
+        "geoPoint": {
+         "lat": 43.70643,
+         "lon": -79.39864
+        }
+       },
+       {
+        "facility": "Centre hospitalier de l'Université de Montréal (CHUM)",
+        "status": "RECRUITING",
+        "city": "Montreal",
+        "state": "Quebec",
+        "country": "Canada",
+        "geoPoint": {
+         "lat": 45.50884,
+         "lon": -73.58781
+        }
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT04641247",
+      "briefTitle": "A Long-term Treatment Extension Study of Niraparib in Participants Who Completed a Prior GlaxoSmithKline/TESARO-sponsored Niraparib Study"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "lastUpdatePostDateStruct": {
+       "date": "2026-06-24"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "GlaxoSmithKline"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Ovarian Neoplasms",
+       "Breast Neoplasms"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ]
+     },
+     "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Participant is able to understand the study procedures and agrees to participate in the study by providing written informed consent.\n* Participant is willing and able to comply with scheduled visits, treatment plans, and any other study procedures.\n* Participant is currently receiving treatment with niraparib (as monotherapy or in combination) in a GlaxoSmithKline/TESARO-sponsored study that has fulfilled the requirements for the primary objective.\n* Participant is currently benefiting from treatment with niraparib as assessed by the Investigator according to the parent study protocol requirements.\n* Participants of childbearing potential who are sexually active and their partners must agree to the use of an effective form of contraception throughout their participation during study treatment through 180 days after last dose of study drug.\n\nExclusion Criteria:\n\n* Participant has been permanently discontinued from niraparib treatment in the parent study for any reason.\n* Participant currently has unresolved toxicities for which niraparib dosing has been interrupted in the parent study. Participants meeting all other eligibility criteria may be enrolled once toxicities have resolved to allow niraparib treatment to resume.\n* Participant is pregnant or is expecting to conceive children while receiving study drug or for up to 180 days after the last dose of study drug. Participant is breastfeeding or is expecting to breastfeed within 30 days of receiving the final dose of study drug (women should not breastfeed or store breastmilk for use during niraparib treatment and for 30 days after receiving the final dose of study treatment).",
+      "sex": "ALL",
+      "minimumAge": "18 Years"
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "facility": "GSK Investigational Site",
+        "status": "COMPLETED",
+        "city": "Tucson",
+        "state": "Arizona",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 32.22174,
+         "lon": -110.92648
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Encinitas",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 33.03699,
+         "lon": -117.29198
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Los Angeles",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 34.05223,
+         "lon": -118.24368
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "COMPLETED",
+        "city": "Whittier",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 33.97918,
+         "lon": -118.03284
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "COMPLETED",
+        "city": "Jacksonville",
+        "state": "Florida",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 30.33218,
+         "lon": -81.65565
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Atlanta",
+        "state": "Georgia",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 33.749,
+         "lon": -84.38798
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Harvey",
+        "state": "Illinois",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 41.61003,
+         "lon": -87.64671
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Boston",
+        "state": "Massachusetts",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.35843,
+         "lon": -71.05977
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Grand Rapids",
+        "state": "Michigan",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.96336,
+         "lon": -85.66809
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Morristown",
+        "state": "New Jersey",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.79677,
+         "lon": -74.48154
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Lake Success",
+        "state": "New York",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.77066,
+         "lon": -73.71763
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Charlotte",
+        "state": "North Carolina",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 35.22709,
+         "lon": -80.84313
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "COMPLETED",
+        "city": "Cleveland",
+        "state": "Ohio",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 41.4995,
+         "lon": -81.69541
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Graz",
+        "country": "Austria",
+        "geoPoint": {
+         "lat": 47.06733,
+         "lon": 15.44197
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Vienna",
+        "country": "Austria",
+        "geoPoint": {
+         "lat": 48.20849,
+         "lon": 16.37208
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Kelowna",
+        "state": "British Columbia",
+        "country": "Canada",
+        "geoPoint": {
+         "lat": 49.88307,
+         "lon": -119.48568
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Toronto",
+        "state": "Ontario",
+        "country": "Canada",
+        "geoPoint": {
+         "lat": 43.70643,
+         "lon": -79.39864
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Montreal",
+        "state": "Quebec",
+        "country": "Canada",
+        "geoPoint": {
+         "lat": 45.50884,
+         "lon": -73.58781
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "COMPLETED",
+        "city": "Odense C",
+        "country": "Denmark",
+        "geoPoint": {
+         "lat": 55.40841,
+         "lon": 10.39538
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "COMPLETED",
+        "city": "Nantes",
+        "country": "France",
+        "geoPoint": {
+         "lat": 47.21725,
+         "lon": -1.55336
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "COMPLETED",
+        "city": "Nice",
+        "country": "France",
+        "geoPoint": {
+         "lat": 43.70313,
+         "lon": 7.26608
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Haifa",
+        "country": "Israel",
+        "geoPoint": {
+         "lat": 32.81303,
+         "lon": 34.99928
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Cremona",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 45.13325,
+         "lon": 10.02129
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "GSK Investigational Site",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT06324357",
+      "briefTitle": "Beamion BCGC-1: A Study to Find a Suitable Dose of Zongertinib Used Alone and in Combination With Other Treatments to Test Whether it Helps People With Different Types of HER2+ Cancer That Has Spread"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "lastUpdatePostDateStruct": {
+       "date": "2026-09-16"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Boehringer Ingelheim"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Metastatic Breast Cancer",
+       "Metastatic Gastric Adenocarcinoma",
+       "Gastroesophageal Junction Adenocarcinoma",
+       "Esophageal Adenocarcinoma",
+       "Colorectal Cancer"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ]
+     },
+     "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion criteria:\n\n* Patients ≥18 years of age or over the legal age of consent in countries where that is greater than 18 years at the time of signature of the informed consent form (ICF)\n* Cohorts A to K and Cohort O: Documented Human epidermal growth factor receptor 2 overexpressing and/or amplified (HER2+), metastatic breast cancer (mBC) or metastatic gastric adenocarcinoma, gastroesophageal junction adenocarcinoma, or esophageal adenocarcinoma (mGEAC).\n* Cohorts L (L-ext), M, and N (metastatic colorectal cancer (mCRC)): Documented Human epidermal growth factor receptor 2 (HER2) overexpression/amplification according to American Society of Clinical Oncology/College of American Pathologists (ASCO/CAP) gastric cancer guidelines and according to the result of local testing.\n* For dose optimization and justification (Phase II): Patient must provide tumor tissue from locations not radiated prior to biopsy, if possible, collected through archival tissue\n* History of prior treatment lines in palliative setting:\n\n  * For cohorts A, B, C, D, E, F, G, H, I, I-ext, J, J-ext, K and O documented investigator assessed progression after HER2-directed treatment for unresectable locally advanced or metastatic disease (For Cohorts D, H, I (I-ext), J (J-ext) - patients must have been pretreated with trastuzumab deruxtecan (T-DXd) and have progressed or have been intolerant to previous T-DXd).\n  * For cohorts L, L-ext, M and N documented progression or recurrence of disease during or following their latest line of therapy. Patients must have had at least one prior line of therapy for locally advanced unresectable disease or metastatic disease (adjuvant and neoadjuvant therapy excluded) and documented disease progression or recurrence of disease during or following their latest line of therapy. In the opinion of the Investigator, patients must be unlikely to tolerate or derive clinically meaningful benefit from further standard of care therapy known to prolong survival.\n* Presence of at least one measurable lesion according to RECIST 1.1\n* Eastern Cooperative Oncology Group (ECOG) score of 0 or 1\n* Adequate organ function based on laboratory values Further inclusion criteria apply.\n\nExclusion criteria:\n\n* Previous treatment with:\n\n  * Any small molecule HER2 inhibitor in the palliative setting in Cohorts D, E, F, H, L, L-ext, M, and N. In Cohort D allowed in up to 15 patients in each dose level (DL).\n  * T-DXd in Cohorts E and F. In Cohort E allowed in up to 15 patients in each DL.\n  * trastuzumab emtansine (T-DM1) in the palliative setting in Cohort D and H. In Cohort H allowed in up to 15 patients in each DL.\n  * Capecitabine in Cohort D and H. In Cohort D allowed in up to 15 patients in each DL\n* Presence of uncontrolled and/or symptomatic brain metastases, or leptomeningeal disease\n* Mean resting corrected QT interval (QT interval corrected for heart rate by Fridericia´s formula (QTcF)) \\>470 msec.\n* Any factors that increase the risk of QT interval corrected for heart rate (QTc) prolongation or risk of arrhythmic events such as heart failure, hypokalemia, congenital long QT syndrome, personal or family history of long QT syndrome or unexplained sudden death under 40 years-of-age.\n* Ejection fraction \\<50% or the lower limit of normal of the institutional standard within 28 days prior to randomization\n* History of (non-infectious) interstitial lung disease (ILD)/pneumonitis that required steroids, current ILD/pneumonitis, or where suspected ILD/pneumonitis cannot be ruled out by imaging at screening Further exclusion criteria apply.",
+      "sex": "ALL",
+      "minimumAge": "18 Years"
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "facility": "The Oncology Institute of Hope and Innovation",
+        "status": "RECRUITING",
+        "city": "Cerritos",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 33.85835,
+         "lon": -118.06479
+        }
+       },
+       {
+        "facility": "Ellison Medical Institute",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Los Angeles",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 34.05223,
+         "lon": -118.24368
+        }
+       },
+       {
+        "facility": "Valkyrie Clinical Trials",
+        "status": "RECRUITING",
+        "city": "Los Angeles",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 34.05223,
+         "lon": -118.24368
+        }
+       },
+       {
+        "facility": "University of California Los Angeles",
+        "status": "RECRUITING",
+        "city": "Los Angeles",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 34.05223,
+         "lon": -118.24368
+        }
+       },
+       {
+        "facility": "University of California Irvine",
+        "status": "RECRUITING",
+        "city": "Orange",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 33.78779,
+         "lon": -117.85311
+        }
+       },
+       {
+        "facility": "Sharp Memorial Hospital",
+        "status": "RECRUITING",
+        "city": "San Diego",
+        "state": "California",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 32.71571,
+         "lon": -117.16472
+        }
+       },
+       {
+        "facility": "Yale University School of Medicine",
+        "status": "RECRUITING",
+        "city": "New Haven",
+        "state": "Connecticut",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 41.30815,
+         "lon": -72.92816
+        }
+       },
+       {
+        "facility": "Helios CR Inc",
+        "status": "RECRUITING",
+        "city": "Lakeland",
+        "state": "Florida",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 28.03947,
+         "lon": -81.9498
+        }
+       },
+       {
+        "facility": "H. Lee Moffitt Cancer Center and Research Institute",
+        "status": "RECRUITING",
+        "city": "Tampa",
+        "state": "Florida",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 27.94752,
+         "lon": -82.45843
+        }
+       },
+       {
+        "facility": "Orchard Healthcare Research Inc.- Skokie",
+        "status": "RECRUITING",
+        "city": "Skokie",
+        "state": "Illinois",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.03336,
+         "lon": -87.73339
+        }
+       },
+       {
+        "facility": "Community Health Network",
+        "status": "RECRUITING",
+        "city": "Indianapolis",
+        "state": "Indiana",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 39.76838,
+         "lon": -86.15804
+        }
+       },
+       {
+        "facility": "University of Iowa Hospitals and Clinics",
+        "status": "RECRUITING",
+        "city": "Iowa City",
+        "state": "Iowa",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 41.66113,
+         "lon": -91.53017
+        }
+       },
+       {
+        "facility": "Dana-Farber Cancer Institute",
+        "status": "RECRUITING",
+        "city": "Boston",
+        "state": "Massachusetts",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.35843,
+         "lon": -71.05977
+        }
+       },
+       {
+        "facility": "University of Michigan",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Ann Arbor",
+        "state": "Michigan",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.27756,
+         "lon": -83.74088
+        }
+       },
+       {
+        "facility": "Memorial Sloan-Kettering Cancer Center",
+        "status": "RECRUITING",
+        "city": "New York",
+        "state": "New York",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.71427,
+         "lon": -74.00597
+        }
+       },
+       {
+        "facility": "New York Cancer & Blood Specialists",
+        "status": "RECRUITING",
+        "city": "Shirley",
+        "state": "New York",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.80149,
+         "lon": -72.8676
+        }
+       },
+       {
+        "facility": "Penn State Milton S. Hershey Medical Center",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Hershey",
+        "state": "Pennsylvania",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 40.28592,
+         "lon": -76.65025
+        }
+       },
+       {
+        "facility": "Avera Cancer Institute",
+        "status": "RECRUITING",
+        "city": "Sioux Falls",
+        "state": "South Dakota",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 43.54369,
+         "lon": -96.72796
+        }
+       },
+       {
+        "facility": "Baptist Cancer Center - Memphis",
+        "status": "RECRUITING",
+        "city": "Memphis",
+        "state": "Tennessee",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 35.14953,
+         "lon": -90.04898
+        }
+       },
+       {
+        "facility": "SCRI Oncology Partners",
+        "status": "RECRUITING",
+        "city": "Nashville",
+        "state": "Tennessee",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 36.16589,
+         "lon": -86.78444
+        }
+       },
+       {
+        "facility": "Tennessee Oncology, Pllc",
+        "status": "RECRUITING",
+        "city": "Nashville",
+        "state": "Tennessee",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 36.16589,
+         "lon": -86.78444
+        }
+       },
+       {
+        "facility": "The Methodist Hospital Research Institute",
+        "status": "RECRUITING",
+        "city": "Houston",
+        "state": "Texas",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 29.76328,
+         "lon": -95.36327
+        }
+       },
+       {
+        "facility": "The University of Texas MD Anderson Cancer Center",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Houston",
+        "state": "Texas",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 29.76328,
+         "lon": -95.36327
+        }
+       },
+       {
+        "facility": "Inova Schar Cancer Institute",
+        "status": "RECRUITING",
+        "city": "Fairfax",
+        "state": "Virginia",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 38.84622,
+         "lon": -77.30637
+        }
+       },
+       {
+        "facility": "Virginia Cancer Specialists, PC",
+        "status": "RECRUITING",
+        "city": "Fairfax",
+        "state": "Virginia",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 38.84622,
+         "lon": -77.30637
+        }
+       },
+       {
+        "facility": "Fred Hutchinson Cancer Research Center",
+        "status": "RECRUITING",
+        "city": "Seattle",
+        "state": "Washington",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 47.60621,
+         "lon": -122.33207
+        }
+       },
+       {
+        "facility": "Cliniques Universitaires Saint-Luc",
+        "status": "RECRUITING",
+        "city": "Brussels",
+        "country": "Belgium",
+        "geoPoint": {
+         "lat": 50.85045,
+         "lon": 4.34878
+        }
+       },
+       {
+        "facility": "Universitair Ziekenhuis Antwerpen",
+        "status": "RECRUITING",
+        "city": "Edegem",
+        "country": "Belgium",
+        "geoPoint": {
+         "lat": 51.15662,
+         "lon": 4.44504
+        }
+       },
+       {
+        "facility": "UZ Leuven",
+        "status": "RECRUITING",
+        "city": "Leuven",
+        "country": "Belgium",
+        "geoPoint": {
+         "lat": 50.87959,
+         "lon": 4.70093
+        }
+       },
+       {
+        "facility": "Hôpital Vivalia De Libramont",
+        "status": "RECRUITING",
+        "city": "Libramont-Chevigny",
+        "country": "Belgium"
+       },
+       {
+        "facility": "Centre Hospitalier Universitaire de Liège",
+        "status": "TERMINATED",
+        "city": "Liège",
+        "country": "Belgium",
+        "geoPoint": {
+         "lat": 50.63373,
+         "lon": 5.56749
+        }
+       },
+       {
+        "facility": "CHU UCL Namur",
+        "status": "RECRUITING",
+        "city": "Namur",
+        "country": "Belgium",
+        "geoPoint": {
+         "lat": 50.4669,
+         "lon": 4.86746
+        }
+       },
+       {
+        "facility": "Jilin Province Cancer Hospital",
+        "status": "RECRUITING",
+        "city": "Changchun",
+        "country": "China",
+        "geoPoint": {
+         "lat": 43.88,
+         "lon": 125.32278
+        }
+       },
+       {
+        "facility": "The First Hospital of Jilin University",
+        "status": "RECRUITING",
+        "city": "Changchun",
+        "country": "China",
+        "geoPoint": {
+         "lat": 43.88,
+         "lon": 125.32278
+        }
+       },
+       {
+        "facility": "Sir Run Run Shaw Hospital, Zhejiang University, School of Medicine",
+        "status": "RECRUITING",
+        "city": "Hangzhou",
+        "country": "China",
+        "geoPoint": {
+         "lat": 30.29365,
+         "lon": 120.16142
+        }
+       },
+       {
+        "facility": "Harbin Medical University Cancer Hospital",
+        "status": "RECRUITING",
+        "city": "Harbin",
+        "country": "China",
+        "geoPoint": {
+         "lat": 45.75,
+         "lon": 126.65
+        }
+       },
+       {
+        "facility": "Jiangsu Province Hospital",
+        "status": "RECRUITING",
+        "city": "Nanjing",
+        "country": "China",
+        "geoPoint": {
+         "lat": 32.06167,
+         "lon": 118.77778
+        }
+       },
+       {
+        "facility": "Fudan University Shanghai Cancer Center",
+        "status": "RECRUITING",
+        "city": "Shanghai",
+        "country": "China",
+        "geoPoint": {
+         "lat": 31.22222,
+         "lon": 121.45806
+        }
+       },
+       {
+        "facility": "Tianjin Cancer Hospital",
+        "status": "RECRUITING",
+        "city": "Tianjin",
+        "country": "China",
+        "geoPoint": {
+         "lat": 39.14222,
+         "lon": 117.17667
+        }
+       },
+       {
+        "facility": "Henan Cancer Hospital",
+        "status": "RECRUITING",
+        "city": "Zhengzhou",
+        "country": "China",
+        "geoPoint": {
+         "lat": 34.75778,
+         "lon": 113.64861
+        }
+       },
+       {
+        "facility": "INS Bergonie",
+        "status": "RECRUITING",
+        "city": "Bordeaux",
+        "country": "France",
+        "geoPoint": {
+         "lat": 44.84124,
+         "lon": -0.58046
+        }
+       },
+       {
+        "facility": "CTR François Baclesse",
+        "status": "RECRUITING",
+        "city": "Caen",
+        "country": "France",
+        "geoPoint": {
+         "lat": 49.18585,
+         "lon": -0.35912
+        }
+       },
+       {
+        "facility": "CTR Georges-François Leclerc",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Dijon",
+        "country": "France",
+        "geoPoint": {
+         "lat": 47.31344,
+         "lon": 5.01391
+        }
+       },
+       {
+        "facility": "CTR Leon Berard",
+        "status": "RECRUITING",
+        "city": "Lyon",
+        "country": "France",
+        "geoPoint": {
+         "lat": 45.74906,
+         "lon": 4.84789
+        }
+       },
+       {
+        "facility": "INS Paoli-Calmettes",
+        "status": "RECRUITING",
+        "city": "Marseille",
+        "country": "France",
+        "geoPoint": {
+         "lat": 43.29695,
+         "lon": 5.38107
+        }
+       },
+       {
+        "facility": "HOP Tenon",
+        "status": "RECRUITING",
+        "city": "Paris",
+        "country": "France",
+        "geoPoint": {
+         "lat": 48.85341,
+         "lon": 2.3488
+        }
+       },
+       {
+        "facility": "CTR Eugène Marquis",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Rennes",
+        "country": "France",
+        "geoPoint": {
+         "lat": 48.11109,
+         "lon": -1.67431
+        }
+       },
+       {
+        "facility": "Institut de Cancérologie de l'Ouest",
+        "status": "RECRUITING",
+        "city": "Saint-Herblain",
+        "country": "France",
+        "geoPoint": {
+         "lat": 47.21154,
+         "lon": -1.651
+        }
+       },
+       {
+        "facility": "Institut de Cancérologie de Strasbourg",
+        "status": "RECRUITING",
+        "city": "Strasbourg",
+        "country": "France",
+        "geoPoint": {
+         "lat": 48.58392,
+         "lon": 7.74553
+        }
+       },
+       {
+        "facility": "INS Claudius Regaud IUCT-Oncopole",
+        "status": "RECRUITING",
+        "city": "Toulouse",
+        "country": "France",
+        "geoPoint": {
+         "lat": 43.60426,
+         "lon": 1.44367
+        }
+       },
+       {
+        "facility": "Institut Gustave Roussy",
+        "status": "RECRUITING",
+        "city": "Villejuif",
+        "country": "France",
+        "geoPoint": {
+         "lat": 48.7939,
+         "lon": 2.35992
+        }
+       },
+       {
+        "facility": "Universitätsklinikum Carl Gustav Carus Dresden",
+        "status": "RECRUITING",
+        "city": "Dresden",
+        "country": "Germany",
+        "geoPoint": {
+         "lat": 51.05089,
+         "lon": 13.73832
+        }
+       },
+       {
+        "facility": "Universitätsklinikum Erlangen",
+        "status": "RECRUITING",
+        "city": "Erlangen",
+        "country": "Germany",
+        "geoPoint": {
+         "lat": 49.59099,
+         "lon": 11.00783
+        }
+       },
+       {
+        "facility": "Evang. Kliniken Essen-Mitte gGmbh",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Essen",
+        "country": "Germany",
+        "geoPoint": {
+         "lat": 51.45657,
+         "lon": 7.01228
+        }
+       },
+       {
+        "facility": "Asklepios Kliniken GmbH & Co. KGaA",
+        "status": "RECRUITING",
+        "city": "Hamburg",
+        "country": "Germany",
+        "geoPoint": {
+         "lat": 53.55073,
+         "lon": 9.99302
+        }
+       },
+       {
+        "facility": "Universitätsklinikum Mannheim GmbH",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Mannheim",
+        "country": "Germany",
+        "geoPoint": {
+         "lat": 49.4891,
+         "lon": 8.46694
+        }
+       },
+       {
+        "facility": "Universitätsklinikum Ulm",
+        "status": "RECRUITING",
+        "city": "Ulm",
+        "country": "Germany",
+        "geoPoint": {
+         "lat": 48.39841,
+         "lon": 9.99155
+        }
+       },
+       {
+        "facility": "Azienda Ospedaliero Universitaria delle Marche",
+        "status": "RECRUITING",
+        "city": "Ancona",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 43.60717,
+         "lon": 13.5103
+        }
+       },
+       {
+        "facility": "Istituto Di Candiolo",
+        "status": "RECRUITING",
+        "city": "Candiolo (TO)",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 44.95858,
+         "lon": 7.59812
+        }
+       },
+       {
+        "facility": "Istituto Scientifico Romagnolo",
+        "status": "RECRUITING",
+        "city": "Meldola (FC)",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 44.12775,
+         "lon": 12.0626
+        }
+       },
+       {
+        "facility": "Ospedale San Raffaele S.r.l.",
+        "status": "RECRUITING",
+        "city": "Milan",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 42.78235,
+         "lon": 12.59836
+        }
+       },
+       {
+        "facility": "Istituto Europeo di Oncologia",
+        "status": "RECRUITING",
+        "city": "Milan",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 42.78235,
+         "lon": 12.59836
+        }
+       },
+       {
+        "facility": "Humanitas Istituto Clinico Catanese S.p.A.",
+        "status": "RECRUITING",
+        "city": "Misterbianco (CT)",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 37.51803,
+         "lon": 15.00913
+        }
+       },
+       {
+        "facility": "Istituto Nazionale IRCCS Tumori Fondazione Pascale",
+        "status": "RECRUITING",
+        "city": "Naples",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 40.85216,
+         "lon": 14.26811
+        }
+       },
+       {
+        "facility": "Istituto Clinico Humanitas",
+        "status": "RECRUITING",
+        "city": "Rozzano",
+        "country": "Italy",
+        "geoPoint": {
+         "lat": 45.38193,
+         "lon": 9.1559
+        }
+       },
+       {
+        "facility": "Aichi Cancer Center Hospital",
+        "status": "RECRUITING",
+        "city": "Aichi, Nagoya",
+        "country": "Japan"
+       },
+       {
+        "facility": "Tokai University Hospital",
+        "status": "RECRUITING",
+        "city": "Isehara",
+        "country": "Japan",
+        "geoPoint": {
+         "lat": 35.39932,
+         "lon": 139.31019
+        }
+       },
+       {
+        "facility": "Hakuaikai Sagara Hospital",
+        "status": "RECRUITING",
+        "city": "Kagoshima",
+        "country": "Japan",
+        "geoPoint": {
+         "lat": 31.56667,
+         "lon": 130.55
+        }
+       },
+       {
+        "facility": "Kanagawa Cancer Center",
+        "status": "RECRUITING",
+        "city": "Kanagawa, Yokohama",
+        "country": "Japan"
+       },
+       {
+        "facility": "National Cancer Center Hospital East",
+        "status": "RECRUITING",
+        "city": "Kashiwa-shi",
+        "country": "Japan"
+       },
+       {
+        "facility": "Kyoto University Hospital",
+        "status": "RECRUITING",
+        "city": "Kyoto",
+        "country": "Japan",
+        "geoPoint": {
+         "lat": 35.02107,
+         "lon": 135.75385
+        }
+       },
+       {
+        "facility": "Osaka International Cancer Institute",
+        "status": "RECRUITING",
+        "city": "Osaka",
+        "country": "Japan",
+        "geoPoint": {
+         "lat": 34.69379,
+         "lon": 135.50107
+        }
+       },
+       {
+        "facility": "Japanese Foundation for Cancer Research",
+        "status": "RECRUITING",
+        "city": "Tokyo, Koto-ku",
+        "country": "Japan"
+       },
+       {
+        "facility": "CHA Bundang Medical Center",
+        "status": "RECRUITING",
+        "city": "Seongnam-si",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.43861,
+         "lon": 127.13778
+        }
+       },
+       {
+        "facility": "Seoul National University Bundang Hospital",
+        "status": "RECRUITING",
+        "city": "Seongnam-si",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.43861,
+         "lon": 127.13778
+        }
+       },
+       {
+        "facility": "Seoul National University Hospital",
+        "status": "RECRUITING",
+        "city": "Seoul",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.566,
+         "lon": 126.9784
+        }
+       },
+       {
+        "facility": "Severance Hospital, Yonsei University Health System",
+        "status": "RECRUITING",
+        "city": "Seoul",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.566,
+         "lon": 126.9784
+        }
+       },
+       {
+        "facility": "Asan Medical Center",
+        "status": "RECRUITING",
+        "city": "Seoul",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.566,
+         "lon": 126.9784
+        }
+       },
+       {
+        "facility": "Korea University Anam Hospital",
+        "status": "RECRUITING",
+        "city": "Seoul",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.566,
+         "lon": 126.9784
+        }
+       },
+       {
+        "facility": "The Catholic University of Korea, Seoul St.Mary's Hospital",
+        "status": "RECRUITING",
+        "city": "Seoul",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.566,
+         "lon": 126.9784
+        }
+       },
+       {
+        "facility": "Severance Hospital, Yonsei University Health System",
+        "status": "RECRUITING",
+        "city": "Seoul",
+        "country": "South Korea",
+        "geoPoint": {
+         "lat": 37.566,
+         "lon": 126.9784
+        }
+       },
+       {
+        "facility": "Complejo Hospitalario Universitario A Coruña",
+        "status": "RECRUITING",
+        "city": "A Coruña",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 43.37135,
+         "lon": -8.396
+        }
+       },
+       {
+        "facility": "Hospital del Mar",
+        "status": "RECRUITING",
+        "city": "Barcelona",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 41.38879,
+         "lon": 2.15899
+        }
+       },
+       {
+        "facility": "Hospital Universitari Vall d'Hebron",
+        "status": "RECRUITING",
+        "city": "Barcelona",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 41.38879,
+         "lon": 2.15899
+        }
+       },
+       {
+        "facility": "Hospital Clínic de Barcelona",
+        "status": "RECRUITING",
+        "city": "Barcelona",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 41.38879,
+         "lon": 2.15899
+        }
+       },
+       {
+        "facility": "Hospital Duran i Reynals",
+        "status": "RECRUITING",
+        "city": "L'Hospitalet de Llobregat",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 41.35967,
+         "lon": 2.10028
+        }
+       },
+       {
+        "facility": "Hospital General Universitario Gregorio Marañón",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "Clínica Universidad de Navarra - Madrid",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "Fundación Jiménez Díaz",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "Hospital Clínico San Carlos",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "Hospital Universitario 12 de Octubre",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "Hospital Universitario La Paz",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "CIO Clara Campal",
+        "status": "RECRUITING",
+        "city": "Madrid",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 40.4165,
+         "lon": -3.70256
+        }
+       },
+       {
+        "facility": "Hospital Universitario Virgen De La Macarena",
+        "status": "RECRUITING",
+        "city": "Seville",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 37.38283,
+         "lon": -5.97317
+        }
+       },
+       {
+        "facility": "Instituto Valenciano de Oncología",
+        "status": "RECRUITING",
+        "city": "Valencia",
+        "country": "Spain",
+        "geoPoint": {
+         "lat": 39.47391,
+         "lon": -0.37966
+        }
+       },
+       {
+        "facility": "Velindre Cancer Centre",
+        "status": "RECRUITING",
+        "city": "Cardiff",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 51.48,
+         "lon": -3.18
+        }
+       },
+       {
+        "facility": "St James's University Hospital",
+        "status": "RECRUITING",
+        "city": "Leeds",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 53.79648,
+         "lon": -1.54785
+        }
+       },
+       {
+        "facility": "St Bartholomew's Hospital",
+        "status": "NOT_YET_RECRUITING",
+        "city": "London",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 51.50853,
+         "lon": -0.12574
+        }
+       },
+       {
+        "facility": "University College Hospital",
+        "status": "RECRUITING",
+        "city": "London",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 51.50853,
+         "lon": -0.12574
+        }
+       },
+       {
+        "facility": "Royal Free Hospital",
+        "status": "RECRUITING",
+        "city": "London",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 51.50853,
+         "lon": -0.12574
+        }
+       },
+       {
+        "facility": "The Royal Marsden Hospital, Chelsea",
+        "status": "RECRUITING",
+        "city": "London",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 51.50853,
+         "lon": -0.12574
+        }
+       },
+       {
+        "facility": "The Christie Hospital",
+        "status": "RECRUITING",
+        "city": "Manchester",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 53.48095,
+         "lon": -2.23743
+        }
+       },
+       {
+        "facility": "Freeman Hospital",
+        "status": "RECRUITING",
+        "city": "Newcastle upon Tyne",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 54.97328,
+         "lon": -1.61396
+        }
+       },
+       {
+        "facility": "Nottingham University Hospital",
+        "status": "NOT_YET_RECRUITING",
+        "city": "Nottingham",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 52.9536,
+         "lon": -1.15047
+        }
+       },
+       {
+        "facility": "The Royal Marsden Hospital, Sutton",
+        "status": "RECRUITING",
+        "city": "Sutton",
+        "country": "United Kingdom",
+        "geoPoint": {
+         "lat": 51.35,
+         "lon": -0.2
+        }
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT02290834",
+      "briefTitle": "Chemotherapy-induced Cognitive and Brain Changes in Older Adults With Breast Cancer"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "lastUpdatePostDateStruct": {
+       "date": "2026-07-16"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Massachusetts General Hospital"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Impaired Cognition",
+       "Chemo-brain",
+       "Breast Cancer"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ]
+     },
+     "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Breast cancer patients treated with chemotherapy- Group 1 (experimental group)\n\n  * Participants must meet the following criteria on screening examination to be eligible to participate in the behavioral +/- imaging components of study\n  * New diagnosis histologically confirmed invasive breast cancer\n  * Treatment plan to include chemotherapy\n  * Female subjects age ≥ 60 years.\n  * Life expectancy ≥ 1 year\n  * Karnofsky Performance Score (KPS) ≥ 80\n  * Ability to understand and the willingness to sign a written informed consent document.\n* Non-treated breast cancer patient controls- Group 2 (control group)\n\n  * Participants must meet the following criteria on screening examination to be eligible to participate in the behavioral +/- imaging components of study:\n  * New diagnosis histologically confirmed invasive breast cancer\n  * Treatment plan does not include chemotherapy\n  * Age ≥ 60 years.\n  * Life expectancy ≥ 1 year\n  * Karnofsky Performance Score (KPS) ≥ 80\n  * Ability to understand and the willingness to sign a written informed consent document.\n* Healthy control subjects- Group 3 (control group)\n\n  * Participants must meet the following criteria on screening examination to be eligible to participate in the behavioral +/- imaging components of study:\n  * Age ≥ 60 years.\n  * Life expectancy ≥ 1 year\n  * Karnofsky Performance Score (KPS) ≥ 80\n  * Ability to understand and the willingness to sign a written informed consent document.\n  * Participants with well-controlled vascular risk factors, such as treated hypertension, treated hyperlipidemia or well-controlled Type II diabetes (glucose levels \\<250) may be included.\n  * Serum Pregnancy Testing: STAT quantitative serum hCG pregnancy testing for all women of childbearing potential. Imaging will not start until and unless the test result returns negative.\n\nExclusion Criteria:\n\n* Participants who exhibit any of the following conditions at screening will not be eligible for admission into the study:\n\n  * Participants with clinical or radiographic evidence of metastatic CNS disease\n  * Subjects with MMSE scores below 24\n  * Active or history of major psychiatric disorders such as schizophrenia, schizoaffective disorder, major affective disorder in mid-life, or treatment with ECT (Mild depression that is well treated with stable dose of SSRI antidepressants may be allowed).\n  * Substance abuse within the past 2 years\n  * Huntington's disease, hydrocephalus or seizure disorder\n* In addition to exclusion criteria above, participants who exhibit any of the following conditions at screening will not be eligible for admission into imaging portion of the study:\n\n  * Participants with contraindications to MRI (i.e., implanted metal including pacemakers, cerebral spinal fluid shunts, aneurysm clips, artificial heart valves, ear implants or metal/foreign objects in the eyes and those with a history of claustrophobia), injuries to the eyes with metal without X-ray documentation that metal was removed",
+      "sex": "FEMALE",
+      "minimumAge": "60 Years"
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "facility": "Massachusetts General Hospital",
+        "status": "RECRUITING",
+        "city": "Boston",
+        "state": "Massachusetts",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.35843,
+         "lon": -71.05977
+        }
+       },
+       {
+        "facility": "Massachusetts General Hospital/North Shore Cancer Center",
+        "status": "RECRUITING",
+        "city": "Salem",
+        "state": "Massachusetts",
+        "country": "United States",
+        "geoPoint": {
+         "lat": 42.51977,
+         "lon": -70.89552
+        }
+       }
+      ]
+     }
+    }
+   }
+  ],
+  "nextPageToken": "ZVNj7o2Elu8o3lpwW8iooeytmpOQJJxtZ_Ol1fwW"
+ }
+}

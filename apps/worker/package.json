@@ -10,7 +10,8 @@
     "check:deploy": "vite build && wrangler deploy --dry-run",
     "test": "vitest run",
     "typecheck": "tsc -p . && tsc -p scripts",
-    "tools:jev-spike": "node --env-file-if-exists=.dev.vars scripts/jev-spike.ts"
+    "tools:jev-spike": "node --env-file-if-exists=.dev.vars scripts/jev-spike.ts",
+    "tools:record-ctgov": "node scripts/record-ctgov.ts"
   },
   "dependencies": {
     "@hono/typia-validator": "0.1.3",

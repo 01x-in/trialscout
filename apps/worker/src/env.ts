@@ -4,4 +4,5 @@ export interface Env {
   TYPESAFE_API_KEY?: string
   // Vars; see config.ts for defaults.
   TYPESAFE_MODEL?: string
+  CTGOV_BASE_URL?: string
 }
