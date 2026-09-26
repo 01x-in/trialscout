@@ -258,6 +258,134 @@ h1 {
   color: var(--ask);
 }
 
+/* A trial's rules, opened from its card. Motion only for expanding. */
+.trial-toggle {
+  margin-top: 1rem;
+  padding: 0.5rem 0.9rem;
+  color: var(--fg);
+  background: transparent;
+  border: 2px solid var(--line);
+  border-radius: 0.4rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trial-toggle:hover {
+  border-color: var(--fg);
+}
+
+.trial-toggle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.trial-details:not([hidden]) {
+  animation: expand 180ms ease-out;
+}
+
+@keyframes expand {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trial-details:not([hidden]) {
+    animation: none;
+  }
+}
+
+.checklist h4 {
+  margin: 1.4rem 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.criteria {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.criterion {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  border-radius: 0.4rem;
+}
+
+.criterion-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+}
+
+.criterion-likely_meets {
+  border-left-color: var(--meets);
+}
+
+.criterion-likely_meets .criterion-verdict {
+  color: var(--meets);
+}
+
+.criterion-likely_fails {
+  border-left-color: var(--fails);
+}
+
+.criterion-likely_fails .criterion-verdict {
+  color: var(--fails);
+}
+
+.criterion-ask_your_doctor {
+  border-left-color: var(--ask);
+}
+
+.criterion-ask_your_doctor .criterion-verdict {
+  color: var(--ask);
+}
+
+.criterion-not_checked .criterion-verdict {
+  color: var(--unchecked);
+  font-weight: 400;
+}
+
+.criterion-text {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.criterion-text::before {
+  content: '“';
+}
+
+.criterion-text::after {
+  content: '”';
+}
+
+.criterion-raw {
+  margin-top: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+
+.criterion-group,
+.criteria-note {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.criteria-note {
+  margin-bottom: 0.5rem;
+}
+
 /* Printed sheets are black on white, and the disclaimer is always printed. */
 @media print {
   :root {

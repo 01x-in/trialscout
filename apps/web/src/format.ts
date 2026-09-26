@@ -14,11 +14,20 @@ export type CountVerdict = keyof VerdictCounts
 
 export type CountPart = { verdict: CountVerdict; count: number; label: string }
 
-const LABELS: Record<CountVerdict, string> = {
+/** The label shown for each verdict, always next to its icon. */
+export const VERDICT_LABELS: Record<CountVerdict, string> = {
   likely_meets: 'likely meets',
   likely_fails: 'likely fails',
   ask_your_doctor: 'ask your doctor',
   not_checked: 'not checked yet',
+}
+
+// Verdicts are told apart by icon and label, never by colour alone.
+export const VERDICT_ICONS: Record<CountVerdict, string> = {
+  likely_meets: '✓',
+  likely_fails: '✕',
+  ask_your_doctor: '?',
+  not_checked: '…',
 }
 
 const ORDER: CountVerdict[] = ['likely_meets', 'likely_fails', 'ask_your_doctor', 'not_checked']
@@ -28,7 +37,7 @@ export function countParts(counts: VerdictCounts): CountPart[] {
   return ORDER.filter((verdict) => counts[verdict] > 0).map((verdict) => ({
     verdict,
     count: counts[verdict],
-    label: `${counts[verdict]} ${LABELS[verdict]}`,
+    label: `${counts[verdict]} ${VERDICT_LABELS[verdict]}`,
   }))
 }
 

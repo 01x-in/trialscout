@@ -1,5 +1,6 @@
 import type { EmptyReason, Profile, SearchResponse } from '@trialscout/contract'
 import type { JSX } from 'react'
+import type { CheckTrial } from './api.ts'
 import { dateLabel } from './format.ts'
 import { TrialCard } from './TrialCard.tsx'
 
@@ -16,9 +17,9 @@ function emptyMessage(reason: EmptyReason, where: string): string {
   }
 }
 
-type Props = { response: SearchResponse; profile: Profile }
+type Props = { response: SearchResponse; profile: Profile; checkTrial: CheckTrial }
 
-export function Results({ response, profile }: Props): JSX.Element {
+export function Results({ response, profile, checkTrial }: Props): JSX.Element {
   const where = `within ${profile.maxDistanceKm} km of ${response.location.city}`
   const asOf = `Trial details from ClinicalTrials.gov, ${dateLabel(response.dataAsOf)}.`
 
@@ -49,7 +50,7 @@ export function Results({ response, profile }: Props): JSX.Element {
       <p className="results-note">{asOf}</p>
       <div className="trial-list">
         {response.results.map((trial) => (
-          <TrialCard key={trial.nctId} trial={trial} />
+          <TrialCard key={trial.nctId} trial={trial} profile={profile} checkTrial={checkTrial} />
         ))}
       </div>
     </section>

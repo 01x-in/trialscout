@@ -1,7 +1,12 @@
-import type { Profile, SearchResponse, TrialResult } from '@trialscout/contract'
+import type {
+  Profile,
+  SearchResponse,
+  TrialResult,
+  TrialVerdictsResponse,
+} from '@trialscout/contract'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import type { SearchOutcome } from './api.ts'
+import type { SearchOutcome, TrialOutcome } from './api.ts'
 import { App } from './App.tsx'
 
 const DISCLAIMER =
@@ -60,15 +65,75 @@ function fillProfile(): void {
   fill(/how far/i, String(PROFILE.maxDistanceKm))
 }
 
-function renderWith(outcome: SearchOutcome, seen: Profile[] = []): void {
+function verdicts(nctId: string): TrialVerdictsResponse {
+  return {
+    nctId,
+    title: `A study of drug ${nctId}`,
+    phases: ['PHASE2'],
+    sponsor: 'Tata Memorial Hospital',
+    url: `https://clinicaltrials.gov/study/${nctId}`,
+    eligibility: 'split',
+    criteria: [
+      {
+        kind: 'inclusion',
+        text: 'Histologically confirmed breast cancer',
+        group: null,
+        verdict: 'likely_meets',
+        confidence: 0.95,
+      },
+      {
+        kind: 'exclusion',
+        text: 'Prior treatment with trastuzumab',
+        group: null,
+        verdict: 'ask_your_doctor',
+        confidence: 0.9,
+      },
+    ],
+    rawCriteria: null,
+    counts: { likely_meets: 1, likely_fails: 0, ask_your_doctor: 1, not_checked: 0 },
+    checked: { questions: 2, requests: 2, cacheHits: 0, model: 'jev-1.13.0' },
+    dataAsOf: Date.UTC(2026, 8, 26),
+  }
+}
+
+type Checked = { nctId: string; profile: Profile }
+
+function renderWith(
+  outcome: SearchOutcome,
+  seen: Profile[] = [],
+  trialOutcome: TrialOutcome = { kind: 'unavailable' },
+  checked: Checked[] = [],
+): void {
   render(
     <App
       search={async (profile) => {
         seen.push(profile)
         return outcome
       }}
+      checkTrial={async (nctId, profile) => {
+        checked.push({ nctId, profile })
+        return trialOutcome
+      }}
     />,
   )
+}
+
+async function searchAndOpen(
+  trialOutcome: TrialOutcome,
+  checked: Checked[] = [],
+): Promise<HTMLElement> {
+  renderWith(
+    { kind: 'results', response: response([result('NCT00000001')]) },
+    [],
+    trialOutcome,
+    checked,
+  )
+  fillProfile()
+  fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+  const [card] = await screen.findAllByRole('article')
+  if (card === undefined) throw new Error('Expected a trial card')
+  fireEvent.click(within(card).getByRole('button', { name: /check each rule/i }))
+  return card
 }
 
 describe('App', () => {
@@ -181,5 +246,52 @@ describe('App', () => {
 
     expect(await screen.findByText('We could not find that city.')).toBeInTheDocument()
     expect(screen.getByLabelText(/city/i)).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  it('checks each rule of a trial when opened, with the profile from this tab', async () => {
+    const checked: Checked[] = []
+    const card = await searchAndOpen(
+      { kind: 'verdicts', response: verdicts('NCT00000001') },
+      checked,
+    )
+
+    expect(
+      await within(card).findByText('Histologically confirmed breast cancer'),
+    ).toBeInTheDocument()
+    expect(within(card).getByText('Prior treatment with trastuzumab')).toBeInTheDocument()
+    expect(within(card).getByRole('button', { name: /hide the rules/i })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    )
+    expect(checked).toEqual([{ nctId: 'NCT00000001', profile: PROFILE }])
+  })
+
+  it('hides the rules again without checking twice', async () => {
+    const checked: Checked[] = []
+    const card = await searchAndOpen(
+      { kind: 'verdicts', response: verdicts('NCT00000001') },
+      checked,
+    )
+    await within(card).findByText('Histologically confirmed breast cancer')
+
+    fireEvent.click(within(card).getByRole('button', { name: /hide the rules/i }))
+    expect(within(card).queryByText('Histologically confirmed breast cancer')).toBeNull()
+    fireEvent.click(within(card).getByRole('button', { name: /check each rule/i }))
+    expect(within(card).getByText('Histologically confirmed breast cancer')).toBeInTheDocument()
+    expect(checked).toHaveLength(1)
+  })
+
+  it('shows a calm message when checking a trial is limited', async () => {
+    const card = await searchAndOpen({ kind: 'rate_limited', retryAfterSeconds: 30 })
+
+    expect(
+      await within(card).findByText(/checked a lot of trials in a short time/i),
+    ).toBeInTheDocument()
+  })
+
+  it('shows a calm message when a trial cannot be checked', async () => {
+    const card = await searchAndOpen({ kind: 'unavailable' })
+
+    expect(await within(card).findByText(/could not check this trial/i)).toBeInTheDocument()
   })
 })

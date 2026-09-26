@@ -1,14 +1,8 @@
-import type { TrialResult } from '@trialscout/contract'
-import type { JSX } from 'react'
-import { type CountVerdict, countParts, phaseLabel } from './format.ts'
-
-// Verdicts are told apart by icon and label, never by colour alone.
-const ICONS: Record<CountVerdict, string> = {
-  likely_meets: '✓',
-  likely_fails: '✕',
-  ask_your_doctor: '?',
-  not_checked: '…',
-}
+import type { Profile, TrialResult } from '@trialscout/contract'
+import { type JSX, useState } from 'react'
+import type { CheckTrial, TrialOutcome } from './api.ts'
+import { Checklist } from './Checklist.tsx'
+import { countParts, phaseLabel, VERDICT_ICONS } from './format.ts'
 
 function siteLabel(trial: TrialResult): string {
   const site = trial.nearestSite
@@ -17,8 +11,43 @@ function siteLabel(trial: TrialResult): string {
   return `${place === '' ? 'Nearest site' : place} · ${site.distanceKm} km`
 }
 
-export function TrialCard({ trial }: { trial: TrialResult }): JSX.Element {
+type Check = { kind: 'idle' } | { kind: 'checking' } | { kind: 'done'; outcome: TrialOutcome }
+
+function checkMessage(check: Check): string {
+  if (check.kind === 'checking') {
+    return 'Checking each rule of this trial. This can take up to a minute.'
+  }
+  if (check.kind !== 'done') return ''
+  switch (check.outcome.kind) {
+    case 'rate_limited':
+      return 'You have checked a lot of trials in a short time. Please try again in a few minutes.'
+    case 'not_found':
+      return 'ClinicalTrials.gov no longer lists this trial.'
+    case 'unavailable':
+      return 'We could not check this trial right now. Please try again later.'
+    default:
+      return ''
+  }
+}
+
+type Props = { trial: TrialResult; profile: Profile; checkTrial: CheckTrial }
+
+export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
+  const [open, setOpen] = useState(false)
+  const [check, setCheck] = useState<Check>({ kind: 'idle' })
   const phase = phaseLabel(trial.phases)
+  const detailsId = `${trial.nctId}-details`
+
+  async function toggle(): Promise<void> {
+    const opening = !open
+    setOpen(opening)
+    // Checked once; a failed check is tried again the next time the trial is opened.
+    if (!opening || check.kind === 'checking') return
+    if (check.kind === 'done' && check.outcome.kind === 'verdicts') return
+    setCheck({ kind: 'checking' })
+    setCheck({ kind: 'done', outcome: await checkTrial(trial.nctId, profile) })
+  }
+
   return (
     <article className="trial-card" aria-labelledby={`${trial.nctId}-title`}>
       <h3 id={`${trial.nctId}-title`} className="trial-title">
@@ -48,13 +77,30 @@ export function TrialCard({ trial }: { trial: TrialResult }): JSX.Element {
           {countParts(trial.counts).map((part) => (
             <li key={part.verdict} className={`count count-${part.verdict}`}>
               <span className="count-icon" aria-hidden="true">
-                {ICONS[part.verdict]}
+                {VERDICT_ICONS[part.verdict]}
               </span>
               <span>{part.label}</span>
             </li>
           ))}
         </ul>
       )}
+      <button
+        type="button"
+        className="trial-toggle"
+        aria-expanded={open}
+        aria-controls={detailsId}
+        onClick={() => void toggle()}
+      >
+        {open ? 'Hide the rules' : 'Check each rule'}
+      </button>
+      <div id={detailsId} className="trial-details" hidden={!open}>
+        <p role="status" className="status">
+          {open ? checkMessage(check) : ''}
+        </p>
+        {open && check.kind === 'done' && check.outcome.kind === 'verdicts' && (
+          <Checklist trial={check.outcome.response} />
+        )}
+      </div>
     </article>
   )
 }

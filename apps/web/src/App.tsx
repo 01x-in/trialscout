@@ -1,6 +1,11 @@
 import type { Profile } from '@trialscout/contract'
 import { type JSX, useState } from 'react'
-import { type SearchOutcome, searchTrials } from './api.ts'
+import {
+  type CheckTrial,
+  checkTrial as checkTrialApi,
+  type SearchOutcome,
+  searchTrials,
+} from './api.ts'
 import { DemoCaution } from './DemoCaution.tsx'
 import { type PlaceError, ProfileForm } from './ProfileForm.tsx'
 import { loadProfile } from './profile.ts'
@@ -28,7 +33,9 @@ function statusText(state: State): string {
   }
 }
 
-export function App({ search = searchTrials }: { search?: Search }): JSX.Element {
+type Props = { search?: Search; checkTrial?: CheckTrial }
+
+export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props): JSX.Element {
   const [initial] = useState(loadProfile)
   const [state, setState] = useState<State>({ kind: 'idle' })
 
@@ -61,7 +68,11 @@ export function App({ search = searchTrials }: { search?: Search }): JSX.Element
           {statusText(state)}
         </p>
         {state.kind === 'done' && state.outcome.kind === 'results' && (
-          <Results response={state.outcome.response} profile={state.profile} />
+          <Results
+            response={state.outcome.response}
+            profile={state.profile}
+            checkTrial={checkTrial}
+          />
         )}
       </main>
     </>
