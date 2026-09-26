@@ -55,6 +55,17 @@ const CASES: [CriterionVerdict['kind'], string, RegExp][] = [
   ['inclusion', 'Patient must have measurable disease as per RECIST v1.1.', /scans/],
   ['inclusion', 'Participants must have measurable liver metastatic disease.', /scans/],
   ['inclusion', 'Able to provide written informed consent.', /steps the study asks/],
+  // From NCT06899126: a consent form named after pregnant partners is still about consent.
+  [
+    'inclusion',
+    'Sign and date the Optional PGx ICF (included in the Main ICF) prior to any PGx procedure, and the Pregnant Partner ICF, if applicable.',
+    /steps the study asks/,
+  ],
+  [
+    'inclusion',
+    'Women of childbearing potential must be willing to use highly effective contraception',
+    /pregnancy/,
+  ],
   [
     'inclusion',
     'Ability to tolerate PO meds and comply with study procedures',

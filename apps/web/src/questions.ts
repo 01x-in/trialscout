@@ -8,7 +8,14 @@ import type { CriterionVerdict } from '@trialscout/contract'
 
 type Topic = { pattern: RegExp; question: string }
 
+const CONSENT = 'This rule is about the steps the study asks of people. What would they involve?'
+
 const TOPICS: Topic[] = [
+  // Consent forms first: their names mention other topics ("Pregnant Partner ICF").
+  {
+    pattern: /\b(informed consent|consent forms?|ICFs?|sign(ed)? and date[ds]?)\b/i,
+    question: CONSENT,
+  },
   {
     pattern: /\b(pregnan\w*|breast[- ]?feeding|lactat\w*|contracepti\w*|childbearing)\b/i,
     question: 'This rule is about pregnancy or birth control. What would it mean for me?',
@@ -56,7 +63,7 @@ const TOPICS: Topic[] = [
   },
   {
     pattern: /\b(consent|comply|compliance|willing|follow-up)\b/i,
-    question: 'This rule is about the steps the study asks of people. What would they involve?',
+    question: CONSENT,
   },
 ]
 
