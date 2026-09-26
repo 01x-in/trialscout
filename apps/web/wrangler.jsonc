@@ -4,8 +4,12 @@
   "name": "trialscout-web",
   "main": "worker/index.ts",
   "compatibility_date": "2026-08-20",
-  // No preview URLs: only the workers.dev URL, or the trialscout.cc custom domain.
+  // Served only on trialscout.cc: no workers.dev or preview URL, so nothing gets around the
+  // zone's rate-limiting rule (docs/deploy-cloudflare.md). The zone must be in the account
+  // before the first deploy; Wrangler then creates the DNS record and the certificate.
+  "workers_dev": false,
   "preview_urls": false,
+  "routes": [{ "pattern": "trialscout.cc", "custom_domain": true }],
   // Console logs only (audited in docs/privacy.md). Invocation logs are off: they record
   // each request's metadata, including where Cloudflare places the client's IP.
   "observability": { "enabled": true, "logs": { "invocation_logs": false } },

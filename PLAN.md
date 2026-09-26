@@ -164,8 +164,11 @@ Record the result in `docs/gate-2-review.md`.
 
 ### M4 Launch
 
-- Write `docs/deploy-cloudflare.md` covering D1, KV, secrets, the Durable Object, the Cloudflare rate-limit rule, the TypeSafe spending cap and the trialscout.cc domain.
-- Run `make smoke URL=…` against production.
+- M4.1 `make smoke URL=…`: with a made-up profile, check the home and About pages, the exact disclaimer in the app bundle and its print styles, a 422 Problem Details for a bad request, and one live search and opened trial end to end. Tested against the real API with recorded trials, and run against a local production build.
+  - The disclaimer text moved to `@trialscout/contract`, so the smoke test checks the same string the app renders.
+- M4.2 `docs/deploy-cloudflare.md` covering D1, KV, secrets, the Durable Object, the Cloudflare rate-limit rule, the TypeSafe spending cap and the trialscout.cc domain; `make db-remote` for the deployed D1.
+  - The web Worker is served only on `trialscout.cc` (`workers_dev: false`), so nothing gets around the zone's rate-limiting rule.
+- Human, after GATE 1 and GATE 2: follow the guide, then run `make smoke URL=https://trialscout.cc` and record its output.
 
 ## Open questions
 
@@ -176,4 +179,4 @@ Record the result in `docs/gate-2-review.md`.
 - Should KV cache keys be narrowed further, to the profile fields each criterion needs? M1.8 already leaves out location and distance, and keys per trial and phase to keep KV operations low. This is not worth it until real hit rates are known.
 - How should `not_applicable` criteria show on the M2 checklist? They are left out of the counts, and CLAUDE.md allows exactly three verdicts. For now (M2.2) they are listed apart under "Rules for other groups of patients", quoted with no verdict label and a note that the doctor can confirm; they are left off the doctor sheet. Confirm or change this at GATE 2.
 - ~~Is cancer stage a hard filter?~~ No (M1.7). ClinicalTrials.gov has no structured stage field, so Jev judges stage criteria and a mismatch shows as `likely fails`. The trial is ranked down, never removed. Zero-result hints therefore only suggest a larger distance.
-- Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue?
+- Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue? The deploy guide requires Workers Paid (30 s of CPU per request by default, against the Free plan's 10 ms), and its step 11 checks the CPU time of real searches after launch.
