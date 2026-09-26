@@ -104,6 +104,10 @@ export function About(): JSX.Element {
             when you close it. We send them to our server to check trials, then throw them away. We
             do not store them, log them or use them for tracking.
           </p>
+          <p>
+            To do the check, ClinicalTrials.gov gets your cancer type and the place you search near.
+            Jev gets your cancer type, stage, age, sex and notes, but not where you live.
+          </p>
         </Section>
 
         <Section id="about-data" title="Where the data comes from">
