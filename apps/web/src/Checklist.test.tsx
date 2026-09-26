@@ -60,6 +60,15 @@ describe('Checklist', () => {
     }
   })
 
+  it("shows Jev's confidence beside each judged verdict, as a whole percentage", () => {
+    render(<Checklist trial={trial()} />)
+
+    expect(
+      within(item('Histologically confirmed NSCLC')).getByText('AI confidence 90%'),
+    ).toBeInTheDocument()
+    expect(item('Active hepatitis B')).not.toHaveTextContent(/confidence/i)
+  })
+
   it('gives each "ask your doctor" rule a plain question to ask', () => {
     render(<Checklist trial={trial()} />)
 

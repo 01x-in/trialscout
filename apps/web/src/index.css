@@ -325,6 +325,16 @@ h1 {
   font-weight: 600;
 }
 
+.criterion-confidence {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.criterion-confidence::before {
+  content: '· ';
+}
+
 .criterion-likely_meets {
   border-left-color: var(--meets);
 }

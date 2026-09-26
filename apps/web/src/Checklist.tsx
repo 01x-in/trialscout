@@ -24,6 +24,11 @@ function Rule({ criterion }: { criterion: Judged }): JSX.Element {
           {VERDICT_ICONS[criterion.verdict]}
         </span>
         <span>{VERDICT_LABELS[criterion.verdict]}</span>
+        {criterion.confidence !== null && (
+          <span className="criterion-confidence">
+            AI confidence {Math.round(criterion.confidence * 100)}%
+          </span>
+        )}
       </p>
       <blockquote className="criterion-text">{criterion.text}</blockquote>
       <Group group={criterion.group} />
