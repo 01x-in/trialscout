@@ -63,9 +63,9 @@ Missing information never produces a guessed pass or fail. The starting threshol
 
 This is a pure function.
 
-1. Trials with no `likely fails` rank above trials with any. Failing trials sink but are never removed.
-2. Within each tier, fewer `ask your doctor` verdicts rank first.
-3. After that, shorter distance to the nearest site ranks first.
+1. Trials with no `likely fails` rank above trials with any. Among failing trials, fewer fails rank first. Failing trials sink but are never removed.
+2. Within each tier, a smaller share of unknown criteria ranks first. Unknown means `ask your doctor` or "not checked yet". It is a share of the trial's counted criteria, so short trials don't win by having fewer criteria, and an unjudged trial never tops the list.
+3. After that, the nearer recruiting site ranks first, with unknown distance last. The NCT ID breaks exact ties.
 
 ### Budget
 
