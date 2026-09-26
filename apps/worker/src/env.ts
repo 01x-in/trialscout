@@ -2,6 +2,8 @@
 export interface Env {
   // Cached trials, split criteria and GeoNames places.
   DB: D1Database
+  // Jev answers, keyed by a hash; values hold no profile content.
+  CACHE: KVNamespace
   // Secrets.
   TYPESAFE_API_KEY?: string
   // Vars; see config.ts for defaults.

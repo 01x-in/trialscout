@@ -129,7 +129,7 @@ These are the safety mechanism. Every change must preserve them.
 - Billing is per input token (about $0.003 per search). The real limit is the account rate limit of 1,200 requests/min. See [docs/jev-budget.md](docs/jev-budget.md) for the measured costs, the exact question wording, the `not_applicable` option and the starting thresholds.
 - Jev cannot generate text. Never use it to write copy, and never ask it to do arithmetic or compare dates.
 - Criteria splitting is deterministic (no AI), runs once per trial version and is cached in D1.
-- Jev verdicts are cached in KV keyed by hash(the model version Jev reports, criterion text, normalised profile). `TYPESAFE_MODEL` is pinned (`jev-1.13.0`). Changing it means re-running the GATE 1 sample.
+- Jev answers are cached in KV per trial and phase. The key is a SHA-256 of the model, `QUESTION_VERSION`, the trial context, the criteria, and the normalised profile without location; the value holds no profile content. Bump `QUESTION_VERSION` (`apps/worker/src/judge/questions.ts`) whenever the wording changes. `TYPESAFE_MODEL` is pinned (`jev-1.13.0`), and changing it means re-running the GATE 1 sample.
 - Re-run the spike with `cd apps/worker && node --env-file-if-exists=.dev.vars scripts/jev-spike.ts`. It sends only synthetic profiles to Jev.
 
 ## Edge cases to handle

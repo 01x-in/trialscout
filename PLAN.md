@@ -72,7 +72,7 @@ This is a pure function.
 - Hard filters run before Jev sees any trial.
 - A search makes at most 300 Jev questions and 30 requests. Billing is per input token, and the real limit is the account's 1,200 requests per minute (M1.3).
 - Exclusion criteria are judged first. After a confident `likely fails`, the trial's remaining criteria are marked "not checked yet" and judged only when the user opens that trial.
-- The KV cache key is a hash of (the model version Jev reports, criterion text, normalised profile). `TYPESAFE_MODEL` is pinned to `jev-1.13.0` in production. The stored value is the verdict only, never raw profile content.
+- KV caches Jev's answers per trial and phase (all of a trial's exclusions, or all its inclusions). The key is a SHA-256 of the model, `QUESTION_VERSION`, the trial context, those criteria, and the normalised profile fields Jev reads; city, country and distance are left out. The value is the answers plus the model Jev reported, never profile content. It expires after 7 days. `TYPESAFE_MODEL` is pinned to `jev-1.13.0` in production.
 - A Durable Object rate limiter applies a per-IP limit.
 
 ### Wording
@@ -170,6 +170,7 @@ Record the result in `docs/gate-2-review.md`.
 - ~~Can Jev produce plain-language text for M2.3?~~ No, Jev returns typed answers only. M2.3 uses templates.
 - How should multi-cohort trials be handled? `not_applicable` fixes "For melanoma: …" criteria, but "NSCLC and cutaneous melanoma" is still read literally as a false `likely fails` (0.98). Review at GATE 1.
 - Do criteria with numeric thresholds or date windows need to be forced to `ask your doctor`? Jev is weak at math and dates. Review at GATE 1.
-- Should KV cache keys be narrowed to only the profile fields relevant to each criterion, to raise the hit rate?
+- Should KV cache keys be narrowed further, to the profile fields each criterion needs? M1.8 already leaves out location and distance, and keys per trial and phase to keep KV operations low. This is not worth it until real hit rates are known.
+- How should `not_applicable` criteria show on the M2 checklist? They are left out of the counts, and CLAUDE.md allows exactly three verdicts, so a label such as "Not for your group" needs a decision at GATE 2.
 - ~~Is cancer stage a hard filter?~~ No (M1.7). ClinicalTrials.gov has no structured stage field, so Jev judges stage criteria and a mismatch shows as `likely fails`. The trial is ranked down, never removed. Zero-result hints therefore only suggest a larger distance.
 - Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue?

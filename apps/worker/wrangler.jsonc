@@ -19,6 +19,8 @@
       "migrations_dir": "migrations"
     }
   ],
+  // No id yet: created at M4 (docs/deploy-cloudflare.md). Local dev and tests need none.
+  "kv_namespaces": [{ "binding": "CACHE" }],
   // Secret: TYPESAFE_API_KEY (apps/worker/.dev.vars locally, `wrangler secret put` in production).
   "vars": {
     // Pinned, not jev-latest: cached verdicts and GATE 1 thresholds belong to one version.
