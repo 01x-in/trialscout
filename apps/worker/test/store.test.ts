@@ -124,6 +124,51 @@ describe('TrialStore', () => {
     expect(row?.fetched_at).toBe(1_000)
   })
 
+  it('marks an unchanged trial as checked, and reports only the trials it wrote', async () => {
+    await store(1_000).save([trial('NCT00000001'), trial('NCT00000002')])
+    const written = await store(2_000).save([
+      trial('NCT00000001'),
+      trial('NCT00000002', { lastUpdated: '2026-09-20' }),
+      trial('NCT00000003'),
+    ])
+
+    expect(written.map((t) => t.nctId)).toEqual(['NCT00000002', 'NCT00000003'])
+    const rows = await createDb(env.DB)
+      .select({ id: trials.nct_id, fetched: trials.fetched_at, checked: trials.checked_at })
+      .from(trials)
+      .orderBy(trials.nct_id)
+    expect(rows).toEqual([
+      { id: 'NCT00000001', fetched: 1_000, checked: 2_000 },
+      { id: 'NCT00000002', fetched: 2_000, checked: 2_000 },
+      { id: 'NCT00000003', fetched: 2_000, checked: 2_000 },
+    ])
+  })
+
+  it('lists trials to refresh, least recently checked first, after a cursor', async () => {
+    await store(3_000).save([trial('NCT00000001')])
+    await store(1_000).save([trial('NCT00000003'), trial('NCT00000002')])
+    await store(2_000).save([trial('NCT00000004')])
+    const s = store()
+
+    const first = await s.stale({ checkedBefore: 2_500, after: null, limit: 2 })
+    expect(first.map((t) => t.nctId)).toEqual(['NCT00000002', 'NCT00000003'])
+    const rest = await s.stale({ checkedBefore: 2_500, after: first.at(-1) ?? null, limit: 2 })
+    expect(rest).toEqual([{ nctId: 'NCT00000004', checkedAt: 2_000 }])
+  })
+
+  it('removes trials and their criteria', async () => {
+    const s = store()
+    await s.save([trial('NCT00000001'), trial('NCT00000002')])
+    await s.criteriaFor([trial('NCT00000001'), trial('NCT00000002')])
+
+    await s.remove(['NCT00000001'])
+
+    expect(await s.find('NCT00000001')).toBeNull()
+    expect(await s.find('NCT00000002')).not.toBeNull()
+    const left = await createDb(env.DB).select({ id: criteria.nct_id }).from(criteria)
+    expect(new Set(left.map((r) => r.id))).toEqual(new Set(['NCT00000002']))
+  })
+
   it('reports a trial that cannot be split', async () => {
     const s = store()
     const raw = trial('NCT00000002', {

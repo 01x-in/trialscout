@@ -66,6 +66,7 @@ export type TestOptions = {
   limits?: Limit[]
   trialLimits?: Limit[]
   budget?: { maxQuestions: number; maxRequests: number }
+  refresh?: { batchSize: number; maxBatches: number }
 }
 
 /** Services from the test bindings: recorded ClinicalTrials.gov, a fake Jev, small pages. */
@@ -97,6 +98,7 @@ export function testServices(options: TestOptions = {}): ServicesFactory {
         maxPages: 2,
         budget: options.budget ?? { maxQuestions: 300, maxRequests: 30 },
         trialBudget: { maxQuestions: 200, maxRequests: 6 },
+        refresh: options.refresh ?? { batchSize: 100, maxBatches: 5 },
       },
       now: () => NOW,
     }

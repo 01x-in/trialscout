@@ -1,11 +1,13 @@
 // Records ClinicalTrials.gov API v2 responses for the client tests, using the same request
-// parameters as the client. Re-run when the requested fields change.
+// parameters as the client. Re-run when the requested fields change. Name recordings to
+// record only those:
 //
-//   cd apps/worker && node scripts/record-ctgov.ts
+//   cd apps/worker && node scripts/record-ctgov.ts [name ...]
 
 import { mkdir, writeFile } from 'node:fs/promises'
 import {
   CTGOV_BASE_URL,
+  idsParams,
   searchParams,
   studyParams,
   type TrialQuery,
@@ -18,11 +20,14 @@ const PAGE_SIZE = 5
 
 type Recording = { path: string; params: Record<string, string>; status: number; body: unknown }
 
+const ONLY = new Set(process.argv.slice(2))
+
 async function record(
   name: string,
   path: string,
   params: Record<string, string>,
-): Promise<Recording> {
+): Promise<Recording | null> {
+  if (ONLY.size > 0 && !ONLY.has(name)) return null
   const response = await fetch(`${CTGOV_BASE_URL}${path}?${new URLSearchParams(params)}`, {
     headers: HEADERS,
   })
@@ -66,13 +71,15 @@ async function main(): Promise<void> {
     '/studies',
     searchParams(PUNE_NSCLC, { pageSize: PAGE_SIZE }),
   )
-  const token = (first.body as { nextPageToken?: string }).nextPageToken
-  if (token === undefined) throw new Error('Expected a second page for NSCLC near Pune')
-  await record(
-    'search-nsclc-pune-p2',
-    '/studies',
-    searchParams(PUNE_NSCLC, { pageSize: PAGE_SIZE, pageToken: token }),
-  )
+  if (first !== null) {
+    const token = (first.body as { nextPageToken?: string }).nextPageToken
+    if (token === undefined) throw new Error('Expected a second page for NSCLC near Pune')
+    await record(
+      'search-nsclc-pune-p2',
+      '/studies',
+      searchParams(PUNE_NSCLC, { pageSize: PAGE_SIZE, pageToken: token }),
+    )
+  }
   await record(
     'search-breast-boston-p1',
     '/studies',
@@ -85,6 +92,8 @@ async function main(): Promise<void> {
   )
   await record('study-NCT06563999', '/studies/NCT06563999', studyParams())
   await record('study-NCT09999999', '/studies/NCT09999999', studyParams())
+  // The daily refresh: a known trial and one ClinicalTrials.gov does not have.
+  await record('studies-by-ids', '/studies', idsParams(['NCT06563999', 'NCT09999999']))
 }
 
 await main()

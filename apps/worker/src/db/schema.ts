@@ -4,29 +4,37 @@ import type { Site } from '../trial.ts'
 // Cached ClinicalTrials.gov data and the GeoNames place tables. No patient data is ever
 // stored here: profiles are used for scoring and discarded.
 
-export const trials = sqliteTable('trial', {
-  nct_id: text('nct_id').primaryKey(),
-  // ClinicalTrials.gov lastUpdatePostDate; with nct_id it identifies the trial version.
-  version: text('version').notNull(),
-  title: text('title').notNull(),
-  phases: text('phases', { mode: 'json' }).notNull().$type<string[]>(),
-  sponsor: text('sponsor'),
-  conditions: text('conditions', { mode: 'json' }).notNull().$type<string[]>(),
-  status: text('status').notNull(),
-  // The verbatim eligibility section, or null when the trial has none.
-  criteria: text('criteria'),
-  sex: text('sex', { enum: ['ALL', 'FEMALE', 'MALE'] }).notNull(),
-  min_age_years: real('min_age_years'),
-  max_age_years: real('max_age_years'),
-  // Every site, as one JSON value: one row per trial keeps each search's writes small.
-  sites: text('sites', { mode: 'json' }).notNull().$type<Site[]>().default([]),
-  // The version the criteria rows belong to; null until split. A newer version is re-split.
-  split_version: text('split_version'),
-  // False when the eligibility text could not be split: show it raw with "ask your doctor".
-  split_ok: integer('split_ok', { mode: 'boolean' }),
-  // Epoch milliseconds; shown as "data as of" when ClinicalTrials.gov is down.
-  fetched_at: integer('fetched_at').notNull(),
-})
+export const trials = sqliteTable(
+  'trial',
+  {
+    nct_id: text('nct_id').primaryKey(),
+    // ClinicalTrials.gov lastUpdatePostDate; with nct_id it identifies the trial version.
+    version: text('version').notNull(),
+    title: text('title').notNull(),
+    phases: text('phases', { mode: 'json' }).notNull().$type<string[]>(),
+    sponsor: text('sponsor'),
+    conditions: text('conditions', { mode: 'json' }).notNull().$type<string[]>(),
+    status: text('status').notNull(),
+    // The verbatim eligibility section, or null when the trial has none.
+    criteria: text('criteria'),
+    sex: text('sex', { enum: ['ALL', 'FEMALE', 'MALE'] }).notNull(),
+    min_age_years: real('min_age_years'),
+    max_age_years: real('max_age_years'),
+    // Every site, as one JSON value: one row per trial keeps each search's writes small.
+    sites: text('sites', { mode: 'json' }).notNull().$type<Site[]>().default([]),
+    // The version the criteria rows belong to; null until split. A newer version is re-split.
+    split_version: text('split_version'),
+    // False when the eligibility text could not be split: show it raw with "ask your doctor".
+    split_ok: integer('split_ok', { mode: 'boolean' }),
+    // Epoch milliseconds this version was fetched.
+    fetched_at: integer('fetched_at').notNull(),
+    // Epoch milliseconds ClinicalTrials.gov last confirmed this version: a search that saw it,
+    // or the daily refresh. Shown as "data as of" when ClinicalTrials.gov is down, and the
+    // refresh cursor walks trials oldest first by it.
+    checked_at: integer('checked_at').notNull().default(0),
+  },
+  (t) => [index('trial_checked').on(t.checked_at, t.nct_id)],
+)
 
 // One row per inclusion or exclusion line, split once per trial version for all users.
 export const criteria = sqliteTable(

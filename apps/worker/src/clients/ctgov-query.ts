@@ -52,6 +52,16 @@ export function searchParams(query: TrialQuery, page: PageRequest): Record<strin
   }
 }
 
+/** Several trials by NCT number, in any status; unknown numbers are left out of the page. */
+export function idsParams(ids: string[]): Record<string, string> {
+  return {
+    format: 'json',
+    'filter.ids': ids.join('|'),
+    fields: CTGOV_FIELDS,
+    pageSize: String(ids.length),
+  }
+}
+
 export function studyParams(): Record<string, string> {
   return { format: 'json', fields: CTGOV_FIELDS }
 }

@@ -146,3 +146,41 @@ describe('CtGovClient.study', () => {
     expect(seen).toHaveLength(0)
   })
 })
+
+describe('CtGovClient.byIds', () => {
+  it('reads several trials in one request, in any status, leaving out unknown ones', async () => {
+    const seen: URL[] = []
+    const page = await client(seen).byIds(['NCT06563999', 'NCT09999999'])
+
+    expect(seen).toHaveLength(1)
+    expect(seen[0]?.searchParams.get('filter.ids')).toBe('NCT06563999|NCT09999999')
+    expect(seen[0]?.searchParams.has('filter.overallStatus')).toBe(false)
+    expect(page.skipped).toBe(0)
+    expect(page.trials.map((t) => t.nctId)).toEqual(['NCT06563999'])
+    expect(page.trials[0]).toEqual(await client().study('NCT06563999'))
+  })
+
+  it('counts a malformed study as skipped', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const body = structuredClone(recording('studies-by-ids').body) as {
+      studies: { protocolSection: { identificationModule: { nctId: unknown } } }[]
+    }
+    const first = body.studies[0]
+    if (first) first.protocolSection.identificationModule.nctId = 42
+    const broken = new CtGovClient({
+      baseUrl: CTGOV_BASE_URL,
+      fetch: mockFetch(() => json(200, body)),
+      retry: FAST,
+    })
+
+    expect(await broken.byIds(['NCT06563999'])).toEqual({ trials: [], skipped: 1 })
+  })
+
+  it('refuses an ID that is not an NCT number without calling upstream', async () => {
+    const seen: URL[] = []
+    await expect(client(seen).byIds(['NCT06563999', 'x|y'])).rejects.toThrow(
+      'Not an NCT number: x|y',
+    )
+    expect(seen).toHaveLength(0)
+  })
+})

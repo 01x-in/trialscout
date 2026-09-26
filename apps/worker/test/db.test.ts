@@ -30,6 +30,7 @@ const TRIAL = {
   split_version: '2026-04-21',
   split_ok: true,
   fetched_at: 1_790_000_000_000,
+  checked_at: 1_790_000_000_000,
 }
 
 describe('D1 schema (Drizzle migrations)', () => {

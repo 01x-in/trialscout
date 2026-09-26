@@ -1,4 +1,4 @@
-import { and, eq, inArray, ne } from 'drizzle-orm'
+import { and, eq, gt, inArray, lt, ne, or } from 'drizzle-orm'
 import type { BatchItem } from 'drizzle-orm/batch'
 import { type Criterion, type Split, splitCriteria } from './criteria.ts'
 import type { Db } from './db/index.ts'
@@ -19,6 +19,9 @@ function chunk<T>(rows: T[], size: number): T[][] {
   for (let i = 0; i < rows.length; i += size) out.push(rows.slice(i, i + size))
   return out
 }
+
+/** Where the daily refresh is up to: the last trial it read, and when that was last checked. */
+export type RefreshCursor = { nctId: string; checkedAt: number }
 
 function version(trial: Trial): string {
   return trial.lastUpdated ?? ''
@@ -85,13 +88,22 @@ export class TrialStore {
     }
   }
 
-  /** Writes trials whose version is new; unchanged trials are left as they are. */
-  async save(list: Trial[]): Promise<void> {
+  /**
+   * Writes trials whose version is new, and returns them; an unchanged trial is only marked
+   * as checked now.
+   */
+  async save(list: Trial[]): Promise<Trial[]> {
     const known = await this.#versions(list.map((t) => t.nctId))
     const now = this.#now()
     const statements: BatchItem<'sqlite'>[] = []
+    const written: Trial[] = []
+    const unchanged: string[] = []
     for (const trial of list) {
-      if (known.get(trial.nctId)?.version === version(trial)) continue
+      if (known.get(trial.nctId)?.version === version(trial)) {
+        unchanged.push(trial.nctId)
+        continue
+      }
+      written.push(trial)
       const row = {
         nct_id: trial.nctId,
         version: version(trial),
@@ -108,6 +120,7 @@ export class TrialStore {
         split_version: null,
         split_ok: null,
         fetched_at: now,
+        checked_at: now,
       }
       const { nct_id: _id, ...update } = row
       statements.push(
@@ -121,6 +134,50 @@ export class TrialStore {
           .delete(criteria)
           .where(and(eq(criteria.nct_id, trial.nctId), ne(criteria.version, version(trial)))),
       )
+    }
+    for (const part of chunk(unchanged, IN_CHUNK)) {
+      statements.push(
+        this.#db.update(trials).set({ checked_at: now }).where(inArray(trials.nct_id, part)),
+      )
+    }
+    await this.#run(statements)
+    return written
+  }
+
+  /**
+   * Trials last checked before `checkedBefore`, least recently checked first, starting after
+   * the cursor: the daily refresh walks them in batches.
+   */
+  async stale(options: {
+    checkedBefore: number
+    after: RefreshCursor | null
+    limit: number
+  }): Promise<RefreshCursor[]> {
+    const { after } = options
+    return this.#db
+      .select({ nctId: trials.nct_id, checkedAt: trials.checked_at })
+      .from(trials)
+      .where(
+        and(
+          lt(trials.checked_at, options.checkedBefore),
+          after === null
+            ? undefined
+            : or(
+                gt(trials.checked_at, after.checkedAt),
+                and(eq(trials.checked_at, after.checkedAt), gt(trials.nct_id, after.nctId)),
+              ),
+        ),
+      )
+      .orderBy(trials.checked_at, trials.nct_id)
+      .limit(options.limit)
+  }
+
+  /** Deletes trials and their criteria, e.g. ones no longer recruiting. */
+  async remove(ids: string[]): Promise<void> {
+    const statements: BatchItem<'sqlite'>[] = []
+    for (const part of chunk(ids, IN_CHUNK)) {
+      statements.push(this.#db.delete(criteria).where(inArray(criteria.nct_id, part)))
+      statements.push(this.#db.delete(trials).where(inArray(trials.nct_id, part)))
     }
     await this.#run(statements)
   }
