@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 is complete on `milestone/m1-profile-to-ranked-list`. Next is **GATE 1** (human verdict review, PLAN.md). Do not start M2 before sign-off.
+M1 is merged. M2 is complete on `milestone/m2-trial-checklist-and-doctor-sheet`. M2 was started at the user's request before the GATE 1 verdict review was recorded in `docs/gate-1-review.md`, so that review is still owed. Next is M3.
 
 ## context-mode (mandatory)
 
