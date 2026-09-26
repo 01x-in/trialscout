@@ -63,6 +63,21 @@ body {
   padding: 2rem 1rem 4rem;
 }
 
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-block: 1.5rem 3rem;
+  font-size: 0.95rem;
+}
+
+.about h2 {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+.about li + li {
+  margin-top: 0.4rem;
+}
+
 h1 {
   margin: 0 0 0.5rem;
   font-size: 2rem;

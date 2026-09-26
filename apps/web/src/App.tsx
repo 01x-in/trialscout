@@ -83,6 +83,9 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
           />
         )}
       </main>
+      <footer className="page site-footer">
+        <a href="/about">About this demo</a>
+      </footer>
     </>
   )
 }
