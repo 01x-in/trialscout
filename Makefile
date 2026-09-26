@@ -1,4 +1,4 @@
-.PHONY: install dev dev-worker dev-web test test-worker test-web lint format db-local db-remote db-generate check-deploy deploy smoke
+.PHONY: install dev dev-worker dev-web test test-worker test-web lint format db-local db-remote db-cities-remote db-generate check-deploy deploy smoke
 
 install:
 	npm install
@@ -33,9 +33,13 @@ db-local:
 	cd apps/worker && npm run db:migrate:local
 	cd apps/worker && npm run db:cities
 
-# The deployed D1 (after wrangler login and setting database_id): migrations, then cities
+# The deployed D1 (after wrangler login and setting database_id): apply migrations
 db-remote:
 	cd apps/worker && npx wrangler d1 migrations apply DB --remote
+
+# The deployed D1's GeoNames tables, once before launch: it empties and refills them, so
+# searches made while it runs find no city
+db-cities-remote:
 	cd apps/worker && npm run db:cities -- --remote
 
 # Regenerate D1 migrations after changing apps/worker/src/db/schema.ts

@@ -57,6 +57,7 @@ make test          # worker (workerd pool) then web (jsdom)
 make lint          # biome format:check + oxlint + typecheck (tsc 7)
 make format        # biome format --write
 make db-local      # local D1: migrations + GeoNames cities (downloads ~3 MB once)
+make db-remote     # deployed D1: migrations only
 make db-generate   # new Drizzle migration after editing apps/worker/src/db/schema.ts
 make check-deploy  # vite build + wrangler deploy --dry-run for both Workers
 make deploy        # API Worker, then web Worker
@@ -64,7 +65,10 @@ make deploy        # API Worker, then web Worker
 
 Run `make db-local` once before `make -j2 dev`, and put `TYPESAFE_API_KEY` in `apps/worker/.dev.vars`.
 
-Deploying follows [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md): `make db-remote` (the deployed D1), `make deploy`, then `make smoke URL=https://trialscout.cc`. The smoke test makes one real search and trial check against live ClinicalTrials.gov and Jev; the guide shows how to run it locally.
+Node 22.18+ (`.nvmrc`): the tools in `apps/worker/scripts` run as `.ts` directly, with no build step.
+
+- **First launch:** follow [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md) step by step. It deploys the API Worker alone, then sets the secret, the TypeSafe spending cap and the rate-limiting rule before the web Worker makes the site public. Do not use `make deploy` for it.
+- **Later updates:** `make db-remote` if there is a new migration, then `make deploy`, then `make smoke URL=https://trialscout.cc`. The smoke test makes one real search and trial check against live ClinicalTrials.gov and Jev; the guide shows how to run it locally.
 
 ## Stack
 

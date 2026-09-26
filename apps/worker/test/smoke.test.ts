@@ -1,4 +1,4 @@
-import { DISCLAIMER } from '@trialscout/contract'
+import { DISCLAIMER, type SearchResponse } from '@trialscout/contract'
 import { env } from 'cloudflare:workers'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { SMOKE_PROFILE, smoke } from '../scripts/lib/smoke.ts'
@@ -24,7 +24,9 @@ const HTML = `<!doctype html><html lang="en"><head><title>TrialScout</title>
 <body><div id="root"></div></body></html>`
 const BUILD = {
   script: `const e=${JSON.stringify(DISCLAIMER)};export{e};`,
-  styles: '.demo-caution{background:#9b1c1c}@media print{.demo-caution{border:2px solid #000}}',
+  styles:
+    '.demo-caution{background:#9b1c1c}.sheet-caution{border:1px solid}' +
+    '@media print{.demo-caution{border:2px solid #000}.doctor-sheet *{color:#000}}',
 }
 
 type Api = (path: string, init?: RequestInit) => Promise<Response>
@@ -67,7 +69,7 @@ describe('the deploy smoke test', () => {
     expect(result.lines).toEqual([
       'home page: ok',
       'about page: ok',
-      'disclaimer: exact text in the app, and in the print styles',
+      'disclaimer: exact text in the app; the print styles keep it on the page and the doctor sheet',
       'bad request: 422 Problem Details',
       expect.stringMatching(
         /^search: \d+ trials near Pune, live from ClinicalTrials\.gov; \d+ Jev questions in \d+ requests, \d+ from the cache$/,
@@ -105,6 +107,67 @@ describe('the deploy smoke test', () => {
     expect(result.ok).toBe(false)
     expect(result.lines).toContain(
       'disclaimer: FAILED: the stylesheet has no print styles for the disclaimer',
+    )
+  })
+
+  it('fails when there are no styles for the doctor sheet disclaimer', async () => {
+    const styles = BUILD.styles.replace('.sheet-caution', '.sheet-note')
+    const result = await smoke(SITE, site(realApi(), { ...BUILD, styles }))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'disclaimer: FAILED: the stylesheet has no styles for the doctor sheet disclaimer',
+    )
+  })
+
+  it.each([
+    '.sheet-caution{display:none}',
+    '.doctor-sheet .sheet-caution, .x { visibility: hidden }',
+    '.demo-caution{display: none !important}',
+  ])('fails when a print style hides a disclaimer: %s', async (rule) => {
+    const styles = BUILD.styles.replace(/\}$/, `${rule}}`)
+    const result = await smoke(SITE, site(realApi(), { ...BUILD, styles }))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain('disclaimer: FAILED: a print style hides the disclaimer')
+  })
+
+  it('opens the first trial whose criteria were split, not an unsplittable one', async () => {
+    const seen: Seen[] = []
+    const api = realApi()
+    let skipped = ''
+    const firstUnsplittable: Api = async (path, init) => {
+      const response = await api(path, init)
+      if (path !== '/api/search' || init?.body === '{}') return response
+      const found = (await response.json()) as SearchResponse
+      const [first] = found.results
+      if (first === undefined) throw new Error('Expected recorded trials')
+      skipped = first.nctId
+      first.eligibility = 'unsplittable'
+      return json(200, found)
+    }
+    const result = await smoke(SITE, site(firstUnsplittable, BUILD, seen))
+
+    expect(result.ok).toBe(true)
+    const opened = seen.find((s) => s.url.includes('/verdicts'))?.url ?? ''
+    expect(opened).toMatch(/NCT\d{8}/)
+    expect(opened).not.toContain(skipped)
+  })
+
+  it('fails when no trial found has split criteria', async () => {
+    const api = realApi()
+    const allUnsplittable: Api = async (path, init) => {
+      const response = await api(path, init)
+      if (path !== '/api/search' || init?.body === '{}') return response
+      const found = (await response.json()) as SearchResponse
+      for (const r of found.results) r.eligibility = 'unsplittable'
+      return json(200, found)
+    }
+    const result = await smoke(SITE, site(allUnsplittable))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContainEqual(
+      expect.stringMatching(/^search: FAILED: none of the \d+ trials had its criteria split$/),
     )
   })
 

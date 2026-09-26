@@ -69,8 +69,15 @@ async function failure(response: Response): Promise<Failed> {
   return new Failed(`HTTP ${response.status}`)
 }
 
-/** Whether a stylesheet has an `@media print` block that styles the disclaimer strip. */
-function printsDisclaimer(css: string): boolean {
+// The page's strip, and the doctor sheet's copy of it (DoctorSheet.tsx).
+const STRIP = '.demo-caution'
+const SHEET = '.sheet-caution'
+
+type Rule = { selector: string; body: string }
+
+/** The rules inside every `@media print` block of a stylesheet. */
+function printRules(css: string): Rule[] {
+  const rules: Rule[] = []
   for (let at = css.indexOf('@media print'); at !== -1; at = css.indexOf('@media print', at + 1)) {
     const open = css.indexOf('{', at)
     let depth = 0
@@ -78,12 +85,30 @@ function printsDisclaimer(css: string): boolean {
       if (css[i] === '{') depth += 1
       else if (css[i] === '}') depth -= 1
       if (depth === 0) {
-        if (css.slice(open, i).includes('.demo-caution')) return true
+        for (const m of css.slice(open + 1, i).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+          rules.push({ selector: (m[1] ?? '').trim(), body: m[2] ?? '' })
+        }
         break
       }
     }
   }
-  return false
+  return rules
+}
+
+/** Why the stylesheets would not print the disclaimer, or null when they would. */
+function printProblem(stylesheets: string[]): string | null {
+  const rules = stylesheets.flatMap(printRules)
+  if (!rules.some((r) => r.selector.includes(STRIP))) {
+    return 'the stylesheet has no print styles for the disclaimer'
+  }
+  if (!stylesheets.some((css) => css.includes(SHEET))) {
+    return 'the stylesheet has no styles for the doctor sheet disclaimer'
+  }
+  const hides = /display\s*:\s*none|visibility\s*:\s*hidden/i
+  const hidden = rules.some(
+    (r) => (r.selector.includes(STRIP) || r.selector.includes(SHEET)) && hides.test(r.body),
+  )
+  return hidden ? 'a print style hides the disclaimer' : null
 }
 
 /** Every same-site asset the page loads with this tag and attribute, e.g. script src. */
@@ -149,11 +174,12 @@ export async function smoke(baseUrl: string, fetch: Fetch): Promise<SmokeResult>
     if (!code.some((js) => js.includes(DISCLAIMER))) {
       throw new Failed('the exact text is not in the app')
     }
-    const styles = await Promise.all(assets(home, 'link', 'href').map(asset))
-    if (!styles.some(printsDisclaimer)) {
-      throw new Failed('the stylesheet has no print styles for the disclaimer')
-    }
-    return ['exact text in the app, and in the print styles', null]
+    const problem = printProblem(await Promise.all(assets(home, 'link', 'href').map(asset)))
+    if (problem !== null) throw new Failed(problem)
+    return [
+      'exact text in the app; the print styles keep it on the page and the doctor sheet',
+      null,
+    ]
   })
 
   await check('bad request', async () => {
@@ -177,8 +203,12 @@ export async function smoke(baseUrl: string, fetch: Fetch): Promise<SmokeResult>
     }
     const city = text(object(found.location, 'location').city, 'location.city')
     const results = array(found.results, 'results').map((r) => object(r, 'a result'))
-    const nctId = results[0]?.nctId
-    if (nctId === undefined) throw new Failed(`no trials found near ${city}`)
+    if (results.length === 0) throw new Failed(`no trials found near ${city}`)
+    // An unsplittable trial is shown as raw text without Jev, so it would not test verdicts.
+    const split = results.find((r) => r.eligibility === 'split')
+    if (split === undefined) {
+      throw new Failed(`none of the ${results.length} trials had its criteria split`)
+    }
     const checked = object(found.checked, 'checked')
     const work = [
       `${count(checked.questions, 'checked.questions')} Jev questions`,
@@ -186,7 +216,7 @@ export async function smoke(baseUrl: string, fetch: Fetch): Promise<SmokeResult>
       `${count(checked.cacheHits, 'checked.cacheHits')} from the cache`,
     ].join(' ')
     const line = `${results.length} trials near ${city}, live from ClinicalTrials.gov; ${work}`
-    return [line, text(nctId, 'nctId')]
+    return [line, text(split.nctId, 'nctId')]
   })
 
   if (first === null) {
@@ -199,10 +229,7 @@ export async function smoke(baseUrl: string, fetch: Fetch): Promise<SmokeResult>
     if (!response.ok) throw await failure(response)
     const trial = object(await response.json(), 'the trial')
     if (trial.nctId !== first) throw new Failed(`answered for ${String(trial.nctId)}`)
-    if (trial.eligibility === 'unsplittable') {
-      text(trial.rawCriteria, 'rawCriteria')
-      return ['shown as its raw eligibility text', null]
-    }
+    if (trial.eligibility !== 'split') throw new Failed('its criteria were not split')
     const criteria = array(trial.criteria, 'criteria').map((c) => object(c, 'a criterion'))
     if (criteria.length === 0) throw new Failed('no criteria')
     for (const [i, c] of criteria.entries()) {

@@ -24,6 +24,7 @@ Run every command from the repository root unless a step says otherwise. Steps 1
 - **A Cloudflare account on the Workers Paid plan ($5 a month).** The Free plan allows 10 ms of CPU per request. Validating a page of ClinicalTrials.gov results and splitting every trial's criteria takes more than that.
 - **`trialscout.cc` added to that Cloudflare account** as a zone, with its nameservers pointed at Cloudflare. Remove any existing DNS record for the bare `trialscout.cc` (a parking page, say): Wrangler creates the record itself in step 9 and stops if one is there.
 - **Your TypeSafe API key.**
+- **Node 22.18 or later** (`.nvmrc`), which runs the TypeScript tools in `apps/worker/scripts`, such as the smoke test, without a build step.
 - **`npm install` done**, and `make test`, `make lint` and `make check-deploy` passing.
 
 ## 1. Log in to Cloudflare
@@ -81,13 +82,21 @@ Local development keys its D1 by the ID once one is set, so run `make db-local` 
 make db-remote
 ```
 
-This applies the D1 migrations, then imports GeoNames countries and cities of 15,000 people or more, the same data `make db-local` uses. It ends with:
+This applies the D1 migrations. It is safe to run again: migrations already applied are skipped.
+
+```bash
+make db-cities-remote
+```
+
+This imports GeoNames countries and cities of 15,000 people or more, the same data `make db-local` uses. It ends with:
 
 ```
 Imported into remote D1
 ```
 
-It is safe to run again: the import replaces the country and city tables, and the migrations already applied are skipped. The trial tables start empty and fill as people search.
+Run it once, now, while nothing is public. It empties the country and city tables and refills them in many batches, so a search made while it runs finds no city, and a failed run leaves the tables partly filled. If it fails, run it again until it ends as above. On a live site, re-run it only when the city data must change, at a quiet hour, followed by the smoke test.
+
+The trial tables start empty and fill as people search.
 
 ## 5. Deploy the API Worker
 
@@ -149,7 +158,7 @@ This builds the app and deploys it on `https://trialscout.cc`, from the `routes`
 
 The site is public from this moment.
 
-After this first time, `make deploy` deploys both Workers, the API first.
+After this first launch, `make deploy` deploys both Workers, the API first. Do not use it for the first launch: it would publish the site before the secret, the spending cap and the rate-limiting rule are in place.
 
 ## 10. Smoke test
 
@@ -160,16 +169,16 @@ make smoke URL=https://trialscout.cc
 It checks, with a made-up profile and no free-text notes:
 
 - that the home and About pages load;
-- that the app carries the exact disclaimer text, and that its print styles style the strip;
+- that the app carries the exact disclaimer text, and that no print style hides it on the page or the doctor sheet;
 - that a bad request gets a 422 Problem Details answer;
-- that one live search and one opened trial work end to end.
+- that one live search and one opened trial with split criteria work end to end.
 
 It passes like this:
 
 ```
 home page: ok
 about page: ok
-disclaimer: exact text in the app, and in the print styles
+disclaimer: exact text in the app; the print styles keep it on the page and the doctor sheet
 bad request: 422 Problem Details
 search: 24 trials near Pune, live from ClinicalTrials.gov; 121 Jev questions in 18 requests, 30 from the cache
 trial NCT06875310: 14 criteria, each next to its source text
@@ -205,7 +214,7 @@ make check-deploy
 make deploy
 ```
 
-When a change adds a D1 migration, run `make db-remote` before `make deploy`, so the new code never runs against the old schema. For the minute in between, the old code runs against the new schema, so a migration that drops or renames something the running code reads needs two deploys: first code that no longer reads it, then the migration.
+When a change adds a D1 migration, run `make db-remote` (migrations only; it leaves the city tables alone) before `make deploy`, so the new code never runs against the old schema. For the minute in between, the old code runs against the new schema, so a migration that drops or renames something the running code reads needs two deploys: first code that no longer reads it, then the migration.
 
 Run `make smoke URL=https://trialscout.cc` after every deploy.
 
