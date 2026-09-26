@@ -15,6 +15,8 @@ type Vars = {
   CTGOV_BASE_URL?: string & tags.Format<'uri'>
   SEARCH_PER_MINUTE?: Count
   SEARCH_PER_DAY?: Count
+  TRIAL_CHECKS_PER_MINUTE?: Count
+  TRIAL_CHECKS_PER_DAY?: Count
 }
 
 export type Config = {
@@ -25,6 +27,9 @@ export type Config = {
   // Searches each client may make; every search calls ClinicalTrials.gov and Jev live.
   searchPerMinute: number
   searchPerDay: number
+  // Opened trials each client may have judged; a check answered from the cache is free.
+  trialChecksPerMinute: number
+  trialChecksPerDay: number
 }
 
 const validateVars = typia.createValidate<Vars>()
@@ -44,5 +49,7 @@ export function readConfig(bindings: object): Config {
     ctgovBaseUrl: vars.CTGOV_BASE_URL ?? CTGOV_BASE_URL,
     searchPerMinute: Number(vars.SEARCH_PER_MINUTE ?? 5),
     searchPerDay: Number(vars.SEARCH_PER_DAY ?? 50),
+    trialChecksPerMinute: Number(vars.TRIAL_CHECKS_PER_MINUTE ?? 20),
+    trialChecksPerDay: Number(vars.TRIAL_CHECKS_PER_DAY ?? 200),
   }
 }

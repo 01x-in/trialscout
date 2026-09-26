@@ -136,7 +136,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 
 ### M2 Trial checklist and doctor sheet
 
-- M2.1 `GET /api/trials/:nctId/verdicts` returns every criterion with its verdict, confidence and verbatim text. It judges "not checked yet" criteria on demand.
+- M2.1 `POST /api/trials/:nctId/verdicts` returns every criterion with its verdict, confidence and verbatim text. It judges "not checked yet" criteria on demand. It is a POST because the profile must travel in the body, never in a URL. Checks are rate limited per client apart from searches (`TRIAL_CHECKS_PER_MINUTE`, `TRIAL_CHECKS_PER_DAY`), and only checks that reach Jev count.
 - M2.2 Checklist UI: verdicts shown with icon and label, readable without colour. Motion is used only for expanding.
 - M2.3 "Ask your doctor" criteria become plain questions, written from templates in code. M1.3 confirmed Jev cannot generate text.
 - M2.4 Printable "Questions for your doctor" sheet with a `@media print` stylesheet: black and white, disclaimer printed, trial ID and official link.
@@ -171,6 +171,6 @@ Record the result in `docs/gate-2-review.md`.
 - How should multi-cohort trials be handled? `not_applicable` fixes "For melanoma: …" criteria, but "NSCLC and cutaneous melanoma" is still read literally as a false `likely fails` (0.98). Review at GATE 1.
 - Do criteria with numeric thresholds or date windows need to be forced to `ask your doctor`? Jev is weak at math and dates. Review at GATE 1.
 - Should KV cache keys be narrowed further, to the profile fields each criterion needs? M1.8 already leaves out location and distance, and keys per trial and phase to keep KV operations low. This is not worth it until real hit rates are known.
-- How should `not_applicable` criteria show on the M2 checklist? They are left out of the counts, and CLAUDE.md allows exactly three verdicts, so a label such as "Not for your group" needs a decision at GATE 2.
+- How should `not_applicable` criteria show on the M2 checklist? They are left out of the counts, and CLAUDE.md allows exactly three verdicts. For now (M2.2) they are listed apart under "Rules for other groups of patients", quoted with no verdict label and a note that the doctor can confirm; they are left off the doctor sheet. Confirm or change this at GATE 2.
 - ~~Is cancer stage a hard filter?~~ No (M1.7). ClinicalTrials.gov has no structured stage field, so Jev judges stage criteria and a mismatch shows as `likely fails`. The trial is ranked down, never removed. Zero-result hints therefore only suggest a larger distance.
 - Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue?

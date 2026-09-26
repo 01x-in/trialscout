@@ -64,6 +64,7 @@ export type TestOptions = {
   jev?: FakeJev | null
   fetch?: Fetch
   limits?: Limit[]
+  trialLimits?: Limit[]
   budget?: { maxQuestions: number; maxRequests: number }
 }
 
@@ -87,10 +88,15 @@ export function testServices(options: TestOptions = {}): ServicesFactory {
         env.SEARCH_LIMITER,
         options.limits ?? [{ count: 100, seconds: 60 }],
       ),
+      trialLimiter: durableSearchLimiter(
+        env.SEARCH_LIMITER,
+        options.trialLimits ?? [{ count: 100, seconds: 60 }],
+      ),
       settings: {
         pageSize: 5,
         maxPages: 2,
         budget: options.budget ?? { maxQuestions: 300, maxRequests: 30 },
+        trialBudget: { maxQuestions: 200, maxRequests: 6 },
       },
       now: () => NOW,
     }

@@ -19,6 +19,8 @@ export type SearchSettings = {
   pageSize: number
   maxPages: number
   budget: Budget
+  // Jev work for one opened trial: every criterion of all but a mis-split trial.
+  trialBudget: Budget
 }
 
 // Up to 100 trials per search before hard filters; Jev work capped as in docs/jev-budget.md.
@@ -26,6 +28,7 @@ export const SEARCH_SETTINGS: SearchSettings = {
   pageSize: 50,
   maxPages: 2,
   budget: { maxQuestions: 300, maxRequests: 30 },
+  trialBudget: { maxQuestions: 200, maxRequests: 6 },
 }
 
 export type Services = {
@@ -35,6 +38,8 @@ export type Services = {
   judge: Judge
   store: TrialStore
   limiter: ClientLimiter
+  // Opened trials, counted apart from searches.
+  trialLimiter: ClientLimiter
   settings: SearchSettings
   now: () => number
 }
@@ -75,6 +80,10 @@ export function workerServices(env: Env): Services {
     limiter: durableSearchLimiter(env.SEARCH_LIMITER, [
       { count: config.searchPerMinute, seconds: 60 },
       { count: config.searchPerDay, seconds: 86_400 },
+    ]),
+    trialLimiter: durableSearchLimiter(env.SEARCH_LIMITER, [
+      { count: config.trialChecksPerMinute, seconds: 60 },
+      { count: config.trialChecksPerDay, seconds: 86_400 },
     ]),
     settings: SEARCH_SETTINGS,
     now: Date.now,

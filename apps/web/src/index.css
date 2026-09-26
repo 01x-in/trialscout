@@ -258,8 +258,257 @@ h1 {
   color: var(--ask);
 }
 
+/* A trial's rules, opened from its card. Motion only for expanding. */
+.trial-toggle {
+  margin-top: 1rem;
+  padding: 0.5rem 0.9rem;
+  color: var(--fg);
+  background: transparent;
+  border: 2px solid var(--line);
+  border-radius: 0.4rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trial-toggle:hover {
+  border-color: var(--fg);
+}
+
+.trial-toggle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.trial-details:not([hidden]) {
+  animation: expand 180ms ease-out;
+}
+
+@keyframes expand {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trial-details:not([hidden]) {
+    animation: none;
+  }
+}
+
+.checklist h4 {
+  margin: 1.4rem 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.criteria {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.criterion {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  border-radius: 0.4rem;
+}
+
+.criterion-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+}
+
+.criterion-confidence {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.criterion-confidence::before {
+  content: '· ';
+}
+
+.criterion-likely_meets {
+  border-left-color: var(--meets);
+}
+
+.criterion-likely_meets .criterion-verdict {
+  color: var(--meets);
+}
+
+.criterion-likely_fails {
+  border-left-color: var(--fails);
+}
+
+.criterion-likely_fails .criterion-verdict {
+  color: var(--fails);
+}
+
+.criterion-ask_your_doctor {
+  border-left-color: var(--ask);
+}
+
+.criterion-ask_your_doctor .criterion-verdict {
+  color: var(--ask);
+}
+
+.criterion-not_checked .criterion-verdict {
+  color: var(--unchecked);
+  font-weight: 400;
+}
+
+.criterion-text {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.criterion-text::before {
+  content: '“';
+}
+
+.criterion-text::after {
+  content: '”';
+}
+
+.criterion-raw {
+  margin-top: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+
+.criterion-group,
+.criteria-note {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.criteria-note {
+  margin-bottom: 0.5rem;
+}
+
+.criterion-question {
+  margin: 0.5rem 0 0;
+}
+
+.checked-for {
+  color: var(--muted);
+}
+
+.link-button {
+  padding: 0;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:focus-visible,
+.trial-source a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.trial-source {
+  margin: 1.2rem 0 0;
+}
+
+.trial-source a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* The doctor sheet exists only while printing, and is never shown on screen. */
+.print-root {
+  display: none;
+}
+
+.sheet-layout {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sheet-layout td {
+  padding: 0;
+  vertical-align: top;
+}
+
+.sheet-caution {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.7rem;
+  border: 2px solid #000000;
+  font-weight: 700;
+}
+
+.sheet-trial {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 1rem;
+}
+
+.sheet-trial dt {
+  font-weight: 700;
+}
+
+.sheet-trial dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.sheet-list li {
+  margin-bottom: 0.8rem;
+  break-inside: avoid;
+}
+
+.sheet-question {
+  margin: 0.3rem 0 0;
+  font-weight: 700;
+}
+
+.sheet-question::after {
+  display: block;
+  height: 2.5rem;
+  border-bottom: 1px solid #000000;
+  content: '';
+}
+
+.sheet-footer {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
 /* Printed sheets are black on white, and the disclaimer is always printed. */
 @media print {
+  body.printing-sheet #root {
+    display: none;
+  }
+
+  body.printing-sheet .print-root {
+    display: block;
+  }
+
+  .doctor-sheet,
+  .doctor-sheet * {
+    color: #000000 !important;
+    background: none !important;
+  }
+
+  .trial-toggle {
+    display: none;
+  }
+
   :root {
     --bg: #ffffff;
     --fg: #000000;

@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import type { Env } from './env.ts'
 import { registerProblemHandlers } from './problems.ts'
 import { searchRoutes } from './routes/search.ts'
+import { trialRoutes } from './routes/trials.ts'
 import type { Services, ServicesFactory } from './services.ts'
 
 export type AppEnv = { Bindings: Env; Variables: { services: Services } }
@@ -15,7 +16,7 @@ export function createApp(makeServices: ServicesFactory) {
     c.set('services', makeServices(c.env))
     await next()
   })
-  return app.route('/api/search', searchRoutes)
+  return app.route('/api/search', searchRoutes).route('/api/trials', trialRoutes)
 }
 
 // The API's route types, for the web app's `hc<AppType>` client.

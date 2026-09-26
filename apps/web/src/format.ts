@@ -1,4 +1,4 @@
-import type { VerdictCounts } from '@trialscout/contract'
+import type { Profile, VerdictCounts } from '@trialscout/contract'
 
 /** "Phase 2", "Phase 1/2", "Early phase 1"; null when ClinicalTrials.gov gives no phase. */
 export function phaseLabel(phases: string[]): string | null {
@@ -14,11 +14,20 @@ export type CountVerdict = keyof VerdictCounts
 
 export type CountPart = { verdict: CountVerdict; count: number; label: string }
 
-const LABELS: Record<CountVerdict, string> = {
+/** The label shown for each verdict, always next to its icon. */
+export const VERDICT_LABELS: Record<CountVerdict, string> = {
   likely_meets: 'likely meets',
   likely_fails: 'likely fails',
   ask_your_doctor: 'ask your doctor',
   not_checked: 'not checked yet',
+}
+
+// Verdicts are told apart by icon and label, never by colour alone.
+export const VERDICT_ICONS: Record<CountVerdict, string> = {
+  likely_meets: '✓',
+  likely_fails: '✕',
+  ask_your_doctor: '?',
+  not_checked: '…',
 }
 
 const ORDER: CountVerdict[] = ['likely_meets', 'likely_fails', 'ask_your_doctor', 'not_checked']
@@ -28,7 +37,7 @@ export function countParts(counts: VerdictCounts): CountPart[] {
   return ORDER.filter((verdict) => counts[verdict] > 0).map((verdict) => ({
     verdict,
     count: counts[verdict],
-    label: `${counts[verdict]} ${LABELS[verdict]}`,
+    label: `${counts[verdict]} ${VERDICT_LABELS[verdict]}`,
   }))
 }
 
@@ -40,4 +49,10 @@ export function dateLabel(epochMs: number): string {
     year: 'numeric',
     timeZone: 'UTC',
   })
+}
+
+/** "breast cancer, stage II, age 47, female.", as the patient entered it. */
+export function profileSummary(profile: Profile): string {
+  const stage = profile.stage === 'unknown' ? 'stage not known' : `stage ${profile.stage}`
+  return `${profile.cancerType}, ${stage}, age ${profile.age}, ${profile.sex}.`
 }

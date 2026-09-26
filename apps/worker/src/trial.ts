@@ -1,5 +1,10 @@
 // A recruiting trial as the app uses it, normalised from ClinicalTrials.gov.
 
+/** The trial's official ClinicalTrials.gov page. */
+export function studyUrl(nctId: string): string {
+  return `https://clinicaltrials.gov/study/${nctId}`
+}
+
 export type TrialSex = 'ALL' | 'FEMALE' | 'MALE'
 
 export type Site = {

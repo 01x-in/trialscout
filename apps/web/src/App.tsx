@@ -1,6 +1,11 @@
 import type { Profile } from '@trialscout/contract'
 import { type JSX, useState } from 'react'
-import { type SearchOutcome, searchTrials } from './api.ts'
+import {
+  type CheckTrial,
+  checkTrial as checkTrialApi,
+  type SearchOutcome,
+  searchTrials,
+} from './api.ts'
 import { DemoCaution } from './DemoCaution.tsx'
 import { type PlaceError, ProfileForm } from './ProfileForm.tsx'
 import { loadProfile } from './profile.ts'
@@ -28,13 +33,22 @@ function statusText(state: State): string {
   }
 }
 
-export function App({ search = searchTrials }: { search?: Search }): JSX.Element {
+type Props = { search?: Search; checkTrial?: CheckTrial }
+
+export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props): JSX.Element {
   const [initial] = useState(loadProfile)
   const [state, setState] = useState<State>({ kind: 'idle' })
 
   async function run(profile: Profile): Promise<void> {
     setState({ kind: 'searching' })
     setState({ kind: 'done', outcome: await search(profile), profile })
+  }
+
+  // The form stays filled in (and in sessionStorage), so a changed answer re-runs the search
+  // without typing the rest again.
+  // Focusing scrolls the field into view, with no motion.
+  function editProfile(): void {
+    document.getElementById('cancerType')?.focus()
   }
 
   const placeError: PlaceError | null =
@@ -61,7 +75,12 @@ export function App({ search = searchTrials }: { search?: Search }): JSX.Element
           {statusText(state)}
         </p>
         {state.kind === 'done' && state.outcome.kind === 'results' && (
-          <Results response={state.outcome.response} profile={state.profile} />
+          <Results
+            response={state.outcome.response}
+            profile={state.profile}
+            checkTrial={checkTrial}
+            onEdit={editProfile}
+          />
         )}
       </main>
     </>

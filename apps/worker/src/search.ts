@@ -3,13 +3,12 @@ import {
   type Profile,
   type SearchResponse,
   type TrialResult,
-  type VerdictCounts,
 } from '@trialscout/contract'
-import type { Trial } from './trial.ts'
+import { studyUrl, type Trial } from './trial.ts'
 import { applyHardFilters, type Candidate, explainEmpty } from './filters.ts'
 import { locate } from './geo/locate.ts'
 import type { JudgeTrial } from './judge/judge.ts'
-import { countVerdicts } from './judge/verdict.ts'
+import { countVerdicts, UNSPLITTABLE_COUNTS } from './judge/verdict.ts'
 import { ProblemError } from './problems.ts'
 import { rankTrials } from './ranking.ts'
 import type { Services } from './services.ts'
@@ -17,16 +16,6 @@ import type { Services } from './services.ts'
 // One search: the patient's place, recruiting trials near it, hard filters, criteria
 // (split once per trial version), Jev verdicts within the budget, and the ranked list.
 // The profile is used here and discarded; nothing about it is stored or logged.
-
-const STUDY_URL = 'https://clinicaltrials.gov/study/'
-
-// An unsplittable trial counts as one "ask your doctor": its raw text is shown instead.
-const UNSPLITTABLE: VerdictCounts = {
-  likely_meets: 0,
-  likely_fails: 0,
-  ask_your_doctor: 1,
-  not_checked: 0,
-}
 
 async function fetchTrials(
   services: Services,
@@ -120,7 +109,7 @@ export async function search(services: Services, profile: Profile): Promise<Sear
       title: trial.title,
       phases: trial.phases,
       sponsor: trial.sponsor,
-      url: `${STUDY_URL}${trial.nctId}`,
+      url: studyUrl(trial.nctId),
       nearestSite:
         nearestSite === null
           ? null
@@ -131,7 +120,10 @@ export async function search(services: Services, profile: Profile): Promise<Sear
               distanceKm: Math.round(nearestSite.distanceKm),
             },
       eligibility: verdicts === undefined ? 'unsplittable' : 'split',
-      counts: verdicts === undefined ? UNSPLITTABLE : countVerdicts(verdicts.map((v) => v.verdict)),
+      counts:
+        verdicts === undefined
+          ? UNSPLITTABLE_COUNTS
+          : countVerdicts(verdicts.map((v) => v.verdict)),
     }
   })
   const ranked = rankTrials(

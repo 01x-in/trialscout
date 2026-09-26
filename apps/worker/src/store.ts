@@ -60,6 +60,31 @@ export class TrialStore {
     return found
   }
 
+  /** A saved trial and when it was fetched, or null when it has never been saved. */
+  async find(nctId: string): Promise<{ trial: Trial; fetchedAt: number } | null> {
+    const [row] = await this.#db.select().from(trials).where(eq(trials.nct_id, nctId)).limit(1)
+    if (row === undefined) return null
+    return {
+      trial: {
+        nctId: row.nct_id,
+        title: row.title,
+        phases: row.phases,
+        sponsor: row.sponsor,
+        conditions: row.conditions,
+        status: row.status,
+        lastUpdated: row.version === '' ? null : row.version,
+        eligibility: {
+          criteria: row.criteria,
+          sex: row.sex,
+          minimumAgeYears: row.min_age_years,
+          maximumAgeYears: row.max_age_years,
+        },
+        sites: row.sites,
+      },
+      fetchedAt: row.fetched_at,
+    }
+  }
+
   /** Writes trials whose version is new; unchanged trials are left as they are. */
   async save(list: Trial[]): Promise<void> {
     const known = await this.#versions(list.map((t) => t.nctId))

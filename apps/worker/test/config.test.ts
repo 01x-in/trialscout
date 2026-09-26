@@ -10,6 +10,8 @@ describe('readConfig (Typia)', () => {
       ctgovBaseUrl: CTGOV_BASE_URL,
       searchPerMinute: 5,
       searchPerDay: 50,
+      trialChecksPerMinute: 20,
+      trialChecksPerDay: 200,
     })
   })
 
@@ -55,6 +57,15 @@ describe('readConfig (Typia)', () => {
     )
     expect(() => readConfig({ SEARCH_PER_DAY: 'lots' })).toThrow(
       'Invalid Worker config: SEARCH_PER_DAY',
+    )
+  })
+
+  it('reads trial check limits', () => {
+    expect(
+      readConfig({ TRIAL_CHECKS_PER_MINUTE: '10', TRIAL_CHECKS_PER_DAY: '100' }),
+    ).toMatchObject({ trialChecksPerMinute: 10, trialChecksPerDay: 100 })
+    expect(() => readConfig({ TRIAL_CHECKS_PER_DAY: '-1' })).toThrow(
+      'Invalid Worker config: TRIAL_CHECKS_PER_DAY',
     )
   })
 
