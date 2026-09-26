@@ -1,0 +1,129 @@
+* INCLUSION CRITERIA:
+
+Inclusion Criteria- All Cohorts
+
+* Participants must have a documented diagnosis of one of the following cancers:
+
+  * Metastatic colorectal cancer (mCRC)
+  * Intrahepatic cholangiocarcinoma (ICC)
+  * Adrenocortical carcinoma (ACC) with liver dominant disease
+* Participants must have an identified medical oncologist who has recommended and is planning to oversee treatment with one of the following standard chemotherapy regimens (based on disease type) not to begin sooner than 28 days after initiation of study-directed HAIP intervention:
+
+  * mCRC: FOLFOX or FOLFIRI
+  * ICC: GemOx or FOLFOX
+  * ACC: GemOx
+* Age \>= 18 years.
+* Negative serum or urine pregnancy test at screening for individuals of childbearing potential (IOCBP).
+
+NOTE: IOCBP is defined as any individual who has experienced menarche and who has not undergone successful surgical sterilization or who is not postmenopausal. IOCBP must have a negative pregnancy test (HCG blood or urine) during screening.
+
+* All participants (regardless of childbearing potential) must agree to use highly effective contraception prior to study entry, for the duration of study participation, and for 3 months after completion of study treatment for those able to father a child or 6 months after completion of study treatment for those of child-bearing potential (i.e., IOCBP). Highly effective birth control (failure rate of less than 1%), e.g., intrauterine device (IUD), intrauterine hormone-releasing system (IUS), bilateral tubal occlusion, vasectomized partner and sexual abstinence. Note: The use of condoms by participants who are able to get other individuals pregnant is required unless the partner of childbearing potential is permanently sterile.
+* Nursing (including breastfeeding) participants must agree to discontinue nursing.
+* Arterial anatomy on CT angiogram or CT chest, abdomen and pelvis multiphase (i.e., CT C/A/P multiphase) amenable to placement of the HAIP.
+* Participant must sign the informed consent form to participate in this study.
+* HIV-positive participants may be considered for this study only if they have an undetectable viral load.
+* Participants must agree to co-enroll on the Surgical Oncology Program s tissue collection protocol 13C0176, "Tumor, Normal Tissue and Specimens from Patients Undergoing Evaluation or Surgical Resection of Solid Tumors".
+* Participant's liver metastases must not be amenable to resection/ablation to No Evidence of Disease (NED) in one stage.
+
+Inclusion Criteria-Metastatic Colorectal Carcinoma
+
+* Participants must have histologically or cytologically confirmed diagnosis of colorectal adenocarcinoma metastatic to the liver (Cohort 1).
+* Participants must have measurable liver metastatic disease.
+* Participants must have received 1st line systemic chemotherapy.
+* ECOG performance status \<= 1.
+* Participants must have adequate organ and marrow function as defined below:
+
+  * leukocytes \> 3,000/mcL
+  * absolute neutrophil count \> 1,500/mcL
+  * platelets \> 90,000/mcL
+  * hemoglobin \> 8 g/dL
+  * total bilirubin \< 1.5 X institutional upper limit of normal
+  * AST(SGOT)/ALT(SGPT) \< 2.5 X institutional upper limit of normal
+  * creatinine within normal institutional limits OR eGFR within normal as predicted by the CKD-EPI equation \> 60 mL/min/1.73 m2.
+
+Inclusion Criteria-Intrahepatic Cholangiocarcinoma
+
+* Participants must have histologically or cytologically confirmed diagnosis of intrahepatic cholangiocarcinoma confined to the liver (Cohort 2). Archival tumor sample may be used but if archival tissue is not available or is not adequate, tissue biopsy will be required.
+* Clinical or radiographic evidence of metastatic disease to regional (porta hepatis) lymph nodes will be allowed, provided it is amenable to resection.
+* Participants must have radiographically measurable disease.
+* Disease must be considered unresectable at the time of preoperative evaluation.
+* Participants must have received 1st line systemic chemotherapy.
+* ECOG performance status \<=1.
+* Participants must have adequate organ and marrow function as defined below:
+
+  * leukocytes \>= 2,000/ mm\^3
+  * absolute neutrophil count \> 1,500/mcL
+  * platelets \>= 75,000/ mm\^3
+  * hemoglobin \> 8 g/dL
+  * total bilirubin \< 1.5 mg/dl
+  * creatinine \<= 1.5 mg/dl
+
+Inclusion Criteria-Adrenocortical Carcinoma
+
+* Participants must have histologically or cytologically confirmed diagnosis of adrenocortical carcinoma (ACC), also referred to as "adrenocortical cancer".
+* Participants must have received at least one line of systemic chemotherapy.
+* Participants must have measurable liver metastatic disease.
+* ECOG performance status \<= 1.
+* Participants must have adequate organ and marrow function as defined below:
+
+  * leukocytes \> 3,000/mcL
+  * absolute neutrophil count \> 1,500/mcL
+  * platelets \> 90,000/mcL
+  * hemoglobin \> 8 g/dL
+  * total bilirubin \< 1.5 X institutional upper limit of normal
+  * AST(SGOT)/ALT(SGPT) \< 3 X institutional upper limit of normal
+  * creatinine \< 2 X institutional upper limit of normal
+
+EXCLUSION CRITERIA:
+
+Exclusion Criteria- All Cohorts
+
+Participants who are receiving any other investigational agents.
+
+* Participants who have previously received rIL-12.
+* Participants with active autoimmune diseases, that might deteriorate when receiving an immunostimulatory agent with the exceptions:
+
+  * diabetes type I, vitiligo, alopecia, psoriasis, hypo- or hyperthyroid disease not requiring immunosuppressive treatment are eligible;
+  * participants requiring hormone replacement with corticosteroids are eligible if the steroids are administered only for the purpose of hormonal replacement and at doses \<= 10 mg of prednisone or equivalent per day;
+  * administration of steroids for other conditions through a route known to result in a minimal systemic exposure (topical, intranasal, intro-ocular, or inhalation) is eligible.
+* History of organ transplant, except for transplants that do not require immunosuppression.
+* History of or active inflammatory bowel disease (e.g., Crohn s disease, ulcerative colitis).
+* Known hypersensitivity or allergic reactions attributed to any compounds of similar chemical or biologic composition to the study medication, such as recombinant IL-12 or other monoclonal antibodies and history of allergic reactions attributed to compounds of similar chemical composition to FUDR or heparin.
+* Clinically significant (i.e., active) cardiovascular disease: cerebral vascular accident/stroke \< 6 months prior to enrollment, myocardial infarction \< 6 months prior to enrollment, unstable angina, congestive heart failure (\>= NYHA III) or serious cardiac arrhythmia requiring medication.
+* All conditions associated with significant necrosis of nontumor-bearing tissues.
+* Esophageal or gastroduodenal ulcers \< 6 months prior to treatment.
+* Active ischemic bowel disease.
+* Psychiatric illness/social situations that would limit compliance with study requirements.
+* Active concurrent malignancies within the last five years other than colorectal primary except basal cell skin carcinoma and thyroid carcinoma.
+* Prior radiation to liver.
+* Participants with active Hepatitis B or C infection.
+* Significant acute or chronic infections (i.e., tuberculosis) history of exposure or history of positive tuberculosis test; plus, presence of clinical symptoms, physical or radiographic findings).
+* Any condition, including the presence of laboratory abnormalities and/or insufficient normal liver parenchyma, which places the participant at unacceptable risk if they were to participate in the study or confounds the ability to interpret data from the study.
+
+Exclusion Criteria-Metastatic Colorectal Carcinoma
+
+-Participants with incontrovertible radiographic evidence of disease outside of the colon/rectum (primary) and liver given unlikelihood of benefit from liver-directed therapy.
+
+Note: Lung lesions seen on CT do not always represent metastases. They are very hard to qualify, therefore exception to this exclusion is participants with fewer than five lung lesions greater than 1 cm that have not increased in size by more than 10% over a 4-month period of time and are amenable to resection should subsequent problematic growth occur. Lesions less than 1 cm are indeterminant as far as etiology is concerned and will be ignored. Participants with liver metastases and oligometastatic lung lesions (we define oligometastatic as less than 5 amenable to thoracoscopic removal) are still likely to benefit from liver directed therapy.
+
+* Participants who have undergone extra-hepatic metastasectomy and have a documented disease-free interval less than or equal to 4 months.
+* Participants with a history of MSI-high results who need to be treated with check-point inhibitors.
+* Prior treatment with FUDR.
+
+Exclusion Criteria-Intrahepatic Cholangiocarcinoma
+
+-Presence of distant metastatic disease. Clinical or radiographic evidence of metastatic disease to regional lymph nodes will be allowed, provided it is amenable to resection.
+
+Note: Lung lesions seen on CT do not always represent metastases. They are very hard to qualify, therefore exception to this exclusion is participants with fewer than five lung lesions greater than 1 cm that have not increased in size by more than 10% over a 4-month period of time and are amenable to resection should subsequent problematic growth occur. Lesions less than 1 cm are indeterminate as far as etiology is concerned and will be ignored. Participants with liver metastases and oligometastatic lung lesions (we define oligometastatic as less than 5 amenable to thoracoscopic removal) are still likely to benefit from liver directed therapy.
+
+* Prior treatment with FUDR.
+* Diagnosis of sclerosing cholangitis.
+* Clinical evidence or portal hypertension (ascites, gastroesophageal varices, or portal vein thrombosis).
+
+Exclusion Criteria-Adrenocortical Carcinoma
+
+* Participants with incontrovertible radiographic evidence of additional abdominal disease outside of the liver (including the primary tumor) that is not amenable to complete surgical extirpation at the time of pump placement.
+* Clinical evidence or portal hypertension (ascites, gastroesophageal varices, or portal vein thrombosis).
+* Diagnosis of sclerosing cholangitis.
+* Participants with pulmonary metastases that have progressed by RECIST criteria in the preceding 3 months prior to study enrollment.
+* Participants with known mismatch repair mutation who have not been treated with a checkpoint inhibitor. Acceptable methods of MSI testing for history of MSI results include immunohistochemistry (IHC) and next generation sequencing (NGS) of tumor material.

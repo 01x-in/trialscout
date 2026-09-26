@@ -1,0 +1,45 @@
+Inclusion Criteria:
+
+Subjects are eligible to be included in the study only if all of the following criteria apply:
+
+1. Subjects must be ≥18 years old (or of legal age of consent in the country in which the study is taking place) at the time of signing the informed consent.
+2. Subjects who have a histologically or cytologically documented metastatic or locally advanced solid tumor, for which standard of care (SoC) therapy does not exist, no longer provides benefit, or is not tolerated by the subject, or the subject has been assessed by the Investigator as not being suitable for SoC therapy.
+
+   1. Part A: Subjects with any solid tumor with genetic alteration of or evidence of tumor dependence upon the RAS/MAPK pathway (subject to additional restrictions specified in the study protocol)
+   2. Part B: Subjects must be diagnosed with one of the following solid tumors harboring specified genetic alterations based on a validated local test:
+
+   i. Melanoma Cohorts:
+   1. Activating NRAS mutations
+   2. Select BRAF alterations
+
+   ii. Non-Melanoma Cohorts:
+   1. Solid tumors with NRAS activating mutations
+   2. Solid tumors with KRAS activating mutations
+   3. Solid tumors with select BRAF alterations
+   4. Glioma with BRAF alterations
+3. Newly obtained or archived tumor tissue is required
+4. Part B: measurable disease as defined by RECIST Version 1.1 or by other disease assessment tool standard for a given tumor type (if RECIST v. 1.1 is not standard)
+5. Performance status
+
+   1. Solid tumors other than glioma: ECOG 0 or 1
+   2. Glioma: Karnofsky ≥ 70 and ECOG 0 or 1
+6. Have adequate organ function
+7. Understand and voluntarily sign an Institutional Review Board/Independent Ethics Committee-approved informed consent form prior to any study-specific evaluation.
+8. Life expectancy ≥ 12 weeks
+
+Exclusion Criteria:
+
+Subjects are excluded from the study if any of the following criteria apply:
+
+1. Conditions interfering with oral intake of NST-628
+2. Conditions interfering with intestinal absorption of an orally administered drug
+3. A history or current evidence of significant retinal pathology leading to increased risk of RVO
+4. A history or evidence of cardiovascular risk
+5. Current or history within 6 months of planned Cycle 1 Day 1 of pneumonitis or interstitial lung disease (ILD)
+6. Part B: prior treatment with any MEK or BRAF inhibitor
+7. Untreated or symptomatic central nervous system (CNS) metastases
+8. Chemotherapy, radiation, gene therapy, vaccine therapy, or anti-cancer antibodies / ADCs within 28 days of Cycle 1 Day 1
+9. Targeted small molecule agents within 14 days or 5 half-lives of Cycle 1 Day 1
+10. Females who are pregnant or breastfeeding.
+11. For fertile patients (female able to become pregnant or male able to father a child), refusal to use effective contraception during the period of the trial and for 6 months after the last dose of NST-628
+12. Presence of any serious or unstable concomitant systemic disorder incompatible with the clinical study

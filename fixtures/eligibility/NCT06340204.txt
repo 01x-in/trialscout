@@ -1,0 +1,26 @@
+Inclusion Criteria:
+
+* Histologically confirmed Ewing sarcoma
+* Evidence of Ewing sarcoma translocation by fluorescence in situ hybridization (FISH) or real-time polymerase chain reaction (RT-PCT).
+* Recurrent or refractory tumors with no known curative treatment options according to the judgment of the investigator.
+* Prior treatment consisted of standard Ewing Sarcoma chemotherapy agents including doxorubicin, vincristine, cyclophosphamide, ifosfamide and etoposide; metastatic relapsed and unresectable progressive disease (PD).
+* Life expectancy of ≥ 3 months.
+* Eastern Cooperative Oncology Group performance status 0-1.
+* Measurable disease on CT or MRI by RECIST 1.1.
+* Adequate organ function.
+* Time elapsed from previous therapy must be ≥ 3 weeks for systemic therapy, ≥ 2 weeks for radiation therapy or major surgery.
+* Patients who have undergone autologous hematopoietic stem cell transplantation are eligible once they have recovered from all toxicities from therapy.
+* Patients who have received allogeneic hematopoietic stem cell transplantation will be eligible 6 months after the procedure provided there is no evidence of active graft-versus-host disease and immunosuppressive treatment has been discontinued for at least 30 days.
+* Patients with central nervous system disease are eligible for enrollment if they have received prior radiotherapy or surgery to sites of central nervous system metastatic disease, have been off glucocorticoids for at least 4 weeks, have no overt evidence of neurological deficit and are ≥ 6 weeks from completion of brain irradiation.
+* Females of childbearing potential as well as males and their partners must agree to use an effective form of contraception during the study and for 6 months following the last dose of study medication.
+
+Exclusion Criteria:
+
+* Clinically significant unrelated illness which would, in the judgment of the treating physician, compromise the patient's ability to tolerate the investigational agent or be likely to interfere with the study procedures or results.
+* Patients with baseline corrected QT interval(QTc) \> 480 msec.
+* Known hypersensitivity to any of the components of irinotecan liposomes or prior hypersensitivity reactions to that class of drugs.
+* Concomitant use of any other investigational or anticancer agent(s).
+* Pregnant patients or patients who are breast feeding. Subjects capable of pregnancy (post menarche and not post-menopausal, defined as over 12 months since final menstrual period) must have a negative pregnancy test within 7 days prior to first dose.
+* Other clinically significant malignant disease diagnosed within the previous 5 years, excluding intra-epithelial cervical neoplasia or non-melanoma skin cancer.
+* Known persistent (\> 4 weeks) ≥ Grade 2 neutropenia, ≥ Grade 2 thrombocytopenia or \> Grade 3 anemia from prior cancer therapy.
+* Other kinds of malignant tumors at the same time.

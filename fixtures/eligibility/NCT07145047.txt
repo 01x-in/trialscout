@@ -1,0 +1,32 @@
+Inclusion criteria:
+
+1. Patients with recurrent glioblastoma, for whom the standard methods of treatment are considered ineffective by the medical commission.
+2. Histologically confirmed recurrent glioblastoma.
+3. Magnetic resonance imaging (MRI) showed that the maximum diameter of recurrent lesions is greater than 1.0 cm.
+4. Before inclusion of patients in the study, at least one of the following types of therapy was previously performed: 4.1 Time from the last radiotherapy/surgery is more than 28 days; 4.2 Subjects maintained stable or declining for at least 7 days prior to corticosteroid regimen; 4.3 Most recent antitumor therapy must have been completed within the specified time prior to treatment: vincristine 2 weeks, nitrosoureas 4 weeks, bevacizumab 4 weeks, temozolomide 6 weeks.
+5. Age \>=18 years, \<=70 years.
+6. Hematological indicators, kidney and liver function are normal.
+7. The subjects must agree to the use of an acceptable contraceptive method throughout the study, from the time informed consent is provided to 180 days after receiving treatment.
+8. Patient's ability to perform the study procedure and provide written informed consent in accordance with the GCP and local laws.
+
+Exclusion criteria:
+
+1. Incompatibility of patients with the inclusion criteria mentioned above.
+2. Participated in other drug clinical trials within 4 weeks
+3. Preoperative bleeding susceptibility or use of anticoagulants or any medication that may increase the risk of bleeding.
+4. Patients with extracranial metastases.
+5. Have poorly controlled clinical diseases, such as liver aminotransferase (aspartate aminotransferase (AST) and/or alanine aminotransferase (ALT)) or total bilirubin \> 2 times the upper normal limit.
+6. Female subjects: during pregnancy or lactation.
+7. Uncontrolled active infection, unstable or severe concomitant disease of infection. Patients with immunodeficiency, autoimmune diseases, active HBV infection, HCV infection, or active HIV infection.
+8. Patients with a history of psychotropic substance abuse who are unable to quit or with mental disorders.
+9. Subjects had any active autoimmune disease or a history of autoimmune disease.
+10. Has a history of antiviral drug use within 1 week.
+11. Subjects are receiving immunosuppressive therapy, or concurrent chemotherapy, or radiation, or biotherapy.
+12. There are prohibited items for MRI, such as: pacemakers, epicardial pacemaker wires, infusion pumps, surgical and/or aneurysm clips, shrapnel, metal prostheses, potentially magnetic implants, metal objects in the eye, etc..
+13. History of substance abuse or known medical, or psychological, or social conditions, such as alcohol or drug abuse.
+14. Allergic, hypersensitive or intolerant to study oncolytic viruses (including any excipients).
+15. Vaccination within 30 days prior to administration.
+16. Patients who have received gene transfer therapy or treated with any type of oncolytic virus.
+17. History of encephalitis, or multiple sclerosis, or other central nervous system (CNS) infections, or primary CNS disease.
+18. Male or female patients who refused contraception during the study period and for 6 months after dosing.
+19. In the investigator's judgment, there is a serious concomitant disease that endangers the patient's safety or interferes with the patient's ability to complete the study.

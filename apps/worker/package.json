@@ -14,7 +14,8 @@
     "tools:record-ctgov": "node scripts/record-ctgov.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
-    "db:cities": "node scripts/import-cities.ts"
+    "db:cities": "node scripts/import-cities.ts",
+    "tools:record-eligibility": "node scripts/record-eligibility.ts"
   },
   "dependencies": {
     "@hono/typia-validator": "0.1.3",

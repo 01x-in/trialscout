@@ -55,6 +55,8 @@ export const criteria = sqliteTable(
     kind: text('kind', { enum: ['inclusion', 'exclusion'] }).notNull(),
     // Verbatim from the source; shown next to every verdict.
     text: text('text').notNull(),
+    // The cohort or group label it sits under, e.g. "Main study cohort".
+    group: text('group'),
   },
   (t) => [primaryKey({ columns: [t.nct_id, t.version, t.position] })],
 )

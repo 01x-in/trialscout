@@ -1,0 +1,1 @@
+ALTER TABLE `criterion` ADD `group` text;

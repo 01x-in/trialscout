@@ -1,0 +1,18 @@
+Inclusion Criteria:
+
+* Adults aged 18 years or older
+* Histologically confirmed, resectable Stage III cutaneous melanoma.
+* Candidate for curative-intent surgical resection
+* Eastern Cooperative Oncology Group (ECOG) performance status of 0-2
+* Adequate organ function
+* Able to provide written informed consent
+
+Exclusion Criteria:
+
+* Prior systemic therapy for melanoma, including immunotherapy
+* Uveal melanoma or mucosal melanoma.
+* Active autoimmune disease requiring systemic treatment
+* Primary immunodeficiency or use of systemic immunosuppressive therapy
+* Women who are pregnant or breastfeeding
+* Recent treatment with another investigational therapy
+* Any condition that, in the opinion of the investigator, would interfere with study participation or safety

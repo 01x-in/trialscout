@@ -1,0 +1,23 @@
+Inclusion Criteria:
+
+* Age ≥18.
+* Histologically confirmed colon and rectum (intraperitoneal) adenocarcinoma.
+* Pathological classification of primary tumor as pT1-3, without peritoneal tumor deposits, absence of mucinous component \>50%, confirmed R0 resection, no limitations for RAS mutations, B-RAF wild type.
+* No signs of extra hepatic metastatic disease or local recurrence according to CT scan+MRI+PET/CT scans.
+* Liver metastases not eligible for curative liver resection
+* Objective response according to RECIST 1.1 to first-line treatment, with sustained response for at least 4 months, OR disease control (complete \[CR\] or partial response \[PR\] or standard disease \[SD\]) during second- line treatment for at least 4 months.
+* Carcinoembryonic Antigen (CEA) values stable or decreasing during the enrollment prior to liver transplant.
+* Performance status, ECOG (Eastern Cooperative Oncology Group) 0-2.
+* Signed informed consent and expected cooperation of the patients for the treatment and follow-up, and national/local regulations.
+
+Exclusion Criteria:
+
+* Hereditary CRC syndromes including FAP (Familial adenomatous polyposis) and Lynch syndrome.
+* Prior extra hepatic metastatic disease or primary tumor local relapse.
+* Palliative resection of primary CRC tumor.
+* Disease progression
+* Other malignancies in the previous 5 years (with exception of in situ cervical carcinoma and basal cell carcinoma; superficial bladder tumors are allowed if curatively treated).
+* Active intra-venous or alcohol abusers (patients may be eligible if abstention \> 6 months is demonstrated)
+* Active HIV infection
+* Psychiatric disorders and patient low compliance
+* Any reason why, in the judgment of the investigators, the patient should not participate (to be formally declared)

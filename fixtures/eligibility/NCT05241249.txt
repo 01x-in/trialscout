@@ -1,0 +1,14 @@
+Inclusion Criteria:
+
+* Pancreatic Ductal Adenocarcinoma
+* Plan for neoadjuvant chemotherapy
+* Available diagnostic tissue adequate for biomarker analysis
+* Ability to tolerate PO meds and comply with study procedures
+
+Exclusion Criteria:
+
+* Metastatic disease
+* Evidence of GI obstruction
+* Baseline bradycardia (HR\<55) or hypotension (systolic blood pressure\<90)
+* Use of acetylcholinesterase inhibitors
+* Medical conditions including: hyperthyroidism, active/symptomatic coronary artery disease, seizure disorder, peptic ulcer disease.

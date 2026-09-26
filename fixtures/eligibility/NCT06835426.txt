@@ -1,0 +1,26 @@
+A. Inclusion Criteria:
+
+* able to understand treatment protocol and informed consent form
+* estimated by the investigator to be compliant for study participation
+
+  1\. Fulfilling all group-specific inclusion criteria:
+* confirmed breast cancer with an indication to undergo breast conserving surgery
+* confirmed prostate cancer with an indication to undergo resective surgeryprostatectomy;
+* confirmed thyroid lesion with an indication to undergo resective surgery;
+* confirmed parathyroid adenoma with an indication to undergo resective surgery;
+* suspected basal cell carcinoma, squamous cell carcinoma or melanoma with an indication to undergo resective surgery;
+* suspected lesion in genitourinary sites (including bladder cancer, renal pelvis and ureter carcinoma, adrenal cortical carcinoma and renal cell carcinoma) with an indication to undergo resective surgery;
+* suspected lesion in the head \& neck region with an indication to undergo resective surgery;
+* confirmed primary or secondary hepatobiliary cancer with an indication to undergo resective surgery;
+* patients undergoing biopsy after metabolic active lesions were detected on a PET scan.
+* suspected neuro-endocrine malignancies with an indication to undergo resective surgery.
+* suspected brain tumor with an indication to undergo resective surgery.
+* Suspected malignant and benign gastrointestinal lesions with an indication to undergo resective surgery.
+* suspected malignant thoracovascular lesions with an indication to undergo resective surgery
+
+B. Exclusion Criteria:
+
+* general or local contra-indications for resective surgery;
+* in case of FDG-based PET tracers: a blood glucose level over 200 mg/dL on the day of surgery;
+* pregnancy or lactation;
+* participation in other clinical studies with a radiation exposure of more than 1 mSv in the past year.
