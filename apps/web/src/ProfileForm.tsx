@@ -269,6 +269,19 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
         </Field>
       </Section>
 
+      {/* Said plainly before anything is sent. The details are on the About page. */}
+      <div role="note" aria-label="Your privacy" className="privacy-note">
+        <svg className="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="5" y="11" width="14" height="10" rx="2" />
+          <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+        </svg>
+        <p>
+          We don't store your answers. They stay in this browser tab. Each check sends them to our
+          server, which uses them and then throws them away. No accounts, no tracking.{' '}
+          <a href="/about#about-privacy">How we handle your answers</a>
+        </p>
+      </div>
+
       {invalid.length > 0 && (
         <div role="alert" className="form-errors">
           <p>Some answers need a look:</p>

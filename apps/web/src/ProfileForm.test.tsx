@@ -93,6 +93,19 @@ describe('the profile form', () => {
     expect(notes.getAttribute('aria-describedby')).toContain('notes-count')
   })
 
+  it('says plainly, before the search, that the answers are not stored', () => {
+    renderApp()
+    const note = screen.getByRole('note', { name: 'Your privacy' })
+
+    expect(note).toHaveTextContent(
+      "We don't store your answers. They stay in this browser tab. Each check sends them to our server, which uses them and then throws them away. No accounts, no tracking.",
+    )
+    expect(within(note).getByRole('link', { name: 'How we handle your answers' })).toHaveAttribute(
+      'href',
+      '/about#about-privacy',
+    )
+  })
+
   it('lists the answers to fix, linked to each field, and moves focus to the first', () => {
     renderApp()
     fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'India' } })

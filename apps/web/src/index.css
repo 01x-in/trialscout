@@ -292,6 +292,25 @@ h1 {
   margin: 0;
 }
 
+/* "We don't store your answers", said plainly right above the button that sends them. */
+.privacy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.privacy-note .icon {
+  margin-top: 0.2rem;
+  color: var(--accent);
+}
+
+.privacy-note p {
+  margin: 0;
+}
+
 .form-errors {
   padding: var(--space-3) var(--space-4);
   background: var(--fails-bg);
