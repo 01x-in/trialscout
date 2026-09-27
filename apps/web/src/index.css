@@ -1,5 +1,7 @@
-/* Calm and plain: warm neutral ground, one restrained accent, and the red strip as the
-   only loud element. No clinical blue. */
+/* Calm and plain: warm neutral ground, one restrained deep-teal accent, and the red strip
+   as the only loud element. No clinical blue. The accent is never a verdict colour, so a
+   button never reads as "ask your doctor". Colour tokens are 6-digit hex: a11y.test.tsx
+   reads them from this file to check contrast. */
 :root {
   --bg: #faf7f2;
   --fg: #1f1b16;
@@ -8,14 +10,34 @@
   /* Borders that mark a field or button: 3:1 against the page and cards. */
   --control: #857b6f;
   --surface: #ffffff;
-  --accent: #7a4424;
+  /* The summary bar and the "To ask" callout: one step off the page. */
+  --surface-2: #f2ede5;
+  --accent: #0f5f5c;
+  --on-accent: #ffffff;
+  /* A selected filter chip or distance pick. */
+  --accent-soft: #dcefec;
   --error: #9f1d1d;
   --caution-bg: #b91c1c;
   --caution-fg: #ffffff;
   --meets: #166534;
+  --meets-bg: #e3f1e6;
   --fails: #9f1d1d;
+  --fails-bg: #f9e3e1;
   --ask: #7a4424;
+  --ask-bg: #f7e9dd;
   --unchecked: #5c554c;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --radius-sm: 0.4rem;
+  --radius: 0.75rem;
+  /* Controls reach 44px, a comfortable touch target. */
+  --control-height: 2.75rem;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 1.125rem;
   line-height: 1.5;
@@ -31,13 +53,19 @@
     --line: #463f37;
     --control: #8a8074;
     --surface: #26221e;
-    --accent: #e0a47c;
+    --surface-2: #2f2a25;
+    --accent: #6fcdc4;
+    --on-accent: #10201f;
+    --accent-soft: #1d3a37;
     --error: #fca5a5;
     --caution-bg: #7f1d1d;
     --caution-fg: #fee2e2;
     --meets: #86efac;
+    --meets-bg: #1c3325;
     --fails: #fca5a5;
+    --fails-bg: #3d2222;
     --ask: #e0a47c;
+    --ask-bg: #3a2a1f;
     --unchecked: #b3aa9e;
   }
 }
@@ -164,20 +192,40 @@ h1 {
   color: var(--error);
 }
 
-.profile-form button {
-  justify-self: start;
-  margin-top: 0.5rem;
-  padding: 0.7rem 1.4rem;
+/* Buttons: one primary (filled accent) per view, everything else secondary (outlined). */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-4);
   font: inherit;
   font-weight: 600;
-  color: var(--bg);
-  background: var(--accent);
-  border: 0;
-  border-radius: 0.4rem;
+  line-height: 1.25;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  touch-action: manipulation;
 }
 
-.profile-form button:disabled {
+.button-primary {
+  color: var(--on-accent);
+  background: var(--accent);
+  border: 2px solid var(--accent);
+}
+
+.button-secondary {
+  color: var(--fg);
+  background: transparent;
+  border: 2px solid var(--control);
+}
+
+.button-secondary:hover {
+  border-color: var(--fg);
+}
+
+.button:disabled {
   opacity: 0.6;
   cursor: progress;
 }

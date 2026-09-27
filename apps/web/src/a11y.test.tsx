@@ -192,15 +192,24 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-// Text on the page and on cards: 4.5:1. Field and button borders, and focus rings: 3:1.
+// Text on the page, on cards and on the summary bar: 4.5:1. Field and button borders, and
+// focus rings: 3:1.
 const TEXT = ['fg', 'muted', 'accent', 'error', 'meets', 'fails', 'ask', 'unchecked']
-const GROUNDS = ['bg', 'surface']
+const GROUNDS = ['bg', 'surface', 'surface-2']
 const PAIRS: [string, string, number][] = [
   ...TEXT.flatMap((fg) => GROUNDS.map((bg): [string, string, number] => [fg, bg, 4.5])),
   ['caution-fg', 'caution-bg', 4.5],
   ['bg', 'accent', 4.5],
-  ['control', 'bg', 3],
-  ['control', 'surface', 3],
+  // A filled button, and a selected filter chip.
+  ['on-accent', 'accent', 4.5],
+  ['accent', 'accent-soft', 4.5],
+  ['fg', 'accent-soft', 4.5],
+  // Verdict pills: the verdict colour on its own soft ground.
+  ['meets', 'meets-bg', 4.5],
+  ['ask', 'ask-bg', 4.5],
+  ['fails', 'fails-bg', 4.5],
+  ...GROUNDS.map((bg): [string, string, number] => ['control', bg, 3]),
+  ...GROUNDS.map((bg): [string, string, number] => ['accent', bg, 3]),
 ]
 
 describe.each(['light', 'dark'] as const)('colour contrast, %s scheme', (scheme) => {

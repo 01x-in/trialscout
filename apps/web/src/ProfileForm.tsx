@@ -182,7 +182,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
         )}
       </Field>
 
-      <button type="submit" disabled={busy}>
+      <button type="submit" className="button button-primary" disabled={busy}>
         Find trials
       </button>
     </form>
