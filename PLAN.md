@@ -159,6 +159,10 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 - Confirm the disclaimer strip is on every page and every printed sheet.
 - Check the reading level.
 - Confirm no verdict appears without its source quote.
+- Review the doctor-sheet questions (`apps/web/src/questions.ts`), changed on 2026-09-27 after live checks picked the wrong topic:
+  - Two new questions: "This rule is about the stage of the cancer. Does my stage meet it?" and "This rule is about other health problems I may have. Does it apply to me?"
+  - Topic order changed. Past-treatment words ("prior", "received", "progression on") now decide before the stage and the spread; "metastatic setting" and "prior to randomization" no longer count; spread to the brain or spine still comes first.
+  - Against the 2,539 rules saved by that day's searches, 317 got a different question. Check a sample of them, as well as the four reported cases in `questions.test.ts`.
 
 Record the result in `docs/gate-2-review.md`.
 
