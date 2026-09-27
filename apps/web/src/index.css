@@ -430,6 +430,11 @@ h1 {
   white-space: nowrap;
 }
 
+/* Focused from code when results arrive: no ring on a heading nobody tabbed to. */
+.results h2:focus {
+  outline: none;
+}
+
 .results h2 {
   margin: var(--space-6) 0 var(--space-3);
   font-size: 1.5rem;
@@ -466,7 +471,7 @@ h1 {
   background: var(--surface);
 }
 
-.trial-group h3 {
+.trial-group > h3 {
   margin: var(--space-6) 0 var(--space-1);
   font-size: 1.2rem;
 }

@@ -98,10 +98,21 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
     if (focusId !== null) document.getElementById(`trial-${focusId}`)?.focus()
   }, [focusId])
 
+  // New results replace the old ones below the form: take the reader (and screen reader)
+  // there. The results mount afresh for each search.
+  useEffect(() => {
+    const heading = document.getElementById('results-heading')
+    heading?.focus({ preventScroll: true })
+    // Instantly, not smoothly: motion is kept for loading and expanding.
+    heading?.scrollIntoView?.({ block: 'start' })
+  }, [])
+
   if (response.empty !== null || response.results.length === 0) {
     return (
       <section className="results" aria-labelledby="results-heading">
-        <h2 id="results-heading">No trials to show</h2>
+        <h2 id="results-heading" tabIndex={-1}>
+          No trials to show
+        </h2>
         <Summary response={response} profile={profile} onEdit={onEdit}>
           <p>{emptyMessage(response.empty?.reason ?? 'none_nearby', where)}</p>
           <p>
@@ -132,7 +143,9 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
   const count = all.length
   return (
     <section className="results" aria-labelledby="results-heading">
-      <h2 id="results-heading">Trials worth discussing with your doctor</h2>
+      <h2 id="results-heading" tabIndex={-1}>
+        Trials worth discussing with your doctor
+      </h2>
       <Summary response={response} profile={profile} onEdit={onEdit}>
         <p>
           {count} recruiting {count === 1 ? 'trial' : 'trials'} {where}. Trials where something

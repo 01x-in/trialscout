@@ -112,6 +112,42 @@ describe('the profile form', () => {
     expect(document.activeElement).toBe(screen.getByLabelText('Cancer type'))
   })
 
+  it('moves focus to the results heading when the results arrive', async () => {
+    sessionStorage.setItem(
+      'trialscout.profile',
+      JSON.stringify({
+        cancerType: 'lung cancer',
+        stage: 'IV',
+        age: 58,
+        sex: 'female',
+        country: 'India',
+        city: 'Pune',
+        maxDistanceKm: 300,
+      }),
+    )
+    render(
+      <App
+        search={async () => ({
+          kind: 'results',
+          response: {
+            location: { city: 'Pune', countryCode: 'IN' },
+            results: [],
+            empty: { reason: 'none_nearby', relax: 'distance' },
+            checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
+            source: 'live',
+            dataAsOf: Date.UTC(2026, 8, 27),
+          },
+        })}
+        checkTrial={async () => ({ kind: 'unavailable' })}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+
+    const heading = await screen.findByRole('heading', { level: 2, name: 'No trials to show' })
+    expect(document.activeElement).toBe(heading)
+  })
+
   it('shows placeholder trial cards while it searches, hidden from screen readers', async () => {
     let finish: (outcome: SearchOutcome) => void = () => {}
     renderApp(

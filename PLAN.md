@@ -159,6 +159,13 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 - Confirm the disclaimer strip is on every page and every printed sheet.
 - Check the reading level.
 - Confirm no verdict appears without its source quote.
+- Review the copy the UI facelift (`task/ui-facelift`) added:
+  - the "How it works" steps;
+  - the form section headings: "About the cancer", "About you", "Where you are", "Anything else (optional)";
+  - the notes line "Stays in this browser tab. We don't store it.";
+  - the results headings "Nothing likely rules you out" and "Something likely rules you out", and the note "Listed last, not hidden. A likely fail can be wrong: your doctor can check it.";
+  - the filter chips ("All", "Ask your doctor", "Likely fails", "Likely meets", "Not checked yet"), "None of these rules." and "Showing n of m rules.";
+  - "Official page".
 
 Record the result in `docs/gate-2-review.md`.
 

@@ -154,7 +154,7 @@ These are the safety mechanism. Every change must preserve them.
 
 ## Design
 
-- Calm, plain-spoken; the red strip is the only loud element. Warm neutral background, one restrained accent.
+- Calm, plain-spoken; the red strip is the only loud element. Warm neutral background, one restrained accent: deep teal (`--accent`), never a verdict colour, so no button reads as "ask your doctor".
 - No clinical medical blue, no stock doctor photos, no gamification or cheerful illustrations.
 - Verdict states distinguishable without colour (icon + label).
 - WCAG AA, readable on a phone, single column on mobile.
