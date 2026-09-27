@@ -1,3 +1,4 @@
+export { DISCLAIMER } from './disclaimer.ts'
 export type { CancerStage, Profile, Sex } from './profile.ts'
 export type {
   EmptyExplanation,

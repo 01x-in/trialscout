@@ -12,8 +12,8 @@
   // Console logs only (audited in docs/privacy.md). Invocation logs are off: they record
   // each request's metadata, including where Cloudflare places the client's IP.
   "observability": { "enabled": true, "logs": { "invocation_logs": false } },
-  // No database_id yet: `wrangler d1 create trialscout` fills it in at M4
-  // (docs/deploy-cloudflare.md). Local dev and tests use the name.
+  // No database_id yet: `wrangler d1 create trialscout` gives it at the first deploy
+  // (docs/deploy-cloudflare.md, step 2). Local dev and tests use the name.
   "d1_databases": [
     {
       "binding": "DB",
@@ -21,7 +21,8 @@
       "migrations_dir": "migrations"
     }
   ],
-  // No id yet: created at M4 (docs/deploy-cloudflare.md). Local dev and tests need none.
+  // No id yet: created at the first deploy (docs/deploy-cloudflare.md, step 3). Local dev and
+  // tests need none.
   "kv_namespaces": [{ "binding": "CACHE" }],
   "durable_objects": {
     "bindings": [{ "name": "SEARCH_LIMITER", "class_name": "SearchLimiter" }]
