@@ -90,6 +90,39 @@ describe('the results list', () => {
     expect(screen.queryByRole('region', { name: /something likely rules you out/i })).toBeNull()
   })
 
+  // A trial the search did not finish checking may still have a likely fail among the rules
+  // left, and an unsplittable trial was never checked: neither can claim "nothing".
+  it('keeps trials with rules not checked yet, or not readable, out of "nothing likely"', () => {
+    show([
+      trial(1),
+      { ...trial(2), counts: { ...trial(2).counts, not_checked: 4 } },
+      { ...trial(3), eligibility: 'unsplittable' },
+      trial(4, 1),
+    ])
+
+    const clear = screen.getByRole('region', { name: 'Nothing likely rules you out (1)' })
+    const partly = screen.getByRole('region', { name: 'Not fully checked (2)' })
+    expect(
+      within(clear)
+        .getAllByRole('article')
+        .map((a) => a.id),
+    ).toEqual(['trial-NCT00000001'])
+    expect(
+      within(partly)
+        .getAllByRole('article')
+        .map((a) => a.id),
+    ).toEqual(['trial-NCT00000002', 'trial-NCT00000003'])
+    expect(partly).toHaveTextContent(
+      'Nothing checked so far likely rules you out, but some rules are not checked yet or could not be read.',
+    )
+    expect(cardIds()).toEqual([
+      'trial-NCT00000001',
+      'trial-NCT00000002',
+      'trial-NCT00000003',
+      'trial-NCT00000004',
+    ])
+  })
+
   it('shows ten trials at a time, and moves focus to the first new one', () => {
     show(trials(20, 5))
 

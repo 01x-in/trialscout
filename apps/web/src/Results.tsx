@@ -126,11 +126,17 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
     )
   }
 
-  // The API ranks trials with a likely fail last; split there, keeping the order.
-  const all = response.results
+  // Three groups, each in the API's order. "Nothing likely rules you out" is only claimed
+  // for a trial whose every rule was checked: one with rules left unchecked (the search's
+  // Jev budget ran out) or unreadable may still hold a likely fail. Trials with a likely fail
+  // come last, as the API ranks them. Pages run through the groups in this order.
   const fails = (t: TrialResult): boolean => t.counts.likely_fails > 0
-  const clear = all.filter((t) => !fails(t))
-  const out = all.filter(fails)
+  const complete = (t: TrialResult): boolean =>
+    t.eligibility === 'split' && t.counts.not_checked === 0
+  const clear = response.results.filter((t) => !fails(t) && complete(t))
+  const partly = response.results.filter((t) => !fails(t) && !complete(t))
+  const out = response.results.filter(fails)
+  const all = [...clear, ...partly, ...out]
   const visible = new Set(all.slice(0, shown).map((t) => t.nctId))
   const left = all.length - shown
   const next = Math.min(PAGE, left)
@@ -156,6 +162,14 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
         id="trials-clear"
         title={`Nothing likely rules you out (${clear.length})`}
         trials={clear.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      <TrialGroup
+        id="trials-partly"
+        title={`Not fully checked (${partly.length})`}
+        note="Nothing checked so far likely rules you out, but some rules are not checked yet or could not be read."
+        trials={partly.filter((t) => visible.has(t.nctId))}
         profile={profile}
         checkTrial={checkTrial}
       />

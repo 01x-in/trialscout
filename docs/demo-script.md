@@ -30,7 +30,7 @@ Type this in the form, exactly:
 | 0:00 | Empty form under the red strip. Hold on the intro line and the three "How it works" steps. | A cancer trial can list 30 rules for who can join. Which ones apply to you? |
 | 0:05 | Fill the four sections (speed it up 2–3×). Tap the **300 km** quick pick. Linger on the notes box and its line "Stays in this browser tab. We don't store it." | A made-up patient: lung cancer, stage IV, near Pune. Plain words, and nothing is stored. |
 | 0:14 | Press **Find trials**. Cut the wait: placeholder cards and "Checking trials against your profile…", about 5 s the first time. | |
-| 0:17 | The page jumps to the results. Hold on the summary bar ("Checked for: …", "24 recruiting trials within 300 km of Pune…") and the heading "Nothing likely rules you out". Scroll slowly past the cards: tags, nearest site, the counts bar and pills. | 24 recruiting trials nearby, each checked against every rule. |
+| 0:17 | The page jumps to the results. Hold on the summary bar ("Checked for: …", "24 recruiting trials within 300 km of Pune…") and the group headings ("Nothing likely rules you out", "Not fully checked"). Scroll slowly past the cards: tags, nearest site, the counts bar and pills. | 24 recruiting trials nearby, each checked against every rule. |
 | 0:25 | Stop on **NCT06417814**, *A Study to Investigate the Efficacy and Safety of Dato-DXd With or Without Osimertinib…*, "Research Site, Pune · 0 km" (press **Show 10 more** first if it is past the first ten). Press **Check each rule**. | |
 | 0:28 | Zoom on the one **likely meets**: *Must have evidence of documented pre-existing EGFRm information…* | Every answer sits next to the trial's own words, quoted exactly. |
 | 0:35 | Press the **Ask your doctor (17)** filter chip ("Showing 17 of 18 rules."). Zoom on *Less than or equal to (<=2) prior lines of EGFR TKIs (osimertinib is the only permitted prior third generation EGFR TKI).* and its callout "To ask: This rule is about treatments I have had before. Does my treatment history affect it?" | Not enough to go on? It says ask your doctor. It never guesses. |
@@ -48,7 +48,7 @@ Type this in the form, exactly:
   - *Must have disease with evidence of KRAS G12C mutation.* (0.94). She has an EGFR mutation instead.
   - The exclusion for *a documented additional validated targetable oncogenic driver mutation… (EGFR)…* (0.99).
   - The exclusion for *Prior systemic therapy… for advanced or metastatic…* disease (0.92). She took osimertinib.
-- **Card counts** show what the search checked, and they stay that way. Opening a trial checks the rules the search left "not checked yet", so the checklist can hold more: the KRAS card says 2 likely fails and "11 not checked yet", and its checklist shows 3. Keep the counts out of frame while zooming on the checklist, or a viewer may spot the difference.
+- **Card counts** show what the search checked until the trial is opened. Opening it checks the rules the search left "not checked yet", and the card's counts update to match: the KRAS card went from 2 likely fails and "11 not checked yet" to 3 likely fails. A trial with rules left unchecked sits under "Not fully checked", never under "Nothing likely rules you out", and stays there after opening.
 - **Ushuaia:** no trials within 50 km, with the "larger travel distance" hint. No Jev call.
 
 ### Backups if a beat changes on the day

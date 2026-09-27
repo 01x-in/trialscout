@@ -57,6 +57,12 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
   const [check, setCheck] = useState<Check>({ kind: 'idle' })
   const [printing, setPrinting] = useState(false)
   const phase = phaseLabel(trial.phases)
+  // Once every rule is checked, the card shows that check: the search may have left rules
+  // "not checked yet", and one of them may be a likely fail. The card stays where it is.
+  const counts =
+    check.kind === 'done' && check.outcome.kind === 'verdicts'
+      ? check.outcome.response.counts
+      : trial.counts
   const detailsId = `${trial.nctId}-details`
 
   // While printing, the sheet is the only thing on the page (index.css); afterwards it goes.
@@ -116,7 +122,7 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
         <>
           {/* Proportions at a glance; the counts below carry the meaning in words. */}
           <div className="verdict-bar" aria-hidden="true">
-            {countParts(trial.counts).map((part) => (
+            {countParts(counts).map((part) => (
               <span
                 key={part.verdict}
                 className={`verdict-bar-${part.verdict}`}
@@ -128,7 +134,7 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
             className="verdict-counts"
             aria-label="How your profile compares with this trial's rules"
           >
-            {countParts(trial.counts).map((part) => (
+            {countParts(counts).map((part) => (
               <li key={part.verdict} className={`count count-${part.verdict}`}>
                 <span className="count-icon" aria-hidden="true">
                   {VERDICT_ICONS[part.verdict]}

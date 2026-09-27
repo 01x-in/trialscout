@@ -1,5 +1,5 @@
-import type { Profile, TrialResult } from '@trialscout/contract'
-import { render, screen, within } from '@testing-library/react'
+import type { Profile, TrialResult, TrialVerdictsResponse } from '@trialscout/contract'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { TrialCard } from './TrialCard.tsx'
 
@@ -97,5 +97,40 @@ describe('a trial card', () => {
 
     expect(document.querySelector('.verdict-bar')).toBeNull()
     expect(screen.getByText(/could not turn this trial's rules into a checklist/)).toBeVisible()
+  })
+
+  it('updates its counts once every rule is checked, so a new likely fail shows', async () => {
+    const searched: TrialResult = {
+      ...TRIAL,
+      counts: { likely_meets: 3, likely_fails: 0, ask_your_doctor: 6, not_checked: 2 },
+    }
+    const checked: TrialVerdictsResponse = {
+      ...TRIAL,
+      criteria: [],
+      rawCriteria: null,
+      counts: { likely_meets: 4, likely_fails: 1, ask_your_doctor: 6, not_checked: 0 },
+      checked: { questions: 2, requests: 1, cacheHits: 0, model: 'jev-1.13.0' },
+      dataAsOf: Date.UTC(2026, 8, 27),
+    }
+    render(
+      <TrialCard
+        trial={searched}
+        profile={PROFILE}
+        checkTrial={async () => ({ kind: 'verdicts', response: checked })}
+      />,
+    )
+    const counts = (): (string | null)[] =>
+      within(
+        screen.getByRole('list', { name: "How your profile compares with this trial's rules" }),
+      )
+        .getAllByRole('listitem')
+        .map((c) => c.textContent)
+
+    expect(counts()).toEqual(['✓3 likely meets', '?6 ask your doctor', '…2 not checked yet'])
+
+    fireEvent.click(screen.getByRole('button', { name: 'Check each rule' }))
+
+    expect(await screen.findByText('1 likely fails')).toBeVisible()
+    expect(counts()).toEqual(['✓4 likely meets', '✕1 likely fails', '?6 ask your doctor'])
   })
 })
