@@ -65,6 +65,11 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
           Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule,
           and show which ones are worth discussing with your doctor.
         </p>
+        <ol className="steps" aria-label="How it works">
+          <li>Tell us about the cancer</li>
+          <li>We check every rule of nearby recruiting trials</li>
+          <li>Take your questions to your doctor</li>
+        </ol>
         <ProfileForm
           initial={initial}
           onSubmit={(profile) => void run(profile)}
@@ -74,6 +79,18 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
         <p role="status" className="status">
           {statusText(state)}
         </p>
+        {state.kind === 'searching' && (
+          // Placeholder cards while the search runs; the status line says what is happening.
+          <div className="skeleton-list" aria-hidden="true">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-line skeleton-title" />
+                <div className="skeleton-line" />
+                <div className="skeleton-line skeleton-short" />
+              </div>
+            ))}
+          </div>
+        )}
         {state.kind === 'done' && state.outcome.kind === 'results' && (
           <Results
             response={state.outcome.response}

@@ -2,6 +2,20 @@ import type { CancerStage, Profile } from '@trialscout/contract'
 import { type JSX, type ReactNode, type SubmitEvent, useState } from 'react'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
+const LABELS: Record<ProfileField, string> = {
+  cancerType: 'Cancer type',
+  stage: 'Stage',
+  age: 'Age',
+  sex: 'Sex',
+  country: 'Country',
+  city: 'City',
+  maxDistanceKm: 'How far can you travel? (km)',
+  notes: 'Past treatments, medicines and other conditions',
+}
+
+// Form order, for the error summary.
+const FIELDS = Object.keys(LABELS) as ProfileField[]
+
 const MESSAGES: Record<ProfileField, string> = {
   cancerType: 'Enter your cancer type.',
   stage: 'Choose a stage, or "Not sure".',
@@ -21,6 +35,11 @@ const STAGES: { value: CancerStage; label: string }[] = [
   { value: 'unknown', label: 'Not sure' },
 ]
 
+const DISTANCE_PICKS = [50, 100, 300, 1000]
+const NOTES_LIMIT = 4000
+
+const number = (n: number): string => n.toLocaleString('en-GB')
+
 export type PlaceError = { field: 'city' | 'country'; message: string }
 
 type Props = {
@@ -31,19 +50,25 @@ type Props = {
   placeError: PlaceError | null
 }
 
+type Aria = { 'aria-invalid': boolean; 'aria-describedby': string | undefined }
+
 type FieldProps = {
   id: ProfileField
-  label: string
   hint?: string
   error: string | null
-  children: (aria: { 'aria-invalid': boolean; 'aria-describedby': string | undefined }) => ReactNode
+  // More ids that describe the control, such as a character counter.
+  describedBy?: string[]
+  // Shown after the control, such as quick picks or a counter.
+  after?: ReactNode
+  children: (aria: Aria) => ReactNode
 }
 
-function Field({ id, label, hint, error, children }: FieldProps): JSX.Element {
-  const described = [hint ? `${id}-hint` : null, error ? `${id}-error` : null].filter(Boolean)
+function Field({ id, hint, error, describedBy = [], after, children }: FieldProps): JSX.Element {
+  const described = [hint ? `${id}-hint` : null, ...describedBy, error ? `${id}-error` : null]
+  const ids = described.filter((d): d is string => d !== null)
   return (
     <div className="field">
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{LABELS[id]}</label>
       {hint && (
         <p id={`${id}-hint`} className="field-hint">
           {hint}
@@ -51,8 +76,9 @@ function Field({ id, label, hint, error, children }: FieldProps): JSX.Element {
       )}
       {children({
         'aria-invalid': error !== null,
-        'aria-describedby': described.length > 0 ? described.join(' ') : undefined,
+        'aria-describedby': ids.length > 0 ? ids.join(' ') : undefined,
       })}
+      {after}
       {error && (
         <p id={`${id}-error`} className="field-error">
           {error}
@@ -62,129 +88,213 @@ function Field({ id, label, hint, error, children }: FieldProps): JSX.Element {
   )
 }
 
-// The guided profile form. The profile is kept only in this browser tab (sessionStorage).
+function Section({ title, children }: { title: string; children: ReactNode }): JSX.Element {
+  return (
+    <fieldset className="form-section">
+      <legend>{title}</legend>
+      {children}
+    </fieldset>
+  )
+}
+
+function focusField(field: ProfileField): void {
+  document.getElementById(field)?.focus()
+}
+
+// The guided profile form, one page in four short sections. The profile is kept only in
+// this browser tab (sessionStorage).
 export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX.Element {
-  const [invalid, setInvalid] = useState<Set<ProfileField>>(new Set())
+  const [invalid, setInvalid] = useState<ProfileField[]>([])
+  const [distance, setDistance] = useState(initial === null ? '' : String(initial.maxDistanceKm))
+  const [notesLength, setNotesLength] = useState(initial?.notes?.length ?? 0)
 
   function submit(event: SubmitEvent<HTMLFormElement>): void {
     event.preventDefault()
     const result = checkProfile(formToCandidate(new FormData(event.currentTarget)))
     if (!result.ok) {
-      setInvalid(new Set(result.fields))
+      const fields = FIELDS.filter((f) => result.fields.includes(f))
+      setInvalid(fields)
+      if (fields[0] !== undefined) focusField(fields[0])
       return
     }
-    setInvalid(new Set())
+    setInvalid([])
     saveProfile(result.profile)
     onSubmit(result.profile)
   }
 
   const error = (field: ProfileField): string | null => {
-    if (invalid.has(field)) return MESSAGES[field]
+    if (invalid.includes(field)) return MESSAGES[field]
     if (placeError?.field === field) return placeError.message
     return null
   }
 
   return (
     <form className="profile-form" onSubmit={submit} noValidate aria-label="Your profile">
-      <Field
-        id="cancerType"
-        label="Cancer type"
-        hint='As your doctor or report names it, for example "non-small cell lung cancer".'
-        error={error('cancerType')}
-      >
-        {(aria) => (
-          <input id="cancerType" name="cancerType" defaultValue={initial?.cancerType} {...aria} />
-        )}
-      </Field>
-
-      <Field id="stage" label="Stage" error={error('stage')}>
-        {(aria) => (
-          <select id="stage" name="stage" defaultValue={initial?.stage ?? ''} {...aria}>
-            <option value="">Choose…</option>
-            {STAGES.map((stage) => (
-              <option key={stage.value} value={stage.value}>
-                {stage.label}
-              </option>
-            ))}
-          </select>
-        )}
-      </Field>
-
-      <div className="field-row">
-        <Field id="age" label="Age" error={error('age')}>
+      <Section title="About the cancer">
+        <Field
+          id="cancerType"
+          hint='As your doctor or report names it, for example "non-small cell lung cancer".'
+          error={error('cancerType')}
+        >
           {(aria) => (
-            <input id="age" name="age" inputMode="numeric" defaultValue={initial?.age} {...aria} />
+            <input id="cancerType" name="cancerType" defaultValue={initial?.cancerType} {...aria} />
           )}
         </Field>
 
-        <Field id="sex" label="Sex" error={error('sex')}>
+        <Field id="stage" error={error('stage')}>
           {(aria) => (
-            <select id="sex" name="sex" defaultValue={initial?.sex ?? ''} {...aria}>
+            <select id="stage" name="stage" defaultValue={initial?.stage ?? ''} {...aria}>
               <option value="">Choose…</option>
-              <option value="female">Female</option>
-              <option value="male">Male</option>
+              {STAGES.map((stage) => (
+                <option key={stage.value} value={stage.value}>
+                  {stage.label}
+                </option>
+              ))}
             </select>
           )}
         </Field>
-      </div>
+      </Section>
 
-      <div className="field-row">
-        <Field id="country" label="Country" error={error('country')}>
+      <Section title="About you">
+        <div className="field-row">
+          <Field id="age" error={error('age')}>
+            {(aria) => (
+              <input
+                id="age"
+                name="age"
+                inputMode="numeric"
+                defaultValue={initial?.age}
+                {...aria}
+              />
+            )}
+          </Field>
+
+          <Field id="sex" error={error('sex')}>
+            {(aria) => (
+              <select id="sex" name="sex" defaultValue={initial?.sex ?? ''} {...aria}>
+                <option value="">Choose…</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+              </select>
+            )}
+          </Field>
+        </div>
+      </Section>
+
+      <Section title="Where you are">
+        <div className="field-row">
+          <Field id="country" error={error('country')}>
+            {(aria) => (
+              <input
+                id="country"
+                name="country"
+                autoComplete="country-name"
+                defaultValue={initial?.country}
+                {...aria}
+              />
+            )}
+          </Field>
+
+          <Field id="city" error={error('city')}>
+            {(aria) => (
+              <input
+                id="city"
+                name="city"
+                autoComplete="address-level2"
+                defaultValue={initial?.city}
+                {...aria}
+              />
+            )}
+          </Field>
+        </div>
+
+        <Field
+          id="maxDistanceKm"
+          hint="We look for trial sites within this distance of your city."
+          error={error('maxDistanceKm')}
+          after={
+            <div role="group" aria-label="Distance quick picks" className="quick-picks">
+              {DISTANCE_PICKS.map((km) => (
+                <button
+                  key={km}
+                  type="button"
+                  className="chip"
+                  aria-pressed={distance === String(km)}
+                  onClick={() => setDistance(String(km))}
+                >
+                  {number(km)} km
+                </button>
+              ))}
+            </div>
+          }
+        >
           {(aria) => (
             <input
-              id="country"
-              name="country"
-              autoComplete="country-name"
-              defaultValue={initial?.country}
+              id="maxDistanceKm"
+              name="maxDistanceKm"
+              inputMode="numeric"
+              value={distance}
+              onChange={(event) => setDistance(event.currentTarget.value)}
               {...aria}
             />
           )}
         </Field>
+      </Section>
 
-        <Field id="city" label="City" error={error('city')}>
+      <Section title="Anything else (optional)">
+        <Field
+          id="notes"
+          hint="In your own words: gene test results, medicines you take, treatments you have had. The more you tell us, the fewer rules we have to leave for your doctor."
+          error={error('notes')}
+          describedBy={['notes-privacy', 'notes-count']}
+          after={
+            <div className="field-foot">
+              <p id="notes-privacy">Stays in this browser tab. We don't store it.</p>
+              <p id="notes-count">
+                {number(notesLength)} of {number(NOTES_LIMIT)} characters
+              </p>
+            </div>
+          }
+        >
           {(aria) => (
-            <input
-              id="city"
-              name="city"
-              autoComplete="address-level2"
-              defaultValue={initial?.city}
+            <textarea
+              id="notes"
+              name="notes"
+              rows={5}
+              defaultValue={initial?.notes}
+              onChange={(event) => setNotesLength(event.currentTarget.value.length)}
               {...aria}
             />
           )}
         </Field>
+      </Section>
+
+      {invalid.length > 0 && (
+        <div role="alert" className="form-errors">
+          <p>Some answers need a look:</p>
+          <ul>
+            {invalid.map((field) => (
+              <li key={field}>
+                <a
+                  href={`#${field}`}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    focusField(field)
+                  }}
+                >
+                  {LABELS[field]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {/* On a phone the button stays in reach while the form scrolls. */}
+      <div className="form-actions">
+        <button type="submit" className="button button-primary" disabled={busy}>
+          Find trials
+        </button>
       </div>
-
-      <Field
-        id="maxDistanceKm"
-        label="How far can you travel? (km)"
-        hint="We look for trial sites within this distance of your city."
-        error={error('maxDistanceKm')}
-      >
-        {(aria) => (
-          <input
-            id="maxDistanceKm"
-            name="maxDistanceKm"
-            inputMode="numeric"
-            defaultValue={initial?.maxDistanceKm}
-            {...aria}
-          />
-        )}
-      </Field>
-
-      <Field
-        id="notes"
-        label="Past treatments, medicines and other conditions (optional)"
-        hint="In your own words. The more you tell us, the fewer rules we have to leave for your doctor."
-        error={error('notes')}
-      >
-        {(aria) => (
-          <textarea id="notes" name="notes" rows={5} defaultValue={initial?.notes} {...aria} />
-        )}
-      </Field>
-
-      <button type="submit" className="button button-primary" disabled={busy}>
-        Find trials
-      </button>
     </form>
   )
 }

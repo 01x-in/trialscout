@@ -105,7 +105,7 @@ a {
 
 .page {
   box-sizing: border-box;
-  max-width: 40rem;
+  max-width: 42rem;
   /* Long trial titles and sponsor names wrap rather than widen the page on a phone. */
   overflow-wrap: break-word;
   margin: 0 auto;
@@ -133,25 +133,83 @@ h1 {
 }
 
 .lede {
-  margin: 0 0 2rem;
+  margin: 0 0 var(--space-5);
   color: var(--muted);
+}
+
+/* How it works: three numbered steps, one row on wider screens. */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  font-size: 0.95rem;
+}
+
+.steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  counter-increment: step;
+}
+
+.steps li::before {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 700;
+  content: counter(step);
 }
 
 .profile-form {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-5);
+}
+
+/* Each section is a card with a plain heading. */
+.form-section {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.form-section legend {
+  /* Floated so the legend sits inside the card, not on its border. */
+  float: left;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.form-section legend + * {
+  clear: both;
 }
 
 .field {
   display: grid;
-  gap: 0.3rem;
+  gap: var(--space-1);
   align-content: start;
 }
 
 .field-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .profile-form label {
@@ -169,27 +227,155 @@ h1 {
 .profile-form textarea {
   box-sizing: border-box;
   width: 100%;
-  padding: 0.6rem 0.7rem;
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
   font: inherit;
   color: var(--fg);
-  background: var(--surface);
+  /* A shade off the section card, so each field reads as a place to type. */
+  background: var(--bg);
   border: 1px solid var(--control);
-  border-radius: 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.profile-form textarea {
+  resize: vertical;
 }
 
 .profile-form [aria-invalid='true'] {
-  border-color: var(--error);
-}
-
-.profile-form :focus-visible,
-.profile-form button:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
+  border: 2px solid var(--error);
 }
 
 .field-error {
   margin: 0;
   color: var(--error);
+  font-weight: 600;
+}
+
+/* Chips: the distance quick picks and the checklist filters. */
+.quick-picks,
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  min-height: var(--control-height);
+  padding: var(--space-1) var(--space-4);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--control);
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chip[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 2px solid var(--accent);
+}
+
+.field-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.field-foot p {
+  margin: 0;
+}
+
+.form-errors {
+  padding: var(--space-3) var(--space-4);
+  background: var(--fails-bg);
+  border: 2px solid var(--error);
+  border-radius: var(--radius-sm);
+}
+
+.form-errors p {
+  margin: 0 0 var(--space-1);
+  font-weight: 700;
+}
+
+.form-errors ul {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.form-errors a {
+  color: var(--fg);
+}
+
+.form-actions .button {
+  min-width: 12rem;
+}
+
+/* On a phone, "Find trials" stays in reach at the bottom while the form scrolls. */
+@media (max-width: 40rem) {
+  .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin-inline: calc(-1 * var(--space-4));
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+  }
+
+  .form-actions .button {
+    width: 100%;
+  }
+}
+
+/* Placeholder cards while a search runs. The only motion is this pulse, and it stops for
+   anyone who asks for less motion. */
+.skeleton-list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.skeleton-card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.skeleton-line {
+  height: 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--line);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-title {
+  width: 80%;
+  height: 1.2rem;
+}
+
+.skeleton-short {
+  width: 45%;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-line {
+    animation: none;
+  }
 }
 
 /* Buttons: one primary (filled accent) per view, everything else secondary (outlined). */
