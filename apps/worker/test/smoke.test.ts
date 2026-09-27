@@ -129,29 +129,47 @@ describe('the deploy smoke test', () => {
     const result = await smoke(SITE, site(realApi(), { ...BUILD, styles }))
 
     expect(result.ok).toBe(false)
-    expect(result.lines).toContain('disclaimer: FAILED: a print style hides the disclaimer')
+    expect(result.lines).toContain('disclaimer: FAILED: a style hides the disclaimer')
+  })
+
+  it.each(['.sheet-caution{display:none}', '.demo-caution{visibility:hidden}'])(
+    'fails when a base style, outside print, hides a disclaimer: %s',
+    async (rule) => {
+      const styles = `${rule}${BUILD.styles}`
+      const result = await smoke(SITE, site(realApi(), { ...BUILD, styles }))
+
+      expect(result.ok).toBe(false)
+      expect(result.lines).toContain('disclaimer: FAILED: a style hides the disclaimer')
+    },
+  )
+
+  it('does not mistake a longer class name for a disclaimer', async () => {
+    const styles = `.sheet-caution-icon{display:none}.demo-caution-note{display:none}${BUILD.styles}`
+    const result = await smoke(SITE, site(realApi(), { ...BUILD, styles }))
+
+    expect(result.ok).toBe(true)
   })
 
   it('opens the first trial whose criteria were split, not an unsplittable one', async () => {
     const seen: Seen[] = []
     const api = realApi()
-    let skipped = ''
+    let expected: string | undefined
     const firstUnsplittable: Api = async (path, init) => {
       const response = await api(path, init)
       if (path !== '/api/search' || init?.body === '{}') return response
       const found = (await response.json()) as SearchResponse
       const [first] = found.results
       if (first === undefined) throw new Error('Expected recorded trials')
-      skipped = first.nctId
       first.eligibility = 'unsplittable'
+      expected = found.results.find((r) => r.eligibility === 'split')?.nctId
       return json(200, found)
     }
     const result = await smoke(SITE, site(firstUnsplittable, BUILD, seen))
 
     expect(result.ok).toBe(true)
-    const opened = seen.find((s) => s.url.includes('/verdicts'))?.url ?? ''
-    expect(opened).toMatch(/NCT\d{8}/)
-    expect(opened).not.toContain(skipped)
+    expect(expected).toMatch(/^NCT\d{8}$/)
+    const opened = seen.filter((s) => s.url.includes('/verdicts')).map((s) => new URL(s.url))
+    expect(opened.map((u) => u.pathname)).toEqual([`/api/trials/${expected}/verdicts`])
   })
 
   it('fails when no trial found has split criteria', async () => {

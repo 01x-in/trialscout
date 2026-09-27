@@ -69,11 +69,21 @@ async function failure(response: Response): Promise<Failed> {
   return new Failed(`HTTP ${response.status}`)
 }
 
-// The page's strip, and the doctor sheet's copy of it (DoctorSheet.tsx).
-const STRIP = '.demo-caution'
-const SHEET = '.sheet-caution'
+// The page's strip, and the doctor sheet's copy of it (DoctorSheet.tsx). The lookahead keeps
+// e.g. `.demo-caution-icon` from counting.
+const STRIP = /\.demo-caution(?![\w-])/
+const SHEET = /\.sheet-caution(?![\w-])/
+const HIDES = /display\s*:\s*none|visibility\s*:\s*hidden/i
 
 type Rule = { selector: string; body: string }
+
+/** The innermost rules of a stylesheet, inside at-rules or not. */
+function rulesIn(css: string): Rule[] {
+  return [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({
+    selector: (m[1] ?? '').trim(),
+    body: m[2] ?? '',
+  }))
+}
 
 /** The rules inside every `@media print` block of a stylesheet. */
 function printRules(css: string): Rule[] {
@@ -85,9 +95,7 @@ function printRules(css: string): Rule[] {
       if (css[i] === '{') depth += 1
       else if (css[i] === '}') depth -= 1
       if (depth === 0) {
-        for (const m of css.slice(open + 1, i).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-          rules.push({ selector: (m[1] ?? '').trim(), body: m[2] ?? '' })
-        }
+        rules.push(...rulesIn(css.slice(open + 1, i)))
         break
       }
     }
@@ -95,20 +103,23 @@ function printRules(css: string): Rule[] {
   return rules
 }
 
-/** Why the stylesheets would not print the disclaimer, or null when they would. */
+/**
+ * Why the stylesheets would not print the disclaimer, or null when they would. Any rule that
+ * hides either copy fails, in `@media print` or not, since a base rule also applies to print.
+ * Hiding through an ancestor is out of reach here; the web tests render both copies.
+ */
 function printProblem(stylesheets: string[]): string | null {
-  const rules = stylesheets.flatMap(printRules)
-  if (!rules.some((r) => r.selector.includes(STRIP))) {
+  if (!stylesheets.flatMap(printRules).some((r) => STRIP.test(r.selector))) {
     return 'the stylesheet has no print styles for the disclaimer'
   }
-  if (!stylesheets.some((css) => css.includes(SHEET))) {
+  const rules = stylesheets.flatMap(rulesIn)
+  if (!rules.some((r) => SHEET.test(r.selector))) {
     return 'the stylesheet has no styles for the doctor sheet disclaimer'
   }
-  const hides = /display\s*:\s*none|visibility\s*:\s*hidden/i
   const hidden = rules.some(
-    (r) => (r.selector.includes(STRIP) || r.selector.includes(SHEET)) && hides.test(r.body),
+    (r) => (STRIP.test(r.selector) || SHEET.test(r.selector)) && HIDES.test(r.body),
   )
-  return hidden ? 'a print style hides the disclaimer' : null
+  return hidden ? 'a style hides the disclaimer' : null
 }
 
 /** Every same-site asset the page loads with this tag and attribute, e.g. script src. */
