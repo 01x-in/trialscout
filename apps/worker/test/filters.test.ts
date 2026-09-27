@@ -99,6 +99,22 @@ describe('applyHardFilters', () => {
     expect(removed[reason]).toBe(1)
   })
 
+  // "Other" is neither female nor male: a trial for one sex is not an assumed fail, so it
+  // stays in, and its card tells the patient to ask their doctor.
+  it('keeps trials for either sex when the patient chose "other"', () => {
+    const forWomen = trial('NCT00000011', {
+      eligibility: { criteria: null, sex: 'FEMALE', minimumAgeYears: 18, maximumAgeYears: null },
+    })
+    const forMen = trial('NCT00000012', {
+      eligibility: { criteria: null, sex: 'MALE', minimumAgeYears: 18, maximumAgeYears: null },
+    })
+
+    const { kept, removed } = applyHardFilters([forWomen, forMen], { ...PATIENT, sex: 'other' })
+
+    expect(kept.map((c) => c.trial.nctId)).toEqual(['NCT00000011', 'NCT00000012'])
+    expect(removed.sex).toBe(0)
+  })
+
   it('treats the age limits as inclusive', () => {
     const edge = trial('NCT00000008', {
       eligibility: { criteria: null, sex: 'FEMALE', minimumAgeYears: 58, maximumAgeYears: 58 },

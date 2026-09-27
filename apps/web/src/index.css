@@ -179,25 +179,15 @@ h1 {
   display: grid;
   gap: var(--space-4);
   min-width: 0;
-  margin: 0;
   padding: var(--space-4) var(--space-4) var(--space-5);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
 }
 
-.form-section legend {
-  /* Floated so the legend sits inside the card, not on its border. */
-  float: left;
-  width: 100%;
+.form-section h2 {
   margin: 0;
-  padding: 0;
   font-size: 1.15rem;
-  font-weight: 700;
-}
-
-.form-section legend + * {
-  clear: both;
 }
 
 .field {
@@ -285,6 +275,46 @@ h1 {
   margin: 0;
   color: var(--error);
   font-weight: 600;
+}
+
+/* A choice of a few options (sex): plain radio buttons on one line, as tall as a field so
+   they line up with the field beside them. Each label is a 44px touch target. */
+.field-label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.radios {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-5);
+  min-height: var(--control-height);
+}
+
+.profile-form .radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  font-weight: 400;
+  cursor: pointer;
+}
+
+/* The browser's own radio, sized and in the accent colour; not the text-field styles. */
+.profile-form input[type='radio'] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.profile-form input[type='radio'][aria-invalid='true'] {
+  outline: 2px solid var(--error);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
 /* Chips: the distance quick picks and the checklist filters. */
@@ -700,6 +730,14 @@ h1 {
 .trial-unsplit {
   margin: var(--space-4) 0 0;
   color: var(--ask);
+}
+
+.trial-sex-limit {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  color: var(--fg);
+  background: var(--surface-2);
+  border-left: 3px solid var(--ask);
 }
 
 .trial-new-fail {

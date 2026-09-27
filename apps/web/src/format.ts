@@ -54,5 +54,6 @@ export function dateLabel(epochMs: number): string {
 /** "breast cancer, stage II, age 47, female.", as the patient entered it. */
 export function profileSummary(profile: Profile): string {
   const stage = profile.stage === 'unknown' ? 'stage not known' : `stage ${profile.stage}`
-  return `${profile.cancerType}, ${stage}, age ${profile.age}, ${profile.sex}.`
+  const sex = profile.sex === 'other' ? 'sex other' : profile.sex
+  return `${profile.cancerType}, ${stage}, age ${profile.age}, ${sex}.`
 }

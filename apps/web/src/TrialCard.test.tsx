@@ -29,6 +29,7 @@ const TRIAL: TrialResult = {
     distanceKm: 8,
   },
   eligibility: 'split',
+  sexLimit: null,
   counts: { likely_meets: 3, likely_fails: 1, ask_your_doctor: 6, not_checked: 0 },
 }
 
@@ -160,5 +161,42 @@ describe('a trial card', () => {
 
     expect(await screen.findByText('5 likely meets')).toBeVisible()
     expect(screen.queryByText(/found something that likely rules you out/)).toBeNull()
+  })
+
+  it('tells a patient who chose "other" when a trial is listed for one sex only', () => {
+    render(
+      <TrialCard
+        trial={{ ...TRIAL, sexLimit: 'female' }}
+        profile={{ ...PROFILE, sex: 'other' }}
+        checkTrial={async () => ({ kind: 'unavailable' })}
+      />,
+    )
+
+    expect(
+      screen.getByText(
+        'ClinicalTrials.gov lists this trial for female patients only. Ask your doctor whether it could include you.',
+      ),
+    ).toBeVisible()
+  })
+
+  it('says nothing about sex when the trial is open to all, or the patient is female or male', () => {
+    const { unmount } = render(
+      <TrialCard
+        trial={{ ...TRIAL, sexLimit: null }}
+        profile={{ ...PROFILE, sex: 'other' }}
+        checkTrial={async () => ({ kind: 'unavailable' })}
+      />,
+    )
+    expect(screen.queryByText(/lists this trial for/)).toBeNull()
+    unmount()
+
+    render(
+      <TrialCard
+        trial={{ ...TRIAL, sexLimit: 'female' }}
+        profile={PROFILE}
+        checkTrial={async () => ({ kind: 'unavailable' })}
+      />,
+    )
+    expect(screen.queryByText(/lists this trial for/)).toBeNull()
   })
 })

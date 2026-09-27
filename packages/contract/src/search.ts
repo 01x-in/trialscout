@@ -22,6 +22,8 @@ export type TrialResult = {
   // 'unsplittable': the eligibility text could not be split into criteria; the trial page
   // shows it raw with "ask your doctor".
   eligibility: 'split' | 'unsplittable'
+  // The sex ClinicalTrials.gov limits the trial to, or null when it is open to all.
+  sexLimit: 'female' | 'male' | null
   counts: VerdictCounts
 }
 

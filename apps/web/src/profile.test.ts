@@ -29,7 +29,7 @@ describe('checkProfile (Typia)', () => {
     ['a distance below the minimum', { ...profile, maxDistanceKm: 0 }, ['maxDistanceKm']],
     ['an unknown stage', { ...profile, stage: 'V' }, ['stage']],
     ['a too-short cancer type', { ...profile, cancerType: 'x' }, ['cancerType']],
-    ['two bad fields', { ...profile, sex: 'other', city: '' }, ['sex', 'city']],
+    ['two bad fields', { ...profile, sex: 'unknown', city: '' }, ['sex', 'city']],
   ])('names the field for %s', (_label, value, fields) => {
     expect(checkProfile(value)).toEqual({ ok: false, fields })
   })

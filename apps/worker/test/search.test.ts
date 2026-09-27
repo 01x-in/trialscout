@@ -58,6 +58,25 @@ describe('POST /api/search', () => {
     expect(body.checked.model).toBe('jev-1.13.0')
   })
 
+  it('gives each trial its own sex limit, as ClinicalTrials.gov lists it', async () => {
+    const body = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+    const store = new TrialStore(createDb(env.DB), () => NOW)
+    const LIMITS = { ALL: null, FEMALE: 'female', MALE: 'male' } as const
+
+    for (const result of body.results) {
+      const saved = await store.find(result.nctId)
+      expect(result.sexLimit).toBe(LIMITS[saved?.trial.eligibility.sex ?? 'ALL'])
+    }
+  })
+
+  it('keeps every trial a female patient would see when the patient chose "other"', async () => {
+    const female = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+    const other = (await (await post({ ...PUNE_NSCLC, sex: 'other' })).json()) as SearchResponse
+
+    const ids = new Set(other.results.map((r) => r.nctId))
+    expect(female.results.every((r) => ids.has(r.nctId))).toBe(true)
+  })
+
   it('ranks a trial with a confident fail last, and keeps it', async () => {
     const baseline = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
     const first = baseline.results[0]
@@ -303,7 +322,7 @@ describe('POST /api/search validation (Typia)', () => {
     ['an unknown stage', { ...profile, stage: 'V' }, 'Invalid request: body.stage'],
     [
       'two bad fields',
-      { ...profile, sex: 'other', city: '' },
+      { ...profile, sex: 'unknown', city: '' },
       'Invalid request: body.sex, body.city',
     ],
   ])('answers %s with a 422 naming the field', async (_label, body, expected) => {

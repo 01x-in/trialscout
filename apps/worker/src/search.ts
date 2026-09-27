@@ -4,7 +4,7 @@ import {
   type SearchResponse,
   type TrialResult,
 } from '@trialscout/contract'
-import { studyUrl, type Trial } from './trial.ts'
+import { studyUrl, type Trial, type TrialSex } from './trial.ts'
 import { conditionTerms } from './fallback.ts'
 import { applyHardFilters, type Candidate, explainEmpty, type HardFilterInput } from './filters.ts'
 import { locate } from './geo/locate.ts'
@@ -14,6 +14,13 @@ import { ProblemError, UpstreamError } from './problems.ts'
 import { rankTrials } from './ranking.ts'
 import type { Services } from './services.ts'
 import type { RefreshCursor } from './store.ts'
+
+// A trial's own sex limit, as the card shows it.
+const SEX_LIMITS: Record<TrialSex, TrialResult['sexLimit']> = {
+  ALL: null,
+  FEMALE: 'female',
+  MALE: 'male',
+}
 
 // One search: the patient's place, recruiting trials near it, hard filters, criteria
 // (split once per trial version), Jev verdicts within the budget, and the ranked list.
@@ -172,6 +179,7 @@ export async function search(services: Services, profile: Profile): Promise<Sear
               distanceKm: Math.round(nearestSite.distanceKm),
             },
       eligibility: verdicts === undefined ? 'unsplittable' : 'split',
+      sexLimit: SEX_LIMITS[trial.eligibility.sex],
       counts:
         verdicts === undefined
           ? UNSPLITTABLE_COUNTS

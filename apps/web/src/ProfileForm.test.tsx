@@ -34,10 +34,20 @@ describe('the profile form', () => {
   it('groups the questions under plain headings', () => {
     renderApp()
 
+    // Headings, not <legend>s: Safari draws a legend on the card's border.
+    for (const name of [
+      'About the cancer',
+      'About you',
+      'Where you are',
+      'Anything else (optional)',
+    ]) {
+      expect(group(name)).toContainElement(screen.getByRole('heading', { level: 2, name }))
+    }
+
     expect(within(group('About the cancer')).getByLabelText('Cancer type')).toBeInTheDocument()
     expect(within(group('About the cancer')).getByLabelText('Stage')).toBeInTheDocument()
     expect(within(group('About you')).getByLabelText('Age')).toBeInTheDocument()
-    expect(within(group('About you')).getByLabelText('Sex')).toBeInTheDocument()
+    expect(within(group('About you')).getByRole('radiogroup', { name: 'Sex' })).toBeInTheDocument()
     expect(within(group('Where you are')).getByLabelText('Country')).toBeInTheDocument()
     expect(within(group('Where you are')).getByLabelText('City')).toBeInTheDocument()
     expect(
@@ -55,9 +65,34 @@ describe('the profile form', () => {
   it('wraps each drop-down menu to draw its own arrow', () => {
     renderApp()
 
-    for (const label of ['Stage', 'Sex']) {
-      expect(screen.getByLabelText(label).parentElement).toHaveClass('select')
+    expect(screen.getByLabelText('Stage').parentElement).toHaveClass('select')
+  })
+
+  it('asks for sex with three radio buttons, all in view, none chosen at first', () => {
+    renderApp()
+    const sex = screen.getByRole('radiogroup', { name: 'Sex' })
+    const radios = within(sex).getAllByRole('radio') as HTMLInputElement[]
+
+    expect(radios.map((r) => r.getAttribute('value'))).toEqual(['female', 'male', 'other'])
+    expect(radios.map((r) => r.labels?.[0]?.textContent)).toEqual(['Female', 'Male', 'Other'])
+    expect(radios.some((r) => r.checked)).toBe(false)
+
+    fireEvent.click(within(sex).getByLabelText('Other'))
+    expect(radios.map((r) => r.checked)).toEqual([false, false, true])
+  })
+
+  it('ties the missing-sex message to the radio group, and links to the first choice', () => {
+    renderApp()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+
+    const sex = screen.getByRole('radiogroup', { name: 'Sex' })
+    expect(sex).toHaveAttribute('aria-describedby', 'sex-error')
+    expect(screen.getByText('Choose female, male or other.')).toHaveAttribute('id', 'sex-error')
+    for (const radio of within(sex).getAllByRole('radio')) {
+      expect(radio).toHaveAttribute('aria-invalid', 'true')
     }
+    expect(document.getElementById('sex')).toBe(within(sex).getByLabelText('Female'))
   })
 
   it('fills the distance from a quick pick, and shows which one is chosen', () => {
@@ -182,7 +217,7 @@ describe('the profile form', () => {
     fireEvent.change(screen.getByLabelText('Cancer type'), { target: { value: 'lung cancer' } })
     fireEvent.change(screen.getByLabelText('Stage'), { target: { value: 'IV' } })
     fireEvent.change(screen.getByLabelText('Age'), { target: { value: '58' } })
-    fireEvent.change(screen.getByLabelText('Sex'), { target: { value: 'female' } })
+    fireEvent.click(screen.getByLabelText('Female'))
     fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'India' } })
     fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Pune' } })
     fireEvent.change(screen.getByLabelText('How far can you travel? (km)'), {

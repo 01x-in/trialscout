@@ -148,6 +148,13 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
           </ul>
         </>
       )}
+      {/* "Other" keeps single-sex trials in; say which sex the trial lists, and to ask. */}
+      {profile.sex === 'other' && trial.sexLimit !== null && (
+        <p className="trial-sex-limit">
+          ClinicalTrials.gov lists this trial for {trial.sexLimit} patients only. Ask your doctor
+          whether it could include you.
+        </p>
+      )}
       {newFail && (
         <p className="trial-new-fail">
           Checking every rule found something that likely rules you out.

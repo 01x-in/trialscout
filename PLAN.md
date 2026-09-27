@@ -29,6 +29,7 @@ profile (browser session only)
 
 - Query ClinicalTrials.gov API v2 live with `query.cond`, `filter.overallStatus=RECRUITING` and `filter.geo=distance(lat,lon,Nmi)`.
 - Apply age and sex from `eligibilityModule` (`minimumAge`, `maximumAge`, `sex`) in code.
+  - Decision (2026-09-28, UI facelift): the form offers female, male and other. For "other", a trial limited to one sex is kept, not removed: it would be an assumed fail. Its card says "ClinicalTrials.gov lists this trial for female/male patients only. Ask your doctor whether it could include you." Jev gets `sex: other`. Check a sample of "other" profiles at GATE 1, including how Jev reads sex-specific rules such as pregnancy.
 - Resolve city to lat/lon from a GeoNames cities table in D1. No third-party geocoder sees profile data.
 - Compute the nearest site distance with haversine over the trial's site coordinates.
 - If zero trials survive, say which filter to relax (distance, stage).
@@ -166,6 +167,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - the privacy note above "Find trials" ("We don't store your answers…", linking to the About page), and the About page's list of the two things kept for a short time (cached Jev answers for 7 days, internet address and search times for a day);
   - the results headings "Nothing likely rules you out" (only for trials with every rule checked), "Not fully checked" and "Something likely rules you out", and their notes "The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest." and "Listed last, not hidden. A likely fail can be wrong: your doctor can check it.";
   - the filter chips ("All", "Ask your doctor", "Likely fails", "Likely meets", "Not checked yet"), "None of these rules." and "Showing n of m rules.";
+  - the sex choice "Female / Male / Other", its error "Choose female, male or other.", and the card note for "other" on a single-sex trial;
   - "Official page", and the card line "Checking every rule found something that likely rules you out." shown when opening a trial finds a likely fail the search did not.
 
 Record the result in `docs/gate-2-review.md`.

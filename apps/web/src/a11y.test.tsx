@@ -51,6 +51,7 @@ const TRIAL: TrialResult = {
     distanceKm: 8,
   },
   eligibility: 'split',
+  sexLimit: null,
   counts: { likely_meets: 1, likely_fails: 1, ask_your_doctor: 1, not_checked: 1 },
 }
 
@@ -117,7 +118,8 @@ function renderApp(outcome: SearchOutcome, trial: TrialOutcome = { kind: 'unavai
 
 async function search(): Promise<void> {
   fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
-  await screen.findByRole('heading', { level: 2 })
+  // The results heading; the form's sections have headings of their own.
+  await screen.findByRole('heading', { level: 2, name: /trials/i })
 }
 
 describe('axe (WCAG 2.2 A and AA)', () => {

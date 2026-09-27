@@ -5,8 +5,10 @@ import type { tags } from 'typia'
 
 export type CancerStage = 'I' | 'II' | 'III' | 'IV' | 'unknown'
 
-// Sex as trial eligibility sections use it (ClinicalTrials.gov `sex`).
-export type Sex = 'female' | 'male'
+// Sex as trial eligibility sections use it (ClinicalTrials.gov `sex`), or 'other'. A trial
+// limited to one sex is not an assumed fail for 'other': it is kept, and its card says to
+// ask the doctor.
+export type Sex = 'female' | 'male' | 'other'
 
 export type Profile = {
   // Free text, e.g. "non-small cell lung cancer".

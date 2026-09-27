@@ -26,6 +26,7 @@ function trial(n: number, likelyFails = 0): TrialResult {
     url: `https://clinicaltrials.gov/study/${nctId}`,
     nearestSite: null,
     eligibility: 'split',
+    sexLimit: null,
     counts: { likely_meets: 2, likely_fails: likelyFails, ask_your_doctor: 3, not_checked: 0 },
   }
 }

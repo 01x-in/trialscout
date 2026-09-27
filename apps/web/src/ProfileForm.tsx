@@ -1,4 +1,4 @@
-import type { CancerStage, Profile } from '@trialscout/contract'
+import type { CancerStage, Profile, Sex } from '@trialscout/contract'
 import { type JSX, type ReactNode, type SubmitEvent, useState } from 'react'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
@@ -20,7 +20,7 @@ const MESSAGES: Record<ProfileField, string> = {
   cancerType: 'Enter your cancer type.',
   stage: 'Choose a stage, or "Not sure".',
   age: 'Enter your age in whole years.',
-  sex: 'Choose female or male.',
+  sex: 'Choose female, male or other.',
   country: 'Enter your country.',
   city: 'Enter your city.',
   maxDistanceKm: 'Enter how far you can travel, from 1 to 20,000 km.',
@@ -33,6 +33,12 @@ const STAGES: { value: CancerStage; label: string }[] = [
   { value: 'III', label: 'Stage III' },
   { value: 'IV', label: 'Stage IV' },
   { value: 'unknown', label: 'Not sure' },
+]
+
+const SEXES: { value: Sex; label: string }[] = [
+  { value: 'female', label: 'Female' },
+  { value: 'male', label: 'Male' },
+  { value: 'other', label: 'Other' },
 ]
 
 const DISTANCE_PICKS = [50, 100, 300, 1000]
@@ -88,12 +94,63 @@ function Field({ id, hint, error, describedBy = [], after, children }: FieldProp
   )
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }): JSX.Element {
+// A few options, all in view, one tap each: plain radio buttons on one line. A group with a
+// label, not a <fieldset>/<legend>, so every browser lays it out like the other fields. The
+// first radio carries the field's id, so the error summary's link lands on it.
+function Choice<T extends string>({
+  id,
+  options,
+  checked,
+  error,
+}: {
+  id: ProfileField
+  options: { value: T; label: string }[]
+  checked: T | undefined
+  error: string | null
+}): JSX.Element {
   return (
-    <fieldset className="form-section">
-      <legend>{title}</legend>
+    <div
+      className="field"
+      role="radiogroup"
+      aria-labelledby={`${id}-label`}
+      aria-describedby={error ? `${id}-error` : undefined}
+    >
+      <p id={`${id}-label`} className="field-label">
+        {LABELS[id]}
+      </p>
+      <div className="radios">
+        {options.map((option, i) => (
+          <label key={option.value} className="radio">
+            <input
+              type="radio"
+              id={i === 0 ? id : undefined}
+              name={id}
+              value={option.value}
+              defaultChecked={checked === option.value}
+              aria-invalid={error !== null}
+            />
+            {option.label}
+          </label>
+        ))}
+      </div>
+      {error && (
+        <p id={`${id}-error`} className="field-error">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+// A titled group of questions. A heading rather than a <fieldset>/<legend>: Safari draws a
+// legend on the card's border, and headings let screen readers jump between sections.
+function Section({ title, children }: { title: string; children: ReactNode }): JSX.Element {
+  const id = `section-${title.toLowerCase().replace(/[^a-z]+/g, '-')}`
+  return (
+    <div role="group" aria-labelledby={id} className="form-section">
+      <h2 id={id}>{title}</h2>
       {children}
-    </fieldset>
+    </div>
   )
 }
 
@@ -171,17 +228,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
             )}
           </Field>
 
-          <Field id="sex" error={error('sex')}>
-            {(aria) => (
-              <div className="select">
-                <select id="sex" name="sex" defaultValue={initial?.sex ?? ''} {...aria}>
-                  <option value="">Choose…</option>
-                  <option value="female">Female</option>
-                  <option value="male">Male</option>
-                </select>
-              </div>
-            )}
-          </Field>
+          <Choice id="sex" options={SEXES} checked={initial?.sex} error={error('sex')} />
         </div>
       </Section>
 

@@ -1,4 +1,4 @@
-import type { EmptyExplanation, EmptyReason } from '@trialscout/contract'
+import type { EmptyExplanation, EmptyReason, Sex } from '@trialscout/contract'
 import { haversineKm, type Point } from './geo/distance.ts'
 import type { Site, Trial } from './trial.ts'
 
@@ -13,7 +13,7 @@ import type { Site, Trial } from './trial.ts'
 
 export type HardFilterInput = {
   age: number
-  sex: 'female' | 'male'
+  sex: Sex
   origin: Point
   maxDistanceKm: number
 }
@@ -48,8 +48,9 @@ function check(trial: Trial, input: HardFilterInput): Removal | Candidate {
   const { minimumAgeYears, maximumAgeYears, sex } = trial.eligibility
   if (minimumAgeYears !== null && input.age < minimumAgeYears) return 'age'
   if (maximumAgeYears !== null && input.age > maximumAgeYears) return 'age'
-  if (sex === 'FEMALE' && input.sex !== 'female') return 'sex'
-  if (sex === 'MALE' && input.sex !== 'male') return 'sex'
+  // Only the other of female and male is ruled out; "other" keeps both (the card says to ask).
+  if (sex === 'FEMALE' && input.sex === 'male') return 'sex'
+  if (sex === 'MALE' && input.sex === 'female') return 'sex'
 
   const open = trial.sites.filter(recruiting)
   if (open.length === 0) return 'distance'

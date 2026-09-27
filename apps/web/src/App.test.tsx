@@ -36,6 +36,7 @@ function result(nctId: string, overrides: Partial<TrialResult> = {}): TrialResul
       distanceKm: 8,
     },
     eligibility: 'split',
+    sexLimit: null,
     counts: { likely_meets: 9, likely_fails: 0, ask_your_doctor: 4, not_checked: 0 },
     ...overrides,
   }
@@ -64,7 +65,7 @@ function fillProfile(): void {
   fill(/cancer type/i, PROFILE.cancerType)
   fill(/^stage/i, PROFILE.stage)
   fill(/^age/i, String(PROFILE.age))
-  fill(/^sex/i, PROFILE.sex)
+  fireEvent.click(screen.getByLabelText(PROFILE.sex === 'female' ? 'Female' : 'Male'))
   fill(/country/i, PROFILE.country)
   fill(/city/i, PROFILE.city)
   fill(/how far/i, String(PROFILE.maxDistanceKm))
