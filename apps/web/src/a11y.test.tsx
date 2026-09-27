@@ -147,6 +147,19 @@ describe('axe (WCAG 2.2 A and AA)', () => {
     expect(await violations()).toEqual([])
   })
 
+  it('finds nothing on a second page of results, split by likely fails', async () => {
+    const many = Array.from({ length: 12 }, (_, i) => ({
+      ...TRIAL,
+      nctId: `NCT${String(i + 1).padStart(8, '0')}`,
+      counts: { ...TRIAL.counts, likely_fails: i < 9 ? 0 : 1 },
+    }))
+    renderApp({ kind: 'results', response: { ...response(), results: many } })
+    await search()
+    fireEvent.click(screen.getByRole('button', { name: 'Show 2 more' }))
+    expect(screen.getAllByRole('article')).toHaveLength(12)
+    expect(await violations()).toEqual([])
+  })
+
   it('finds nothing on the about page', async () => {
     render(<Root pathname="/about" />)
     expect(await violations()).toEqual([])

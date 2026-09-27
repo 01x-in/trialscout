@@ -71,7 +71,13 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
   }
 
   return (
-    <article className="trial-card" aria-labelledby={`${trial.nctId}-title`}>
+    <article
+      id={`trial-${trial.nctId}`}
+      className="trial-card"
+      aria-labelledby={`${trial.nctId}-title`}
+      // Focusable from code only: "Show more" moves focus to the first new card.
+      tabIndex={-1}
+    >
       <h3 id={`${trial.nctId}-title`} className="trial-title">
         <a href={trial.url} target="_blank" rel="noreferrer">
           {trial.title}

@@ -1,8 +1,11 @@
-import type { EmptyReason, Profile, SearchResponse } from '@trialscout/contract'
-import type { JSX } from 'react'
+import type { EmptyReason, Profile, SearchResponse, TrialResult } from '@trialscout/contract'
+import { type JSX, type ReactNode, useEffect, useState } from 'react'
 import type { CheckTrial } from './api.ts'
 import { dateLabel, profileSummary } from './format.ts'
 import { TrialCard } from './TrialCard.tsx'
+
+// Trials shown at first, and added by each "Show more".
+const PAGE = 10
 
 function emptyMessage(reason: EmptyReason, where: string): string {
   switch (reason) {
@@ -25,17 +28,6 @@ type Props = {
   onEdit: () => void
 }
 
-function CheckedFor({ profile, onEdit }: Pick<Props, 'profile' | 'onEdit'>): JSX.Element {
-  return (
-    <p className="checked-for">
-      Checked for: {profileSummary(profile)}{' '}
-      <button type="button" className="link-button" onClick={onEdit}>
-        Change your answers
-      </button>
-    </p>
-  )
-}
-
 // Where the trial details came from, and how current they are.
 function DataAsOf({ response }: { response: SearchResponse }): JSX.Element {
   const date = dateLabel(response.dataAsOf)
@@ -51,41 +43,122 @@ function DataAsOf({ response }: { response: SearchResponse }): JSX.Element {
   return <p className="results-note">Trial details from ClinicalTrials.gov, {date}.</p>
 }
 
+// The search at a glance: who it was checked for, what came back, and a way back.
+function Summary({
+  response,
+  profile,
+  onEdit,
+  children,
+}: Pick<Props, 'response' | 'profile' | 'onEdit'> & { children: ReactNode }): JSX.Element {
+  return (
+    <section className="results-summary" aria-label="Your search">
+      <p className="checked-for">Checked for: {profileSummary(profile)}</p>
+      {children}
+      <DataAsOf response={response} />
+      <button type="button" className="button button-secondary" onClick={onEdit}>
+        Change your answers
+      </button>
+    </section>
+  )
+}
+
+function TrialGroup({
+  id,
+  title,
+  note,
+  trials,
+  ...card
+}: {
+  id: string
+  title: string
+  note?: string
+  trials: TrialResult[]
+} & Pick<Props, 'profile' | 'checkTrial'>): JSX.Element | null {
+  if (trials.length === 0) return null
+  return (
+    <section className="trial-group" aria-labelledby={id}>
+      <h3 id={id}>{title}</h3>
+      {note && <p className="trial-group-note">{note}</p>}
+      <div className="trial-list">
+        {trials.map((trial) => (
+          <TrialCard key={trial.nctId} trial={trial} {...card} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.Element {
+  const [shown, setShown] = useState(PAGE)
+  // The first card a "Show more" added, to move focus to once it is on the page.
+  const [focusId, setFocusId] = useState<string | null>(null)
   const where = `within ${profile.maxDistanceKm} km of ${response.location.city}`
+
+  useEffect(() => {
+    if (focusId !== null) document.getElementById(`trial-${focusId}`)?.focus()
+  }, [focusId])
 
   if (response.empty !== null || response.results.length === 0) {
     return (
       <section className="results" aria-labelledby="results-heading">
         <h2 id="results-heading">No trials to show</h2>
-        <CheckedFor profile={profile} onEdit={onEdit} />
-        <p>{emptyMessage(response.empty?.reason ?? 'none_nearby', where)}</p>
-        <p>
-          Try a larger travel distance
-          {response.empty?.reason === 'none_nearby'
-            ? ', or a broader cancer type such as "lung cancer".'
-            : '.'}
-        </p>
-        <DataAsOf response={response} />
+        <Summary response={response} profile={profile} onEdit={onEdit}>
+          <p>{emptyMessage(response.empty?.reason ?? 'none_nearby', where)}</p>
+          <p>
+            Try a larger travel distance
+            {response.empty?.reason === 'none_nearby'
+              ? ', or a broader cancer type such as "lung cancer".'
+              : '.'}
+          </p>
+        </Summary>
       </section>
     )
   }
 
-  const count = response.results.length
+  // The API ranks trials with a likely fail last; split there, keeping the order.
+  const all = response.results
+  const fails = (t: TrialResult): boolean => t.counts.likely_fails > 0
+  const clear = all.filter((t) => !fails(t))
+  const out = all.filter(fails)
+  const visible = new Set(all.slice(0, shown).map((t) => t.nctId))
+  const left = all.length - shown
+  const next = Math.min(PAGE, left)
+
+  function showMore(): void {
+    setFocusId(all[shown]?.nctId ?? null)
+    setShown(shown + PAGE)
+  }
+
+  const count = all.length
   return (
     <section className="results" aria-labelledby="results-heading">
       <h2 id="results-heading">Trials worth discussing with your doctor</h2>
-      <CheckedFor profile={profile} onEdit={onEdit} />
-      <p>
-        {count} recruiting {count === 1 ? 'trial' : 'trials'} {where}. Trials where something likely
-        rules you out are listed last, not hidden.
-      </p>
-      <DataAsOf response={response} />
-      <div className="trial-list">
-        {response.results.map((trial) => (
-          <TrialCard key={trial.nctId} trial={trial} profile={profile} checkTrial={checkTrial} />
-        ))}
-      </div>
+      <Summary response={response} profile={profile} onEdit={onEdit}>
+        <p>
+          {count} recruiting {count === 1 ? 'trial' : 'trials'} {where}. Trials where something
+          likely rules you out are listed last, not hidden.
+        </p>
+      </Summary>
+      <TrialGroup
+        id="trials-clear"
+        title={`Nothing likely rules you out (${clear.length})`}
+        trials={clear.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      <TrialGroup
+        id="trials-out"
+        title={`Something likely rules you out (${out.length})`}
+        note="Listed last, not hidden. A likely fail can be wrong: your doctor can check it."
+        trials={out.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      {left > 0 && (
+        <button type="button" className="button button-secondary show-more" onClick={showMore}>
+          Show {next} more{left > next ? ` (${left} left)` : ''}
+        </button>
+      )}
     </section>
   )
 }

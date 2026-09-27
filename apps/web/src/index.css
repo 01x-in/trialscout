@@ -431,8 +431,26 @@ h1 {
 }
 
 .results h2 {
-  margin: 2.5rem 0 0.5rem;
+  margin: var(--space-6) 0 var(--space-3);
   font-size: 1.5rem;
+}
+
+/* The search at a glance, one step off the page. */
+.results-summary {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.results-summary p {
+  margin: 0;
+}
+
+.results-summary .button {
+  margin-top: var(--space-2);
 }
 
 .results-note {
@@ -442,16 +460,32 @@ h1 {
 
 /* Saved copy served during a ClinicalTrials.gov outage: calm, but hard to miss. */
 .results-saved {
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
   color: var(--fg);
   border-left: 4px solid var(--accent);
   background: var(--surface);
 }
 
+.trial-group h3 {
+  margin: var(--space-6) 0 var(--space-1);
+  font-size: 1.2rem;
+}
+
+.trial-group-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 .trial-list {
   display: grid;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.show-more {
+  width: 100%;
+  margin-top: var(--space-5);
 }
 
 .trial-card {
@@ -679,24 +713,7 @@ h1 {
 }
 
 .checked-for {
-  color: var(--muted);
-}
-
-.link-button {
-  padding: 0;
-  color: var(--accent);
-  background: none;
-  border: 0;
-  font: inherit;
   font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.link-button:focus-visible,
-.trial-source a:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
 }
 
 .trial-source {

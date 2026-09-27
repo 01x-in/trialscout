@@ -1,0 +1,109 @@
+import type { Profile, SearchResponse, TrialResult } from '@trialscout/contract'
+import { fireEvent, render, screen, within } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { Results } from './Results.tsx'
+
+// The results list (F3): a summary bar, trials split by whether something likely rules the
+// patient out (listed last, never hidden), and ten trials at a time.
+
+const PROFILE: Profile = {
+  cancerType: 'breast cancer',
+  stage: 'II',
+  age: 47,
+  sex: 'female',
+  country: 'India',
+  city: 'Mumbai',
+  maxDistanceKm: 100,
+}
+
+function trial(n: number, likelyFails = 0): TrialResult {
+  const nctId = `NCT${String(n).padStart(8, '0')}`
+  return {
+    nctId,
+    title: `A study of drug ${nctId}`,
+    phases: ['PHASE2'],
+    sponsor: 'Tata Memorial Hospital',
+    url: `https://clinicaltrials.gov/study/${nctId}`,
+    nearestSite: null,
+    eligibility: 'split',
+    counts: { likely_meets: 2, likely_fails: likelyFails, ask_your_doctor: 3, not_checked: 0 },
+  }
+}
+
+// Ranked as the API ranks them: trials with a likely fail last.
+function trials(passing: number, failing: number): TrialResult[] {
+  return [
+    ...Array.from({ length: passing }, (_, i) => trial(i + 1)),
+    ...Array.from({ length: failing }, (_, i) => trial(passing + i + 1, 1)),
+  ]
+}
+
+function show(results: TrialResult[], onEdit = vi.fn()): void {
+  const response: SearchResponse = {
+    location: { city: 'Mumbai', countryCode: 'IN' },
+    results,
+    empty: null,
+    checked: { questions: 40, requests: 4, cacheHits: 0, model: 'jev-1.13.0' },
+    source: 'live',
+    dataAsOf: Date.UTC(2026, 8, 26),
+  }
+  render(
+    <Results
+      response={response}
+      profile={PROFILE}
+      checkTrial={async () => ({ kind: 'unavailable' })}
+      onEdit={onEdit}
+    />,
+  )
+}
+
+const cardIds = (): string[] => screen.getAllByRole('article').map((a) => a.id)
+
+describe('the results list', () => {
+  it('sums up the search in one bar, with a way back to the answers', () => {
+    const onEdit = vi.fn()
+    show(trials(2, 0), onEdit)
+    const summary = screen.getByRole('region', { name: 'Your search' })
+
+    expect(summary).toHaveTextContent('Checked for: breast cancer, stage II, age 47, female.')
+    expect(summary).toHaveTextContent('2 recruiting trials within 100 km of Mumbai.')
+    expect(summary).toHaveTextContent('Trial details from ClinicalTrials.gov, 26 September 2026.')
+    fireEvent.click(within(summary).getByRole('button', { name: 'Change your answers' }))
+    expect(onEdit).toHaveBeenCalledTimes(1)
+  })
+
+  it('lists trials that something likely rules out last, under their own heading', () => {
+    show(trials(2, 1))
+
+    const clear = screen.getByRole('region', { name: 'Nothing likely rules you out (2)' })
+    const out = screen.getByRole('region', { name: 'Something likely rules you out (1)' })
+    expect(within(clear).getAllByRole('article')).toHaveLength(2)
+    expect(within(out).getAllByRole('article')).toHaveLength(1)
+    expect(out).toHaveTextContent('Listed last, not hidden.')
+    expect(cardIds()).toEqual(['trial-NCT00000001', 'trial-NCT00000002', 'trial-NCT00000003'])
+  })
+
+  it('shows one heading when nothing likely rules any trial out', () => {
+    show(trials(3, 0))
+
+    expect(screen.getByRole('region', { name: 'Nothing likely rules you out (3)' })).toBeVisible()
+    expect(screen.queryByRole('region', { name: /something likely rules you out/i })).toBeNull()
+  })
+
+  it('shows ten trials at a time, and moves focus to the first new one', () => {
+    show(trials(20, 5))
+
+    expect(screen.getAllByRole('article')).toHaveLength(10)
+    // The trials something likely rules out come after the first page, not dropped.
+    expect(screen.queryByRole('region', { name: /something likely rules you out/i })).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show 10 more (15 left)' }))
+    expect(screen.getAllByRole('article')).toHaveLength(20)
+    expect(document.activeElement).toBe(screen.getAllByRole('article')[10])
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show 5 more' }))
+    expect(screen.getAllByRole('article')).toHaveLength(25)
+    expect(screen.getByRole('region', { name: 'Something likely rules you out (5)' })).toBeVisible()
+    expect(screen.queryByRole('button', { name: /^show/i })).toBeNull()
+  })
+})
