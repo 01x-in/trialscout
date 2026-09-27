@@ -168,7 +168,7 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
       <TrialGroup
         id="trials-partly"
         title={`Not fully checked (${partly.length})`}
-        note="Nothing checked so far likely rules you out, but some rules are not checked yet or could not be read."
+        note="The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest."
         trials={partly.filter((t) => visible.has(t.nctId))}
         profile={profile}
         checkTrial={checkTrial}

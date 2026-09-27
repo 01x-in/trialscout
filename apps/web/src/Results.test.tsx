@@ -112,8 +112,10 @@ describe('the results list', () => {
         .getAllByRole('article')
         .map((a) => a.id),
     ).toEqual(['trial-NCT00000002', 'trial-NCT00000003'])
+    // Says what the search found, so a card that later finds a likely fail does not
+    // contradict it.
     expect(partly).toHaveTextContent(
-      'Nothing checked so far likely rules you out, but some rules are not checked yet or could not be read.',
+      'The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest.',
     )
     expect(cardIds()).toEqual([
       'trial-NCT00000001',

@@ -48,7 +48,7 @@ Type this in the form, exactly:
   - *Must have disease with evidence of KRAS G12C mutation.* (0.94). She has an EGFR mutation instead.
   - The exclusion for *a documented additional validated targetable oncogenic driver mutation… (EGFR)…* (0.99).
   - The exclusion for *Prior systemic therapy… for advanced or metastatic…* disease (0.92). She took osimertinib.
-- **Card counts** show what the search checked until the trial is opened. Opening it checks the rules the search left "not checked yet", and the card's counts update to match: the KRAS card went from 2 likely fails and "11 not checked yet" to 3 likely fails. A trial with rules left unchecked sits under "Not fully checked", never under "Nothing likely rules you out", and stays there after opening.
+- **Card counts** show what the search checked until the trial is opened. Opening it checks the rules the search left "not checked yet", and the card's counts update to match: the KRAS card went from 2 likely fails and "11 not checked yet" to 3 likely fails. A trial with rules left unchecked sits under "Not fully checked", never under "Nothing likely rules you out", and stays there after opening; if the full check finds a likely fail, the card says "Checking every rule found something that likely rules you out."
 - **Ushuaia:** no trials within 50 km, with the "larger travel distance" hint. No Jev call.
 
 ### Backups if a beat changes on the day

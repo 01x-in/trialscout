@@ -63,6 +63,9 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
     check.kind === 'done' && check.outcome.kind === 'verdicts'
       ? check.outcome.response.counts
       : trial.counts
+  // The card sits in the group the search put it in; say so when the full check finds a
+  // likely fail the search did not.
+  const newFail = trial.counts.likely_fails === 0 && counts.likely_fails > 0
   const detailsId = `${trial.nctId}-details`
 
   // While printing, the sheet is the only thing on the page (index.css); afterwards it goes.
@@ -144,6 +147,11 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
             ))}
           </ul>
         </>
+      )}
+      {newFail && (
+        <p className="trial-new-fail">
+          Checking every rule found something that likely rules you out.
+        </p>
       )}
       <div className="trial-actions">
         <button

@@ -132,5 +132,33 @@ describe('a trial card', () => {
 
     expect(await screen.findByText('1 likely fails')).toBeVisible()
     expect(counts()).toEqual(['✓4 likely meets', '✕1 likely fails', '?6 ask your doctor'])
+    expect(
+      screen.getByText('Checking every rule found something that likely rules you out.'),
+    ).toBeVisible()
+  })
+
+  it('says nothing new when the full check finds no likely fail the search missed', async () => {
+    render(
+      <TrialCard
+        trial={{ ...TRIAL, counts: { ...TRIAL.counts, likely_fails: 0, not_checked: 2 } }}
+        profile={PROFILE}
+        checkTrial={async () => ({
+          kind: 'verdicts',
+          response: {
+            ...TRIAL,
+            criteria: [],
+            rawCriteria: null,
+            counts: { likely_meets: 5, likely_fails: 0, ask_your_doctor: 6, not_checked: 0 },
+            checked: { questions: 2, requests: 1, cacheHits: 0, model: 'jev-1.13.0' },
+            dataAsOf: Date.UTC(2026, 8, 27),
+          },
+        })}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Check each rule' }))
+
+    expect(await screen.findByText('5 likely meets')).toBeVisible()
+    expect(screen.queryByText(/found something that likely rules you out/)).toBeNull()
   })
 })
