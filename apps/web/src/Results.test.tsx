@@ -39,7 +39,12 @@ function trials(passing: number, failing: number): TrialResult[] {
   ]
 }
 
-function show(results: TrialResult[], onEdit = vi.fn()): void {
+function show(
+  results: TrialResult[],
+  onEdit = vi.fn(),
+  profile: Profile = PROFILE,
+  listed: SearchResponse['listed'] = { total: results.length, read: results.length },
+): void {
   const response: SearchResponse = {
     location: { city: 'Mumbai', countryCode: 'IN' },
     results,
@@ -47,11 +52,12 @@ function show(results: TrialResult[], onEdit = vi.fn()): void {
     checked: { questions: 40, requests: 4, cacheHits: 0, model: 'jev-1.13.0' },
     source: 'live',
     dataAsOf: Date.UTC(2026, 8, 26),
+    listed,
   }
   render(
     <Results
       response={response}
-      profile={PROFILE}
+      profile={profile}
       checkTrial={async () => ({ kind: 'unavailable' })}
       onEdit={onEdit}
     />,
@@ -71,6 +77,33 @@ describe('the results list', () => {
     expect(summary).toHaveTextContent('Trial details from ClinicalTrials.gov, 26 September 2026.')
     fireEvent.click(within(summary).getByRole('button', { name: 'Change your answers' }))
     expect(onEdit).toHaveBeenCalledTimes(1)
+  })
+
+  it('says "at any distance" when the patient can travel anywhere', () => {
+    show(trials(2, 0), vi.fn(), { ...PROFILE, maxDistanceKm: 20000 })
+
+    expect(screen.getByRole('region', { name: 'Your search' })).toHaveTextContent(
+      '2 recruiting trials at any distance from Mumbai.',
+    )
+  })
+
+  // A search reads a fixed number of trials in ClinicalTrials.gov's order, not by distance.
+  it('says when ClinicalTrials.gov lists more trials than were checked', () => {
+    show(trials(2, 0), vi.fn(), { ...PROFILE, maxDistanceKm: 20000 }, { total: 1076, read: 100 })
+
+    expect(screen.getByRole('region', { name: 'Your search' })).toHaveTextContent(
+      'ClinicalTrials.gov lists 1,076 recruiting trials at any distance from Mumbai. We checked the first 100 it gave us, which are not always the nearest. Choose a smaller distance to check the nearest ones.',
+    )
+  })
+
+  it('says nothing more when every trial listed was checked', () => {
+    show(trials(2, 0), vi.fn(), PROFILE, { total: 2, read: 2 })
+    expect(screen.queryByText(/We checked the first/)).toBeNull()
+  })
+
+  it('says nothing more for the saved copy, whose total is unknown', () => {
+    show(trials(2, 0), vi.fn(), PROFILE, { total: null, read: 2 })
+    expect(screen.queryByText(/We checked the first/)).toBeNull()
   })
 
   it('lists trials that something likely rules out last, under their own heading', () => {

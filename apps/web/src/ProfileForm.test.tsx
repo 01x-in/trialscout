@@ -112,6 +112,29 @@ describe('the profile form', () => {
     }
   })
 
+  it('offers "Any distance", for a patient who can travel anywhere', () => {
+    renderApp()
+    const picks = within(group('Distance quick picks'))
+
+    expect(picks.getAllByRole('button').map((b) => b.textContent)).toEqual([
+      '50 km',
+      '100 km',
+      '300 km',
+      '1,000 km',
+      'Any distance',
+    ])
+    fireEvent.click(picks.getByRole('button', { name: 'Any distance' }))
+
+    // The furthest the search allows: half the way round the Earth.
+    expect(screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)').value).toBe(
+      '20000',
+    )
+    expect(picks.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+  })
+
   it('never submits the form from a quick pick', () => {
     let searches = 0
     renderApp(async () => {
@@ -194,6 +217,7 @@ describe('the profile form', () => {
             checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
             source: 'live',
             dataAsOf: Date.UTC(2026, 8, 27),
+            listed: { total: 0, read: 0 },
           },
         })}
         checkTrial={async () => ({ kind: 'unavailable' })}

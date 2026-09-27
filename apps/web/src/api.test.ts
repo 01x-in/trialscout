@@ -24,6 +24,7 @@ const RESPONSE: SearchResponse = {
   checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
   source: 'live',
   dataAsOf: 1_790_000_000_000,
+  listed: { total: 0, read: 0 },
 }
 
 function problem(status: number, type: string, headers: Record<string, string> = {}): Response {

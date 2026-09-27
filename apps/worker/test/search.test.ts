@@ -11,7 +11,7 @@ import { TrialStore } from '../src/store.ts'
 import type { Trial } from '../src/trial.ts'
 import { NOW, PUNE_NSCLC, seedPlaces, type TestOptions, testServices } from './helpers.ts'
 import { FakeJev, rules } from './jev.ts'
-import { mockFetch } from './recorded.ts'
+import { mockFetch, recording } from './recorded.ts'
 
 beforeEach(async () => {
   await seedPlaces(createDb(env.DB))
@@ -56,6 +56,16 @@ describe('POST /api/search', () => {
     expect(body.results.map((r) => r.nctId)).toEqual(order)
     expect(body.checked.questions).toBeGreaterThan(0)
     expect(body.checked.model).toBe('jev-1.13.0')
+  })
+
+  // A search reads at most pageSize × maxPages trials, in ClinicalTrials.gov's own order (it
+  // cannot sort by distance), so the patient is told when it lists more than were checked.
+  it('says how many trials ClinicalTrials.gov lists, and how many were read', async () => {
+    const body = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+    const total = (recording('search-nsclc-pune-p1').body as { totalCount: number }).totalCount
+
+    expect(body.listed).toEqual({ total, read: 10 })
+    expect(total).toBeGreaterThan(10)
   })
 
   it('gives each trial its own sex limit, as ClinicalTrials.gov lists it', async () => {

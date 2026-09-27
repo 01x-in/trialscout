@@ -108,6 +108,7 @@ function response(source: SearchResponse['source'] = 'live'): SearchResponse {
     checked: { questions: 40, requests: 4, cacheHits: 0, model: 'jev-1.13.0' },
     source,
     dataAsOf: Date.UTC(2026, 8, 26),
+    listed: { total: 2, read: 2 },
   }
 }
 

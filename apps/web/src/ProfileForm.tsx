@@ -1,5 +1,6 @@
 import type { CancerStage, Profile, Sex } from '@trialscout/contract'
 import { type JSX, type ReactNode, type SubmitEvent, useState } from 'react'
+import { ANY_DISTANCE_KM } from './format.ts'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
 const LABELS: Record<ProfileField, string> = {
@@ -41,7 +42,10 @@ const SEXES: { value: Sex; label: string }[] = [
   { value: 'other', label: 'Other' },
 ]
 
-const DISTANCE_PICKS = [50, 100, 300, 1000]
+const DISTANCE_PICKS: { km: number; label: string }[] = [
+  ...[50, 100, 300, 1000].map((km) => ({ km, label: `${km.toLocaleString('en-GB')} km` })),
+  { km: ANY_DISTANCE_KM, label: 'Any distance' },
+]
 const NOTES_LIMIT = 4000
 
 const number = (n: number): string => n.toLocaleString('en-GB')
@@ -265,15 +269,15 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           error={error('maxDistanceKm')}
           after={
             <div role="group" aria-label="Distance quick picks" className="quick-picks">
-              {DISTANCE_PICKS.map((km) => (
+              {DISTANCE_PICKS.map((pick) => (
                 <button
-                  key={km}
+                  key={pick.km}
                   type="button"
                   className="chip"
-                  aria-pressed={distance === String(km)}
-                  onClick={() => setDistance(String(km))}
+                  aria-pressed={distance === String(pick.km)}
+                  onClick={() => setDistance(String(pick.km))}
                 >
-                  {number(km)} km
+                  {pick.label}
                 </button>
               ))}
             </div>

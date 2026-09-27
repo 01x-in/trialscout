@@ -326,23 +326,32 @@ h1 {
 }
 
 .chip {
-  min-height: var(--control-height);
+  min-height: 2.5rem;
   padding: var(--space-1) var(--space-4);
   font: inherit;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--fg);
-  background: transparent;
-  border: 1px solid var(--control);
+  /* Soft and borderless: a quiet shortcut, not another field. */
+  background: var(--surface-2);
+  border: 0;
   border-radius: 999px;
   cursor: pointer;
   touch-action: manipulation;
 }
 
+.chip:hover {
+  background: var(--line);
+}
+
 .chip[aria-pressed='true'] {
   color: var(--accent);
   background: var(--accent-soft);
-  border: 2px solid var(--accent);
+}
+
+/* A tick, so the chosen chip is not told apart by colour alone. */
+.chip[aria-pressed='true']::before {
+  content: '✓ ';
 }
 
 .field-foot {

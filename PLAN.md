@@ -168,6 +168,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - the results headings "Nothing likely rules you out" (only for trials with every rule checked), "Not fully checked" and "Something likely rules you out", and their notes "The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest." and "Listed last, not hidden. A likely fail can be wrong: your doctor can check it.";
   - the filter chips ("All", "Ask your doctor", "Likely fails", "Likely meets", "Not checked yet"), "None of these rules." and "Showing n of m rules.";
   - the sex choice "Female / Male / Other", its error "Choose female, male or other.", and the card note for "other" on a single-sex trial;
+  - the "Any distance" quick pick (20,000 km, the search's limit), the summary's "at any distance from …", and its note when ClinicalTrials.gov lists more trials than a search reads ("We checked the first 100 it gave us, which are not always the nearest. Choose a smaller distance to check the nearest ones.");
   - "Official page", and the card line "Checking every rule found something that likely rules you out." shown when opening a trial finds a likely fail the search did not.
 
 Record the result in `docs/gate-2-review.md`.

@@ -57,3 +57,14 @@ export function profileSummary(profile: Profile): string {
   const sex = profile.sex === 'other' ? 'sex other' : profile.sex
   return `${profile.cancerType}, ${stage}, age ${profile.age}, ${sex}.`
 }
+
+/** The furthest a search reaches (Profile.maxDistanceKm's limit): about half the way round
+ * the Earth, so no trial site is further. The form offers it as "Any distance". */
+export const ANY_DISTANCE_KM = 20000
+
+/** "within 300 km of Pune", or "at any distance from Pune". */
+export function whereLabel(maxDistanceKm: number, city: string): string {
+  return maxDistanceKm >= ANY_DISTANCE_KM
+    ? `at any distance from ${city}`
+    : `within ${maxDistanceKm} km of ${city}`
+}

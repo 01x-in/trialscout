@@ -1,7 +1,7 @@
 import type { EmptyReason, Profile, SearchResponse, TrialResult } from '@trialscout/contract'
 import { type JSX, type ReactNode, useEffect, useState } from 'react'
 import type { CheckTrial } from './api.ts'
-import { dateLabel, profileSummary } from './format.ts'
+import { dateLabel, profileSummary, whereLabel } from './format.ts'
 import { TrialCard } from './TrialCard.tsx'
 
 // Trials shown at first, and added by each "Show more".
@@ -43,6 +43,28 @@ function DataAsOf({ response }: { response: SearchResponse }): JSX.Element {
   return <p className="results-note">Trial details from ClinicalTrials.gov, {date}.</p>
 }
 
+// A search reads a fixed number of trials in ClinicalTrials.gov's own order, which is not by
+// distance. When it lists more, say so: the nearest trials may not all have been checked.
+function Coverage({
+  listed,
+  maxDistanceKm,
+  city,
+}: {
+  listed: SearchResponse['listed']
+  maxDistanceKm: number
+  city: string
+}): JSX.Element | null {
+  if (listed.total === null || listed.total <= listed.read) return null
+  const n = (x: number): string => x.toLocaleString('en-GB')
+  return (
+    <p className="results-note">
+      ClinicalTrials.gov lists {n(listed.total)} recruiting trials {whereLabel(maxDistanceKm, city)}
+      . We checked the first {n(listed.read)} it gave us, which are not always the nearest. Choose a
+      smaller distance to check the nearest ones.
+    </p>
+  )
+}
+
 // The search at a glance: who it was checked for, what came back, and a way back.
 function Summary({
   response,
@@ -54,6 +76,11 @@ function Summary({
     <section className="results-summary" aria-label="Your search">
       <p className="checked-for">Checked for: {profileSummary(profile)}</p>
       {children}
+      <Coverage
+        listed={response.listed}
+        maxDistanceKm={profile.maxDistanceKm}
+        city={response.location.city}
+      />
       <DataAsOf response={response} />
       <button type="button" className="button button-secondary" onClick={onEdit}>
         Change your answers
@@ -92,7 +119,7 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
   const [shown, setShown] = useState(PAGE)
   // The first card a "Show more" added, to move focus to once it is on the page.
   const [focusId, setFocusId] = useState<string | null>(null)
-  const where = `within ${profile.maxDistanceKm} km of ${response.location.city}`
+  const where = whereLabel(profile.maxDistanceKm, response.location.city)
 
   useEffect(() => {
     if (focusId !== null) document.getElementById(`trial-${focusId}`)?.focus()
