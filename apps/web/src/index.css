@@ -227,9 +227,10 @@ h1 {
 .profile-form textarea {
   box-sizing: border-box;
   width: 100%;
-  min-height: var(--control-height);
+  margin: 0;
   padding: var(--space-2) var(--space-3);
   font: inherit;
+  line-height: 1.25;
   color: var(--fg);
   /* A shade off the section card, so each field reads as a place to type. */
   background: var(--bg);
@@ -237,12 +238,47 @@ h1 {
   border-radius: var(--radius-sm);
 }
 
+/* One height for every single-line field. Browsers draw menus natively at their own
+   height (Safari ignores ours), so menus drop that drawing and get the arrow below. */
+.profile-form input,
+.profile-form select {
+  height: var(--control-height);
+}
+
+.profile-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.75rem;
+  cursor: pointer;
+}
+
+.select {
+  position: relative;
+}
+
+/* The menu arrow, drawn in CSS: no image, so nothing loads from anywhere. */
+.select::after {
+  position: absolute;
+  top: 50%;
+  right: 1.1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+  content: '';
+}
+
 .profile-form textarea {
+  min-height: 7rem;
   resize: vertical;
 }
 
+/* An invalid field gets a thicker edge without changing its size. */
 .profile-form [aria-invalid='true'] {
-  border: 2px solid var(--error);
+  border-color: var(--error);
+  box-shadow: 0 0 0 1px var(--error);
 }
 
 .field-error {

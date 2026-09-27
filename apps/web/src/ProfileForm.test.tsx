@@ -50,6 +50,16 @@ describe('the profile form', () => {
     ).toBeInTheDocument()
   })
 
+  // Safari draws its own menus at its own height, ignoring ours; the form turns that off
+  // and draws the arrow on a wrapper, so every field is the same height in every browser.
+  it('wraps each drop-down menu to draw its own arrow', () => {
+    renderApp()
+
+    for (const label of ['Stage', 'Sex']) {
+      expect(screen.getByLabelText(label).parentElement).toHaveClass('select')
+    }
+  })
+
   it('fills the distance from a quick pick, and shows which one is chosen', () => {
     renderApp()
     const picks = within(group('Distance quick picks'))

@@ -143,14 +143,16 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
 
         <Field id="stage" error={error('stage')}>
           {(aria) => (
-            <select id="stage" name="stage" defaultValue={initial?.stage ?? ''} {...aria}>
-              <option value="">Choose…</option>
-              {STAGES.map((stage) => (
-                <option key={stage.value} value={stage.value}>
-                  {stage.label}
-                </option>
-              ))}
-            </select>
+            <div className="select">
+              <select id="stage" name="stage" defaultValue={initial?.stage ?? ''} {...aria}>
+                <option value="">Choose…</option>
+                {STAGES.map((stage) => (
+                  <option key={stage.value} value={stage.value}>
+                    {stage.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
         </Field>
       </Section>
@@ -171,11 +173,13 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
 
           <Field id="sex" error={error('sex')}>
             {(aria) => (
-              <select id="sex" name="sex" defaultValue={initial?.sex ?? ''} {...aria}>
-                <option value="">Choose…</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-              </select>
+              <div className="select">
+                <select id="sex" name="sex" defaultValue={initial?.sex ?? ''} {...aria}>
+                  <option value="">Choose…</option>
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                </select>
+              </div>
             )}
           </Field>
         </div>
