@@ -1,5 +1,5 @@
 import type { CriterionVerdict, TrialVerdictsResponse } from '@trialscout/contract'
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { Checklist } from './Checklist.tsx'
 
@@ -112,6 +112,84 @@ describe('Checklist', () => {
 
     expect(screen.getByText(raw).tagName).toBe('BLOCKQUOTE')
     expect(screen.getByText(/ask your doctor/i)).toBeInTheDocument()
+  })
+
+  it('counts the rules in each list beside its heading', () => {
+    render(<Checklist trial={trial()} />)
+
+    expect(screen.getByRole('heading', { name: 'To take part, you need (2)' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: 'You cannot take part if (2)' })).toBeVisible()
+  })
+
+  it('offers a filter for each verdict it found, with counts, starting at all', () => {
+    render(<Checklist trial={trial()} />)
+    const chips = within(screen.getByRole('group', { name: 'Show rules' })).getAllByRole('button')
+
+    expect(chips.map((c) => [c.textContent, c.getAttribute('aria-pressed')])).toEqual([
+      ['All (4)', 'true'],
+      ['Ask your doctor (1)', 'false'],
+      ['Likely fails (1)', 'false'],
+      ['Likely meets (1)', 'false'],
+      ['Not checked yet (1)', 'false'],
+    ])
+  })
+
+  it('shows only the rules with the chosen verdict, and all of them again', () => {
+    render(<Checklist trial={trial()} />)
+    const chips = within(screen.getByRole('group', { name: 'Show rules' }))
+
+    fireEvent.click(chips.getByRole('button', { name: 'Ask your doctor (1)' }))
+
+    const include = screen.getByRole('list', { name: 'To take part, you need' })
+    expect(within(include).getAllByRole('listitem')).toHaveLength(1)
+    expect(within(include).getByText('ECOG performance status 0-1')).toBeVisible()
+    expect(screen.queryByRole('list', { name: 'You cannot take part if' })).toBeNull()
+    expect(screen.getByText('None of these rules.')).toBeVisible()
+    expect(screen.queryByRole('list', { name: 'Rules for other groups of patients' })).toBeNull()
+    expect(screen.getByRole('status')).toHaveTextContent('Showing 1 of 4 rules.')
+    expect(chips.getByRole('button', { name: 'Ask your doctor (1)' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+
+    fireEvent.click(chips.getByRole('button', { name: 'All (4)' }))
+    expect(screen.getAllByRole('listitem')).toHaveLength(5)
+    expect(screen.getByRole('status')).toHaveTextContent('')
+  })
+
+  it('leaves out filters for verdicts it did not find', () => {
+    render(
+      <Checklist
+        trial={trial({
+          criteria: [
+            criterion('inclusion', 'Adults aged 18 or over', 'likely_meets'),
+            criterion('inclusion', 'ECOG performance status 0-1', 'ask_your_doctor'),
+            criterion('exclusion', 'Pregnant or breast-feeding', 'likely_meets'),
+          ],
+        })}
+      />,
+    )
+
+    expect(
+      within(screen.getByRole('group', { name: 'Show rules' }))
+        .getAllByRole('button')
+        .map((c) => c.textContent),
+    ).toEqual(['All (3)', 'Ask your doctor (1)', 'Likely meets (2)'])
+  })
+
+  it('shows no filters when every rule has the same verdict', () => {
+    render(
+      <Checklist
+        trial={trial({
+          criteria: [
+            criterion('inclusion', 'Adults aged 18 or over', 'ask_your_doctor'),
+            criterion('exclusion', 'Pregnant or breast-feeding', 'ask_your_doctor'),
+          ],
+        })}
+      />,
+    )
+
+    expect(screen.queryByRole('group', { name: 'Show rules' })).toBeNull()
   })
 
   it('never promises eligibility in its own wording', () => {

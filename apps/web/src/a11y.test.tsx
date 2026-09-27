@@ -141,6 +141,15 @@ describe('axe (WCAG 2.2 A and AA)', () => {
     expect(await violations()).toEqual([])
   })
 
+  it('finds nothing on an opened trial filtered to one verdict', async () => {
+    renderApp({ kind: 'results', response: response() }, { kind: 'verdicts', response: VERDICTS })
+    await search()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Check each rule' })[0] as HTMLElement)
+    fireEvent.click(await screen.findByRole('button', { name: 'Ask your doctor (1)' }))
+    expect(screen.getByText('Showing 1 of 4 rules.')).toBeInTheDocument()
+    expect(await violations()).toEqual([])
+  })
+
   it('finds nothing on results served from the saved copy, or with no trials', async () => {
     renderApp({ kind: 'results', response: response('saved') })
     await search()

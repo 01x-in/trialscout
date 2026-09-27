@@ -166,6 +166,15 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
         </p>
         {open && check.kind === 'done' && check.outcome.kind === 'verdicts' && (
           <>
+            <div className="trial-toolbar">
+              <button
+                type="button"
+                className="button button-secondary trial-toggle"
+                onClick={print}
+              >
+                Print questions for your doctor
+              </button>
+            </div>
             <Checklist trial={check.outcome.response} />
             <p className="trial-source">
               <a href={trial.url} target="_blank" rel="noreferrer">
@@ -173,9 +182,6 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
                 <span className="visually-hidden"> (opens in a new tab)</span>
               </a>
             </p>
-            <button type="button" className="button button-secondary trial-toggle" onClick={print}>
-              Print questions for your doctor
-            </button>
           </>
         )}
       </div>

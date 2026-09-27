@@ -676,9 +676,41 @@ h1 {
   }
 }
 
+.trial-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 var(--space-3);
+}
+
+.checklist-filters {
+  margin: var(--space-2) 0 0;
+}
+
+.filter-status {
+  margin: var(--space-2) 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.filter-status:empty {
+  display: none;
+}
+
 .checklist h4 {
-  margin: 1.4rem 0 0.5rem;
+  margin: var(--space-5) 0 var(--space-2);
   font-size: 1.05rem;
+}
+
+.rule-count {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.criteria-empty {
+  margin: 0;
+  color: var(--muted);
 }
 
 .criteria {
@@ -690,18 +722,25 @@ h1 {
 }
 
 .criterion {
-  padding: 0.7rem 0.8rem;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-left-width: 4px;
-  border-radius: 0.4rem;
+  border-radius: var(--radius-sm);
 }
 
+/* The verdict as a soft pill, then Jev's confidence in muted text. */
 .criterion-verdict {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem;
-  margin: 0 0 0.4rem;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
   font-weight: 600;
+}
+
+.criterion-verdict > span:nth-child(2) {
+  margin-left: calc(-1 * var(--space-1));
 }
 
 .criterion-confidence {
@@ -722,6 +761,10 @@ h1 {
   color: var(--meets);
 }
 
+.criterion-likely_meets .count-icon {
+  background: var(--meets-bg);
+}
+
 .criterion-likely_fails {
   border-left-color: var(--fails);
 }
@@ -730,12 +773,20 @@ h1 {
   color: var(--fails);
 }
 
+.criterion-likely_fails .count-icon {
+  background: var(--fails-bg);
+}
+
 .criterion-ask_your_doctor {
   border-left-color: var(--ask);
 }
 
 .criterion-ask_your_doctor .criterion-verdict {
   color: var(--ask);
+}
+
+.criterion-ask_your_doctor .count-icon {
+  background: var(--ask-bg);
 }
 
 .criterion-not_checked .criterion-verdict {
@@ -775,8 +826,19 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
+/* Rules for other groups of patients: no verdict, so quieter than the rest. */
+.criterion-other {
+  background: transparent;
+  border-style: dashed;
+  border-left-width: 1px;
+}
+
+/* "To ask": a callout, set apart from the quoted rule it belongs to. */
 .criterion-question {
-  margin: 0.5rem 0 0;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-left: 3px solid var(--ask);
 }
 
 .checked-for {
@@ -784,7 +846,7 @@ h1 {
 }
 
 .trial-source {
-  margin: 1.2rem 0 0;
+  margin: var(--space-5) 0 0;
 }
 
 .trial-source a {
@@ -867,7 +929,11 @@ h1 {
     background: none !important;
   }
 
-  .trial-toggle {
+  .trial-toggle,
+  .trial-toolbar,
+  .checklist-filters,
+  .show-more,
+  .form-actions {
     display: none;
   }
 
