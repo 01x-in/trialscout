@@ -62,6 +62,14 @@ export function profileSummary(profile: Profile): string {
  * the Earth, so no trial site is further. The form offers it as "Any distance". */
 export const ANY_DISTANCE_KM = 20000
 
+/** What the distance field shows for ANY_DISTANCE_KM; the search itself gets the number. */
+export const ANY_DISTANCE_LABEL = 'Any distance'
+
+/** The distance field's text for a distance: "300", or "Any distance". */
+export function distanceText(km: number): string {
+  return km >= ANY_DISTANCE_KM ? ANY_DISTANCE_LABEL : String(km)
+}
+
 /** "within 300 km of Pune", or "at any distance from Pune". */
 export function whereLabel(maxDistanceKm: number, city: string): string {
   return maxDistanceKm >= ANY_DISTANCE_KM

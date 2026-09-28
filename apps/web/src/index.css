@@ -317,8 +317,46 @@ h1 {
   box-shadow: none;
 }
 
-/* Chips: the distance quick picks and the checklist filters. */
-.quick-picks,
+/* Distance quick picks: plain text buttons, like links, after "Or choose:". Each still has
+   a 44px touch target; the chosen one is bold, with a tick, and not underlined. */
+.quick-picks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-1);
+  font-size: 0.95rem;
+}
+
+.quick-picks-lead {
+  margin-right: var(--space-1);
+  color: var(--muted);
+}
+
+.text-pick {
+  min-height: var(--control-height);
+  padding: 0 var(--space-2);
+  font: inherit;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.text-pick[aria-pressed='true'] {
+  color: var(--fg);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.text-pick[aria-pressed='true']::before {
+  color: var(--accent);
+  content: '✓ ';
+}
+
+/* Chips: the checklist filters. */
 .chips {
   display: flex;
   flex-wrap: wrap;

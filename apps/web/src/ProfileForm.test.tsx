@@ -1,3 +1,4 @@
+import type { Profile } from '@trialscout/contract'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { SearchOutcome } from './api.ts'
@@ -7,7 +8,7 @@ import { App } from './App.tsx'
 // error summary and the loading state.
 
 function renderApp(
-  search: () => Promise<SearchOutcome> = async () => ({ kind: 'unavailable' }),
+  search: (profile: Profile) => Promise<SearchOutcome> = async () => ({ kind: 'unavailable' }),
 ): void {
   sessionStorage.clear()
   render(<App search={search} checkTrial={async () => ({ kind: 'unavailable' })} />)
@@ -112,6 +113,14 @@ describe('the profile form', () => {
     }
   })
 
+  it('shows the quick picks as plain text buttons after "Or choose:"', () => {
+    renderApp()
+    const picks = group('Distance quick picks')
+
+    expect(picks).toHaveTextContent(/^Or choose:/)
+    for (const pick of within(picks).getAllByRole('button')) expect(pick).toHaveClass('text-pick')
+  })
+
   it('offers "Any distance", for a patient who can travel anywhere', () => {
     renderApp()
     const picks = within(group('Distance quick picks'))
@@ -125,11 +134,60 @@ describe('the profile form', () => {
     ])
     fireEvent.click(picks.getByRole('button', { name: 'Any distance' }))
 
-    // The furthest the search allows: half the way round the Earth.
+    // The field says "Any distance"; the search gets 20,000 km (see the next test).
     expect(screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)').value).toBe(
-      '20000',
+      'Any distance',
     )
     expect(picks.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+  })
+
+  it('searches 20,000 km, the furthest a search reaches, for "Any distance"', async () => {
+    const searched: number[] = []
+    renderApp(async (profile) => {
+      searched.push(profile.maxDistanceKm)
+      return { kind: 'unavailable' }
+    })
+    fireEvent.change(screen.getByLabelText('Cancer type'), { target: { value: 'lung cancer' } })
+    fireEvent.change(screen.getByLabelText('Stage'), { target: { value: 'IV' } })
+    fireEvent.change(screen.getByLabelText('Age'), { target: { value: '58' } })
+    fireEvent.click(screen.getByLabelText('Female'))
+    fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'India' } })
+    fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Pune' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Any distance' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+
+    await screen.findByText(/could not check trials right now/)
+    expect(searched).toEqual([20000])
+  })
+
+  it('shows "Any distance" again for a saved search at 20,000 km', () => {
+    sessionStorage.setItem(
+      'trialscout.profile',
+      JSON.stringify({
+        cancerType: 'lung cancer',
+        stage: 'IV',
+        age: 58,
+        sex: 'female',
+        country: 'India',
+        city: 'Pune',
+        maxDistanceKm: 20000,
+      }),
+    )
+    render(
+      <App
+        search={async () => ({ kind: 'unavailable' })}
+        checkTrial={async () => ({ kind: 'unavailable' })}
+      />,
+    )
+
+    expect(screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)').value).toBe(
+      'Any distance',
+    )
+    expect(screen.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
       'aria-pressed',
       'true',
     )

@@ -1,6 +1,6 @@
 import type { CancerStage, Profile, Sex } from '@trialscout/contract'
 import { type JSX, type ReactNode, type SubmitEvent, useState } from 'react'
-import { ANY_DISTANCE_KM } from './format.ts'
+import { ANY_DISTANCE_KM, ANY_DISTANCE_LABEL, distanceText } from './format.ts'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
 const LABELS: Record<ProfileField, string> = {
@@ -44,7 +44,7 @@ const SEXES: { value: Sex; label: string }[] = [
 
 const DISTANCE_PICKS: { km: number; label: string }[] = [
   ...[50, 100, 300, 1000].map((km) => ({ km, label: `${km.toLocaleString('en-GB')} km` })),
-  { km: ANY_DISTANCE_KM, label: 'Any distance' },
+  { km: ANY_DISTANCE_KM, label: ANY_DISTANCE_LABEL },
 ]
 const NOTES_LIMIT = 4000
 
@@ -166,7 +166,9 @@ function focusField(field: ProfileField): void {
 // this browser tab (sessionStorage).
 export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX.Element {
   const [invalid, setInvalid] = useState<ProfileField[]>([])
-  const [distance, setDistance] = useState(initial === null ? '' : String(initial.maxDistanceKm))
+  const [distance, setDistance] = useState(
+    initial === null ? '' : distanceText(initial.maxDistanceKm),
+  )
   const [notesLength, setNotesLength] = useState(initial?.notes?.length ?? 0)
 
   function submit(event: SubmitEvent<HTMLFormElement>): void {
@@ -269,13 +271,17 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           error={error('maxDistanceKm')}
           after={
             <div role="group" aria-label="Distance quick picks" className="quick-picks">
+              {/* The group has its own name; this is for sighted readers. */}
+              <span className="quick-picks-lead" aria-hidden="true">
+                Or choose:
+              </span>
               {DISTANCE_PICKS.map((pick) => (
                 <button
                   key={pick.km}
                   type="button"
-                  className="chip"
-                  aria-pressed={distance === String(pick.km)}
-                  onClick={() => setDistance(String(pick.km))}
+                  className="text-pick"
+                  aria-pressed={distance === distanceText(pick.km)}
+                  onClick={() => setDistance(distanceText(pick.km))}
                 >
                   {pick.label}
                 </button>
