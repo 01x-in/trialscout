@@ -114,7 +114,7 @@
   }
 
   a {
-    @apply text-primary underline-offset-4;
+    @apply text-primary underline underline-offset-4;
   }
 
   /* One focus ring for every control and link. */
@@ -140,41 +140,16 @@
   --control-height: 2.75rem;
 }
 
+/* The disclaimer strip: plain CSS, since the deploy smoke test (scripts/lib/smoke.ts) reads
+   this rule and its print rule below. SiteHeader keeps it in view. */
 @layer components {
   .demo-caution {
-    position: sticky;
-    top: 0;
-    z-index: 10;
     padding: 0.5rem 1rem;
     text-align: center;
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--caution-fg);
     background: var(--caution-bg);
-  }
-
-  .page {
-    box-sizing: border-box;
-    max-width: 42rem;
-    /* Long trial titles and sponsor names wrap rather than widen the page on a phone. */
-    overflow-wrap: break-word;
-    margin: 0 auto;
-    padding: 2rem 1rem 4rem;
-  }
-
-  .site-footer {
-    border-top: 1px solid var(--line);
-    padding-block: 1.5rem 3rem;
-    font-size: 0.95rem;
-  }
-
-  .about h2 {
-    margin: 2rem 0 0.5rem;
-    font-size: 1.3rem;
-  }
-
-  .about li + li {
-    margin-top: 0.4rem;
   }
 
   h1 {

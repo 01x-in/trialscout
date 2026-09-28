@@ -6,10 +6,10 @@ import {
   type SearchOutcome,
   searchTrials,
 } from './api.ts'
-import { DemoCaution } from './DemoCaution.tsx'
 import { type PlaceError, ProfileForm } from './ProfileForm.tsx'
 import { loadProfile } from './profile.ts'
 import { Results } from './Results.tsx'
+import { SiteHeader } from './SiteHeader.tsx'
 
 type Search = (profile: Profile) => Promise<SearchOutcome>
 
@@ -58,9 +58,9 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
 
   return (
     <>
-      <DemoCaution />
-      <main className="page">
-        <h1>TrialScout</h1>
+      <SiteHeader page="search" />
+      <main className="mx-auto max-w-3xl px-4 pt-8 pb-16 [overflow-wrap:break-word]">
+        <h1 className="font-semibold text-3xl tracking-tight sm:text-4xl">TrialScout</h1>
         <p className="lede">
           Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule,
           and show which ones are worth discussing with your doctor.
@@ -100,9 +100,6 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
           />
         )}
       </main>
-      <footer className="page site-footer">
-        <a href="/about">About this demo</a>
-      </footer>
     </>
   )
 }
