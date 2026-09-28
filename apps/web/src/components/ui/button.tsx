@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import type { ComponentProps, JSX } from 'react'
 import { cn } from '@/lib/utils.ts'
 
-// shadcn/ui Button. Sizes keep a 44px touch target by default, and focus uses the page's
+// shadcn/ui Button. Every size keeps a 44px touch target, and focus uses the page's
 // own solid ring (index.css) rather than shadcn's faint one.
 const buttonVariants = cva(
   "inline-flex shrink-0 cursor-pointer no-underline touch-manipulation items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-60 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -19,7 +19,8 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-11 px-5 text-base has-[>svg]:px-4',
-        sm: 'h-9 gap-1.5 px-3 text-sm has-[>svg]:px-2.5',
+        // Smaller text and padding, but still a 44px touch target.
+        sm: 'h-11 gap-1.5 px-3 text-sm has-[>svg]:px-2.5',
         lg: 'h-12 px-6 text-base has-[>svg]:px-5',
       },
     },
