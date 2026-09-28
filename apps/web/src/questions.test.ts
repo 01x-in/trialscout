@@ -71,6 +71,80 @@ const CASES: [CriterionVerdict['kind'], string, RegExp][] = [
     'Ability to tolerate PO meds and comply with study procedures',
     /steps the study asks/,
   ],
+  // Live checks on 2026-09-27 that picked the wrong topic. "Metastatic setting" names when a
+  // treatment was given, not where the cancer has spread.
+  [
+    'inclusion',
+    'Documented extra-cranial radiologic progression on prior osimertinib monotherapy (as most recent line of treatment) in the adjuvant, locally advanced, or metastatic setting.',
+    /treatments I have had/,
+  ],
+  [
+    'exclusion',
+    'Use of chemotherapy, vascular endothelial growth factor inhibitor, immunotherapy or any anti-cancer therapy in the metastatic setting. Platinum-based chemotherapy in non-metastatic setting within 12 months prior to randomization.',
+    /treatments I have had/,
+  ],
+  // A list of many conditions is not about the one infection it names.
+  [
+    'exclusion',
+    'Any evidence of severe or uncontrolled systemic diseases, including, but not limited to active bleeding diseases, active infection, active ILD/pneumonitis, cardiac disease.',
+    /other health problems/,
+  ],
+  // Surgery or radiation the cancer is not suitable for is not a past treatment.
+  [
+    'inclusion',
+    'Histologically or cytologically confirmed NSCLC with Stage IIIB-IIIC or Stage IV disease, not suitable for curative intent radical surgery or radiation therapy.',
+    /stage of the cancer/,
+  ],
+  // Rules from the same trials that were already right, and must stay so.
+  [
+    'inclusion',
+    'Less than or equal to (<=2) prior lines of EGFR TKIs (osimertinib is the only permitted prior third generation EGFR TKI).',
+    /treatments I have had/,
+  ],
+  // Past treatment decides, even when the rule names a stage.
+  [
+    'inclusion',
+    'Participants must not have received prior EGFR TKIs or other systemic therapy for Stage IIIB, IIIC or IV NSCLC.',
+    /treatments I have had/,
+  ],
+  [
+    'exclusion',
+    'Uncontrolled infection requiring systemic antibiotics, antivirals, or antifungals, suspected infections or inability to rule out infections. Use of systemic antibiotics within 14 days of randomization.',
+    /infections/,
+  ],
+  [
+    'exclusion',
+    'Participants with symptomatic brain metastases (including leptomeningeal involvement).',
+    /where the cancer has spread/,
+  ],
+  ['exclusion', 'Major surgery within 4 weeks prior to randomization.', /treatments I have had/],
+  // From the PR #7 review.
+  [
+    'inclusion',
+    'No signs of extra hepatic metastatic disease or local recurrence according to CT scan+MRI+PET/CT scans.',
+    /where the cancer has spread/,
+  ],
+  [
+    'exclusion',
+    'The subject has not recovered to CTCAE v4.0 Grade ≤1 from AEs (except alopecia, anemia, and lymphopenia) due to antineoplastic agents, investigational drugs, or other medications that were administered prior to study.',
+    /treatments I have had/,
+  ],
+  // The reviewer's examples: no saved rule words them this way on its own.
+  ['inclusion', 'Stage IV with spinal metastases', /where the cancer has spread/],
+  ['exclusion', 'History of radiation-induced pneumonitis', /^Does this rule apply to me\?$/],
+  // Saved rules that went wrong while the matching above was being fixed.
+  ['exclusion', 'Known current metastatic disease.', /where the cancer has spread/],
+  ['inclusion', 'Able to swallow oral medication.', /^Do I meet this rule\?$/],
+  [
+    'exclusion',
+    'History of ILD/pneumonitis, including radiation pneumonitis (apart from radiation pneumonitis that did not require steroids), or drug-induced ILD/pneumonitis, or has suspected ILD/pneumonitis that cannot be ruled out by imaging at screening. Examples of suspected ILD/pneumonitis by imaging include the presence of lung parenchymal fibrosis, such as combined pulmonary fibrosis and emphysema (CPFE), and any radiographic features consistent with interstitial lung abnormalities, including but not limited to, extensive ground glass opacities, reticular opacities, traction bronchiectasis, and honeycombing.',
+    /^Does this rule apply to me\?$/,
+  ],
+  [
+    'inclusion',
+    'Sites must seek additional patient consent for the future use of specimens',
+    /steps the study asks/,
+  ],
 ]
 
 // Words a patient-facing question of ours must never use: medical terms belong only inside

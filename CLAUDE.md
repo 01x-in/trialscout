@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 to M4 are merged; nothing is deployed yet. A UI facelift of the form, results and checklist is on `task/ui-facelift`. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Deploying, by following [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md), waits for both.
+M1 to M4 and the UI facelift of the form, results and checklist are merged; nothing is deployed yet. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Deploying, by following [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md), waits for both.
 
 ## context-mode (mandatory)
 

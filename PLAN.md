@@ -160,7 +160,11 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
 - Confirm the disclaimer strip is on every page and every printed sheet.
 - Check the reading level.
 - Confirm no verdict appears without its source quote.
-- Review the copy the UI facelift (`task/ui-facelift`) added:
+- Review the doctor-sheet questions (`apps/web/src/questions.ts`), changed on 2026-09-27 after live checks picked the wrong topic:
+  - Two new questions: "This rule is about the stage of the cancer. Does my stage meet it?" and "This rule is about other health problems I may have. Does it apply to me?"
+  - Topic order changed. Past-treatment words ("prior", "received", "progression on") now decide before the stage and the spread; "metastatic setting" and "prior to randomization" no longer count; spread to the brain or spine still comes first.
+  - Against the 2,539 rules saved by that day's searches, 317 got a different question. Check a sample of them, as well as the four reported cases in `questions.test.ts`.
+- Review the copy the UI facelift (01x-in/trialscout#6) added:
   - the "How it works" steps;
   - the form section headings: "About the cancer", "About you", "Where you are", "Anything else (optional)";
   - the notes line "Stays in this browser tab. We don't store it.";
@@ -168,7 +172,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - the results headings "Nothing likely rules you out" (only for trials with every rule checked), "Not fully checked", "Rules we could not read" (note: "We could not turn these trials' rules into a checklist. Ask your doctor about them.") and "Something likely rules you out", and their notes "The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest." and "Listed last, not hidden. A likely fail can be wrong: your doctor can check it.";
   - the filter chips ("All", "Ask your doctor", "Likely fails", "Likely meets", "Not checked yet"), "None of these rules." and "Showing n of m rules.";
   - the sex choice "Female / Male / Other", its error "Choose female, male or other.", and the card note for "other" on a single-sex trial;
-  - the distance quick picks after "Or choose:", and "Any distance" (the field shows those words; the search gets 20,000 km, its limit), the summary's "at any distance from …", and its note when ClinicalTrials.gov lists more trials than a search reads ("We checked the first 100 it gave us, which are not always the nearest. Choose a smaller distance to check the nearest ones.");
+  - the distance quick picks after "Or choose:", and "Any distance" (the field shows those words; it means no distance limit), the summary's "at any distance from …", and its note when ClinicalTrials.gov lists more trials than a search reads ("We checked the first 100 it gave us, which are not always the nearest. Choose a smaller distance to check the nearest ones.");
   - "Official page", and the card line "Checking every rule found something that likely rules you out." shown when opening a trial finds a likely fail the search did not.
 
 Record the result in `docs/gate-2-review.md`.
