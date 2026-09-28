@@ -144,6 +144,21 @@ describe('the profile form', () => {
     )
   })
 
+  it('selects "Any distance" when 20000 is typed, since that is the same search', () => {
+    renderApp()
+    const picks = within(group('Distance quick picks'))
+
+    fireEvent.change(screen.getByLabelText('How far can you travel? (km)'), {
+      target: { value: '20000' },
+    })
+
+    expect(picks.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+    expect(picks.getByRole('button', { name: '1,000 km' })).toHaveAttribute('aria-pressed', 'false')
+  })
+
   it('searches 20,000 km, the furthest a search reaches, for "Any distance"', async () => {
     const searched: number[] = []
     renderApp(async (profile) => {

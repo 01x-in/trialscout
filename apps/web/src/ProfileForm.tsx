@@ -50,6 +50,17 @@ const NOTES_LIMIT = 4000
 
 const number = (n: number): string => n.toLocaleString('en-GB')
 
+/**
+ * The distance the field's text stands for, read as the form reads it on submit: "any" or
+ * "Any distance" is ANY_DISTANCE_KM, and a whole number is itself. So typing "20000" shows
+ * "Any distance" as chosen, since it is the same search.
+ */
+function pickedKm(text: string): number | null {
+  const value = text.trim()
+  if (/^any\b/i.test(value)) return ANY_DISTANCE_KM
+  return /^\d+$/.test(value) ? Number(value) : null
+}
+
 export type PlaceError = { field: 'city' | 'country'; message: string }
 
 type Props = {
@@ -280,7 +291,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
                   key={pick.km}
                   type="button"
                   className="text-pick"
-                  aria-pressed={distance === distanceText(pick.km)}
+                  aria-pressed={pickedKm(distance) === pick.km}
                   onClick={() => setDistance(distanceText(pick.km))}
                 >
                   {pick.label}
