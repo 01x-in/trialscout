@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react'
+import { type JSX, type ReactNode, useEffect } from 'react'
 import { DemoCaution } from './DemoCaution.tsx'
 
 // "About this demo": how the check works, what Jev is, its limits and why no clinician has
@@ -22,6 +22,12 @@ function Section({
 }
 
 export function About(): JSX.Element {
+  // The page renders after load, so a link such as /about#about-privacy cannot jump on its
+  // own: jump once the section exists. Instantly, with no motion.
+  useEffect(() => {
+    const target = window.location.hash.slice(1)
+    if (target !== '') document.getElementById(target)?.scrollIntoView?.()
+  }, [])
   return (
     <>
       <DemoCaution />
@@ -107,7 +113,20 @@ export function About(): JSX.Element {
           <p>
             To do the check, ClinicalTrials.gov gets your cancer type and the place you search near.
             Jev gets your cancer type, stage, age, sex and notes, but not where you live.
+            ClinicalTrials.gov and TypeSafe AI, who make Jev, keep what they get under their own
+            terms.
           </p>
+          <p>Two things are kept for a short time, and neither holds your answers:</p>
+          <ul>
+            <li>
+              Jev's answers for each trial, for up to 7 days, so the same check is not paid for
+              twice. They are filed under a scrambled code, with nothing that says who asked.
+            </li>
+            <li>
+              Your internet address and the times you searched or checked a trial, for up to a day,
+              to limit how often one connection can search.
+            </li>
+          </ul>
         </Section>
 
         <Section id="about-data" title="Where the data comes from">

@@ -51,6 +51,7 @@ const TRIAL: TrialResult = {
     distanceKm: 8,
   },
   eligibility: 'split',
+  sexLimit: null,
   counts: { likely_meets: 1, likely_fails: 1, ask_your_doctor: 1, not_checked: 1 },
 }
 
@@ -107,6 +108,7 @@ function response(source: SearchResponse['source'] = 'live'): SearchResponse {
     checked: { questions: 40, requests: 4, cacheHits: 0, model: 'jev-1.13.0' },
     source,
     dataAsOf: Date.UTC(2026, 8, 26),
+    listed: { total: 2, read: 2 },
   }
 }
 
@@ -117,7 +119,8 @@ function renderApp(outcome: SearchOutcome, trial: TrialOutcome = { kind: 'unavai
 
 async function search(): Promise<void> {
   fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
-  await screen.findByRole('heading', { level: 2 })
+  // The results heading; the form's sections have headings of their own.
+  await screen.findByRole('heading', { level: 2, name: /trials/i })
 }
 
 describe('axe (WCAG 2.2 A and AA)', () => {
@@ -141,9 +144,31 @@ describe('axe (WCAG 2.2 A and AA)', () => {
     expect(await violations()).toEqual([])
   })
 
+  it('finds nothing on an opened trial filtered to one verdict', async () => {
+    renderApp({ kind: 'results', response: response() }, { kind: 'verdicts', response: VERDICTS })
+    await search()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Check each rule' })[0] as HTMLElement)
+    fireEvent.click(await screen.findByRole('button', { name: 'Ask your doctor (1)' }))
+    expect(screen.getByText('Showing 1 of 4 rules.')).toBeInTheDocument()
+    expect(await violations()).toEqual([])
+  })
+
   it('finds nothing on results served from the saved copy, or with no trials', async () => {
     renderApp({ kind: 'results', response: response('saved') })
     await search()
+    expect(await violations()).toEqual([])
+  })
+
+  it('finds nothing on a second page of results, split by likely fails', async () => {
+    const many = Array.from({ length: 12 }, (_, i) => ({
+      ...TRIAL,
+      nctId: `NCT${String(i + 1).padStart(8, '0')}`,
+      counts: { ...TRIAL.counts, likely_fails: i < 9 ? 0 : 1 },
+    }))
+    renderApp({ kind: 'results', response: { ...response(), results: many } })
+    await search()
+    fireEvent.click(screen.getByRole('button', { name: 'Show 2 more' }))
+    expect(screen.getAllByRole('article')).toHaveLength(12)
     expect(await violations()).toEqual([])
   })
 
@@ -192,16 +217,32 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-// Text on the page and on cards: 4.5:1. Field and button borders, and focus rings: 3:1.
+// Text on the page, on cards and on the summary bar: 4.5:1. Field and button borders, and
+// focus rings: 3:1.
 const TEXT = ['fg', 'muted', 'accent', 'error', 'meets', 'fails', 'ask', 'unchecked']
-const GROUNDS = ['bg', 'surface']
+const GROUNDS = ['bg', 'surface', 'surface-2']
 const PAIRS: [string, string, number][] = [
   ...TEXT.flatMap((fg) => GROUNDS.map((bg): [string, string, number] => [fg, bg, 4.5])),
   ['caution-fg', 'caution-bg', 4.5],
   ['bg', 'accent', 4.5],
-  ['control', 'bg', 3],
-  ['control', 'surface', 3],
+  // A filled button, and a selected filter chip.
+  ['on-accent', 'accent', 4.5],
+  ['accent', 'accent-soft', 4.5],
+  ['fg', 'accent-soft', 4.5],
+  // Verdict pills: the verdict colour on its own soft ground.
+  ['meets', 'meets-bg', 4.5],
+  ['ask', 'ask-bg', 4.5],
+  ['fails', 'fails-bg', 4.5],
+  ...GROUNDS.map((bg): [string, string, number] => ['control', bg, 3]),
+  ...GROUNDS.map((bg): [string, string, number] => ['accent', bg, 3]),
 ]
+
+// A filter chip needs a boundary that stands out from the card (WCAG 1.4.11): its border
+// is --control, which reaches 3:1 on every ground above.
+it('gives filter chips a --control border', () => {
+  const chip = /\.chip\s*\{([^}]*)\}/.exec(CSS)?.[1] ?? ''
+  expect(chip).toMatch(/border:\s*1px solid var\(--control\)/)
+})
 
 describe.each(['light', 'dark'] as const)('colour contrast, %s scheme', (scheme) => {
   const colours = tokens(scheme)

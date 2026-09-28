@@ -1,4 +1,4 @@
-import type { Profile, VerdictCounts } from '@trialscout/contract'
+import { ANY_DISTANCE_KM, type Profile, type VerdictCounts } from '@trialscout/contract'
 
 /** "Phase 2", "Phase 1/2", "Early phase 1"; null when ClinicalTrials.gov gives no phase. */
 export function phaseLabel(phases: string[]): string | null {
@@ -54,5 +54,24 @@ export function dateLabel(epochMs: number): string {
 /** "breast cancer, stage II, age 47, female.", as the patient entered it. */
 export function profileSummary(profile: Profile): string {
   const stage = profile.stage === 'unknown' ? 'stage not known' : `stage ${profile.stage}`
-  return `${profile.cancerType}, ${stage}, age ${profile.age}, ${profile.sex}.`
+  const sex = profile.sex === 'other' ? 'sex other' : profile.sex
+  return `${profile.cancerType}, ${stage}, age ${profile.age}, ${sex}.`
+}
+
+// The most maxDistanceKm allows, offered as "Any distance": no limit at all.
+export { ANY_DISTANCE_KM }
+
+/** What the distance field shows for ANY_DISTANCE_KM; the search itself gets the number. */
+export const ANY_DISTANCE_LABEL = 'Any distance'
+
+/** The distance field's text for a distance: "300", or "Any distance". */
+export function distanceText(km: number): string {
+  return km >= ANY_DISTANCE_KM ? ANY_DISTANCE_LABEL : String(km)
+}
+
+/** "within 300 km of Pune", or "at any distance from Pune". */
+export function whereLabel(maxDistanceKm: number, city: string): string {
+  return maxDistanceKm >= ANY_DISTANCE_KM
+    ? `at any distance from ${city}`
+    : `within ${maxDistanceKm} km of ${city}`
 }

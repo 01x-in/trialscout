@@ -22,6 +22,8 @@ export type TrialResult = {
   // 'unsplittable': the eligibility text could not be split into criteria; the trial page
   // shows it raw with "ask your doctor".
   eligibility: 'split' | 'unsplittable'
+  // The sex ClinicalTrials.gov limits the trial to, or null when it is open to all.
+  sexLimit: 'female' | 'male' | null
   counts: VerdictCounts
 }
 
@@ -53,6 +55,11 @@ export type SearchResponse = {
   // Epoch milliseconds the trial data is current as of: now for a live search, and the
   // oldest check among the trials shown for a saved one.
   dataAsOf: number
+  // How many trials ClinicalTrials.gov lists for the search (null when unknown, as for the
+  // saved copy), and how many the search read. A search reads a fixed number of pages in
+  // ClinicalTrials.gov's own order, which is not by distance, so when `total` is larger the
+  // nearest trials may not all be among those checked.
+  listed: { total: number | null; read: number }
 }
 
 // Problem Details `type` values the web app tells apart.

@@ -1,8 +1,11 @@
-import type { EmptyReason, Profile, SearchResponse } from '@trialscout/contract'
-import type { JSX } from 'react'
+import type { EmptyReason, Profile, SearchResponse, TrialResult } from '@trialscout/contract'
+import { type JSX, type ReactNode, useEffect, useState } from 'react'
 import type { CheckTrial } from './api.ts'
-import { dateLabel, profileSummary } from './format.ts'
+import { dateLabel, profileSummary, whereLabel } from './format.ts'
 import { TrialCard } from './TrialCard.tsx'
+
+// Trials shown at first, and added by each "Show more".
+const PAGE = 10
 
 function emptyMessage(reason: EmptyReason, where: string): string {
   switch (reason) {
@@ -25,17 +28,6 @@ type Props = {
   onEdit: () => void
 }
 
-function CheckedFor({ profile, onEdit }: Pick<Props, 'profile' | 'onEdit'>): JSX.Element {
-  return (
-    <p className="checked-for">
-      Checked for: {profileSummary(profile)}{' '}
-      <button type="button" className="link-button" onClick={onEdit}>
-        Change your answers
-      </button>
-    </p>
-  )
-}
-
 // Where the trial details came from, and how current they are.
 function DataAsOf({ response }: { response: SearchResponse }): JSX.Element {
   const date = dateLabel(response.dataAsOf)
@@ -51,41 +43,187 @@ function DataAsOf({ response }: { response: SearchResponse }): JSX.Element {
   return <p className="results-note">Trial details from ClinicalTrials.gov, {date}.</p>
 }
 
+// A search reads a fixed number of trials in ClinicalTrials.gov's own order, which is not by
+// distance. When it lists more, say so: the nearest trials may not all have been checked.
+function Coverage({
+  listed,
+  maxDistanceKm,
+  city,
+}: {
+  listed: SearchResponse['listed']
+  maxDistanceKm: number
+  city: string
+}): JSX.Element | null {
+  if (listed.total === null || listed.total <= listed.read) return null
+  const n = (x: number): string => x.toLocaleString('en-GB')
+  return (
+    <p className="results-note">
+      ClinicalTrials.gov lists {n(listed.total)} recruiting trials {whereLabel(maxDistanceKm, city)}
+      . We checked the first {n(listed.read)} it gave us, which are not always the nearest. Choose a
+      smaller distance to check the nearest ones.
+    </p>
+  )
+}
+
+// The search at a glance: who it was checked for, what came back, and a way back.
+function Summary({
+  response,
+  profile,
+  onEdit,
+  children,
+}: Pick<Props, 'response' | 'profile' | 'onEdit'> & { children: ReactNode }): JSX.Element {
+  return (
+    <section className="results-summary" aria-label="Your search">
+      <p className="checked-for">Checked for: {profileSummary(profile)}</p>
+      {children}
+      <Coverage
+        listed={response.listed}
+        maxDistanceKm={profile.maxDistanceKm}
+        city={response.location.city}
+      />
+      <DataAsOf response={response} />
+      <button type="button" className="button button-secondary" onClick={onEdit}>
+        Change your answers
+      </button>
+    </section>
+  )
+}
+
+function TrialGroup({
+  id,
+  title,
+  note,
+  trials,
+  ...card
+}: {
+  id: string
+  title: string
+  note?: string
+  trials: TrialResult[]
+} & Pick<Props, 'profile' | 'checkTrial'>): JSX.Element | null {
+  if (trials.length === 0) return null
+  return (
+    <section className="trial-group" aria-labelledby={id}>
+      <h3 id={id}>{title}</h3>
+      {note && <p className="trial-group-note">{note}</p>}
+      <div className="trial-list">
+        {trials.map((trial) => (
+          <TrialCard key={trial.nctId} trial={trial} {...card} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.Element {
-  const where = `within ${profile.maxDistanceKm} km of ${response.location.city}`
+  const [shown, setShown] = useState(PAGE)
+  // The first card a "Show more" added, to move focus to once it is on the page.
+  const [focusId, setFocusId] = useState<string | null>(null)
+  const where = whereLabel(profile.maxDistanceKm, response.location.city)
+
+  useEffect(() => {
+    if (focusId !== null) document.getElementById(`trial-${focusId}`)?.focus()
+  }, [focusId])
+
+  // New results replace the old ones below the form: take the reader (and screen reader)
+  // there. The results mount afresh for each search.
+  useEffect(() => {
+    const heading = document.getElementById('results-heading')
+    heading?.focus({ preventScroll: true })
+    // Instantly, not smoothly: motion is kept for loading and expanding.
+    heading?.scrollIntoView?.({ block: 'start' })
+  }, [])
 
   if (response.empty !== null || response.results.length === 0) {
     return (
       <section className="results" aria-labelledby="results-heading">
-        <h2 id="results-heading">No trials to show</h2>
-        <CheckedFor profile={profile} onEdit={onEdit} />
-        <p>{emptyMessage(response.empty?.reason ?? 'none_nearby', where)}</p>
-        <p>
-          Try a larger travel distance
-          {response.empty?.reason === 'none_nearby'
-            ? ', or a broader cancer type such as "lung cancer".'
-            : '.'}
-        </p>
-        <DataAsOf response={response} />
+        <h2 id="results-heading" tabIndex={-1}>
+          No trials to show
+        </h2>
+        <Summary response={response} profile={profile} onEdit={onEdit}>
+          <p>{emptyMessage(response.empty?.reason ?? 'none_nearby', where)}</p>
+          <p>
+            Try a larger travel distance
+            {response.empty?.reason === 'none_nearby'
+              ? ', or a broader cancer type such as "lung cancer".'
+              : '.'}
+          </p>
+        </Summary>
       </section>
     )
   }
 
-  const count = response.results.length
+  // Four groups, each in the API's order. "Nothing likely rules you out" is only claimed for
+  // a trial whose every rule was checked. One with rules left unchecked (the search's Jev
+  // budget ran out) may still hold a likely fail, and opening it checks the rest. One whose
+  // rules could not be read cannot be checked at all: ask the doctor. Trials with a likely
+  // fail come last, as the API ranks them. Pages run through the groups in this order.
+  const fails = (t: TrialResult): boolean => t.counts.likely_fails > 0
+  const unread = (t: TrialResult): boolean => t.eligibility === 'unsplittable'
+  const clear = response.results.filter(
+    (t) => !fails(t) && !unread(t) && t.counts.not_checked === 0,
+  )
+  const partly = response.results.filter((t) => !fails(t) && !unread(t) && t.counts.not_checked > 0)
+  const unreadable = response.results.filter((t) => !fails(t) && unread(t))
+  const out = response.results.filter(fails)
+  const all = [...clear, ...partly, ...unreadable, ...out]
+  const visible = new Set(all.slice(0, shown).map((t) => t.nctId))
+  const left = all.length - shown
+  const next = Math.min(PAGE, left)
+
+  function showMore(): void {
+    setFocusId(all[shown]?.nctId ?? null)
+    setShown(shown + PAGE)
+  }
+
+  const count = all.length
   return (
     <section className="results" aria-labelledby="results-heading">
-      <h2 id="results-heading">Trials worth discussing with your doctor</h2>
-      <CheckedFor profile={profile} onEdit={onEdit} />
-      <p>
-        {count} recruiting {count === 1 ? 'trial' : 'trials'} {where}. Trials where something likely
-        rules you out are listed last, not hidden.
-      </p>
-      <DataAsOf response={response} />
-      <div className="trial-list">
-        {response.results.map((trial) => (
-          <TrialCard key={trial.nctId} trial={trial} profile={profile} checkTrial={checkTrial} />
-        ))}
-      </div>
+      <h2 id="results-heading" tabIndex={-1}>
+        Trials worth discussing with your doctor
+      </h2>
+      <Summary response={response} profile={profile} onEdit={onEdit}>
+        <p>
+          {count} recruiting {count === 1 ? 'trial' : 'trials'} {where}. Trials where something
+          likely rules you out are listed last, not hidden.
+        </p>
+      </Summary>
+      <TrialGroup
+        id="trials-clear"
+        title={`Nothing likely rules you out (${clear.length})`}
+        trials={clear.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      <TrialGroup
+        id="trials-partly"
+        title={`Not fully checked (${partly.length})`}
+        note="The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest."
+        trials={partly.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      <TrialGroup
+        id="trials-unread"
+        title={`Rules we could not read (${unreadable.length})`}
+        note="We could not turn these trials' rules into a checklist. Ask your doctor about them."
+        trials={unreadable.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      <TrialGroup
+        id="trials-out"
+        title={`Something likely rules you out (${out.length})`}
+        note="Listed last, not hidden. A likely fail can be wrong: your doctor can check it."
+        trials={out.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      {left > 0 && (
+        <button type="button" className="button button-secondary show-more" onClick={showMore}>
+          Show {next} more{left > next ? ` (${left} left)` : ''}
+        </button>
+      )}
     </section>
   )
 }

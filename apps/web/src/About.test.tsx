@@ -46,6 +46,22 @@ describe('About this demo', () => {
     )
   })
 
+  it('says the answers are not stored, and names the two things kept for a short time', () => {
+    render(<Root pathname="/about" />)
+    const privacy = screen.getByRole('region', { name: 'Your answers stay with you' })
+
+    expect(privacy).toHaveTextContent('We do not store them, log them or use them for tracking.')
+    expect(privacy).toHaveTextContent(
+      "Jev's answers for each trial, for up to 7 days, so the same check is not paid for twice. They are filed under a scrambled code, with nothing that says who asked.",
+    )
+    expect(privacy).toHaveTextContent(
+      'Your internet address and the times you searched or checked a trial, for up to a day, to limit how often one connection can search.',
+    )
+    expect(privacy).toHaveTextContent(
+      'ClinicalTrials.gov and TypeSafe AI, who make Jev, keep what they get under their own terms.',
+    )
+  })
+
   it('never promises a place on a trial in its wording', () => {
     render(<Root pathname="/about" />)
 

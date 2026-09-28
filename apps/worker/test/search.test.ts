@@ -5,13 +5,14 @@ import { createApp } from '../src/app.ts'
 import { createDb } from '../src/db/index.ts'
 import { eq } from 'drizzle-orm'
 import { criteria, trials } from '../src/db/schema.ts'
+import type { Fetch } from '../src/http.ts'
 import { PROBLEM_JSON } from '../src/problems.ts'
 import { rankTrials } from '../src/ranking.ts'
 import { TrialStore } from '../src/store.ts'
 import type { Trial } from '../src/trial.ts'
 import { NOW, PUNE_NSCLC, seedPlaces, type TestOptions, testServices } from './helpers.ts'
 import { FakeJev, rules } from './jev.ts'
-import { mockFetch } from './recorded.ts'
+import { ctgovFetch, json, mockFetch, recording } from './recorded.ts'
 
 beforeEach(async () => {
   await seedPlaces(createDb(env.DB))
@@ -35,6 +36,49 @@ async function detail(response: Response): Promise<string> {
   return ((await response.json()) as { detail: string }).detail
 }
 
+type RawStudy = {
+  protocolSection: {
+    identificationModule: { nctId: string }
+    eligibilityModule?: { sex?: string }
+  }
+}
+
+/** Each result's sex limit, by NCT number. */
+async function search(profile: Profile, fetch: Fetch): Promise<Map<string, string | null>> {
+  const response = await post(profile, { fetch })
+  expect(response.status).toBe(200)
+  const body = (await response.json()) as SearchResponse
+  return new Map(body.results.map((r) => [r.nctId, r.sexLimit]))
+}
+
+/**
+ * The recorded Pune trials as one page, with two that a female patient sees made
+ * single-sex: every recorded trial is open to all, so this is the only way to see limits.
+ */
+async function singleSexTrials(): Promise<{
+  fetch: Fetch
+  forWomen: string
+  forMen: string
+  open: string
+}> {
+  const [forWomen, forMen, open] = [...(await search(PUNE_NSCLC, ctgovFetch())).keys()]
+  if (forWomen === undefined || forMen === undefined || open === undefined) {
+    throw new Error('Expected three recorded trials near Pune')
+  }
+  const studies = ['search-nsclc-pune-p1', 'search-nsclc-pune-p2'].flatMap((name) =>
+    structuredClone((recording(name).body as { studies: RawStudy[] }).studies),
+  )
+  for (const study of studies) {
+    const nctId = study.protocolSection.identificationModule.nctId
+    const sex = nctId === forWomen ? 'FEMALE' : nctId === forMen ? 'MALE' : null
+    if (sex !== null) {
+      study.protocolSection.eligibilityModule = { ...study.protocolSection.eligibilityModule, sex }
+    }
+  }
+  const page = { studies, totalCount: studies.length }
+  return { fetch: mockFetch(() => json(200, page)), forWomen, forMen, open }
+}
+
 describe('POST /api/search', () => {
   it('returns recruiting trials near the patient, ranked, with verdict counts', async () => {
     const response = await post(PUNE_NSCLC)
@@ -56,6 +100,38 @@ describe('POST /api/search', () => {
     expect(body.results.map((r) => r.nctId)).toEqual(order)
     expect(body.checked.questions).toBeGreaterThan(0)
     expect(body.checked.model).toBe('jev-1.13.0')
+  })
+
+  // A search reads at most pageSize × maxPages trials, in ClinicalTrials.gov's own order (it
+  // cannot sort by distance), so the patient is told when it lists more than were checked.
+  it('says how many trials ClinicalTrials.gov lists, and how many were read', async () => {
+    const body = (await (await post(PUNE_NSCLC)).json()) as SearchResponse
+    const total = (recording('search-nsclc-pune-p1').body as { totalCount: number }).totalCount
+
+    expect(body.listed).toEqual({ total, read: 10 })
+    expect(total).toBeGreaterThan(10)
+  })
+
+  it('marks single-sex trials, and keeps only the matching ones for a female or male patient', async () => {
+    const { fetch, forWomen, forMen, open } = await singleSexTrials()
+
+    const female = await search(PUNE_NSCLC, fetch)
+    expect(female.get(forWomen)).toBe('female')
+    expect(female.has(forMen)).toBe(false)
+    expect(female.get(open)).toBeNull()
+
+    const male = await search({ ...PUNE_NSCLC, sex: 'male' }, fetch)
+    expect(male.get(forMen)).toBe('male')
+    expect(male.has(forWomen)).toBe(false)
+  })
+
+  it('keeps trials for either sex when the patient chose "other", each marked', async () => {
+    const { fetch, forWomen, forMen } = await singleSexTrials()
+
+    const other = await search({ ...PUNE_NSCLC, sex: 'other' }, fetch)
+
+    expect(other.get(forWomen)).toBe('female')
+    expect(other.get(forMen)).toBe('male')
   })
 
   it('ranks a trial with a confident fail last, and keeps it', async () => {
@@ -303,7 +379,7 @@ describe('POST /api/search validation (Typia)', () => {
     ['an unknown stage', { ...profile, stage: 'V' }, 'Invalid request: body.stage'],
     [
       'two bad fields',
-      { ...profile, sex: 'other', city: '' },
+      { ...profile, sex: 'unknown', city: '' },
       'Invalid request: body.sex, body.city',
     ],
   ])('answers %s with a 422 naming the field', async (_label, body, expected) => {

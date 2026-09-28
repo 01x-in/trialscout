@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 to M3 are merged. M4 (smoke test and deploy guide) is complete on `milestone/m4-launch`; nothing is deployed yet. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Deploying, by following [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md), waits for both.
+M1 to M4 are merged; nothing is deployed yet. A UI facelift of the form, results and checklist is on `task/ui-facelift`. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Deploying, by following [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md), waits for both.
 
 ## context-mode (mandatory)
 
@@ -154,7 +154,7 @@ These are the safety mechanism. Every change must preserve them.
 
 ## Design
 
-- Calm, plain-spoken; the red strip is the only loud element. Warm neutral background, one restrained accent.
+- Calm, plain-spoken; the red strip is the only loud element. Warm neutral background, one restrained accent: deep teal (`--accent`), never a verdict colour, so no button reads as "ask your doctor".
 - No clinical medical blue, no stock doctor photos, no gamification or cheerful illustrations.
 - Verdict states distinguishable without colour (icon + label).
 - WCAG AA, readable on a phone, single column on mobile.

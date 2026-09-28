@@ -4,9 +4,15 @@ import {
   type SearchResponse,
   type TrialResult,
 } from '@trialscout/contract'
-import { studyUrl, type Trial } from './trial.ts'
+import { studyUrl, type Trial, type TrialSex } from './trial.ts'
 import { conditionTerms } from './fallback.ts'
-import { applyHardFilters, type Candidate, explainEmpty, type HardFilterInput } from './filters.ts'
+import {
+  applyHardFilters,
+  type Candidate,
+  explainEmpty,
+  type HardFilterInput,
+  searchRadiusKm,
+} from './filters.ts'
 import { locate } from './geo/locate.ts'
 import type { JudgeTrial } from './judge/judge.ts'
 import { countVerdicts, UNSPLITTABLE_COUNTS } from './judge/verdict.ts'
@@ -15,6 +21,13 @@ import { rankTrials } from './ranking.ts'
 import type { Services } from './services.ts'
 import type { RefreshCursor } from './store.ts'
 
+// A trial's own sex limit, as the card shows it.
+const SEX_LIMITS: Record<TrialSex, TrialResult['sexLimit']> = {
+  ALL: null,
+  FEMALE: 'female',
+  MALE: 'male',
+}
+
 // One search: the patient's place, recruiting trials near it, hard filters, criteria
 // (split once per trial version), Jev verdicts within the budget, and the ranked list.
 // The profile is used here and discarded; nothing about it is stored or logged.
@@ -22,8 +35,9 @@ import type { RefreshCursor } from './store.ts'
 async function fetchTrials(
   services: Services,
   query: Parameters<Services['ctgov']['search']>[0],
-): Promise<Trial[]> {
+): Promise<{ trials: Trial[]; total: number | null }> {
   const found: Trial[] = []
+  let total: number | null = null
   let pageToken: string | undefined
   for (let page = 0; page < services.settings.maxPages; page++) {
     const result = await services.ctgov.search(query, {
@@ -31,13 +45,19 @@ async function fetchTrials(
       ...(pageToken === undefined ? {} : { pageToken }),
     })
     found.push(...result.trials)
+    total ??= result.totalCount
     if (result.nextPageToken === null) break
     pageToken = result.nextPageToken
   }
-  return found
+  return { trials: found, total }
 }
 
-type Found = { source: SearchResponse['source']; kept: Candidate[]; dataAsOf: number }
+type Found = {
+  source: SearchResponse['source']
+  kept: Candidate[]
+  dataAsOf: number
+  listed: SearchResponse['listed']
+}
 
 /** Saved trials that pass the hard filters, dated by the oldest check; null when none do. */
 async function savedTrials(
@@ -69,7 +89,7 @@ async function savedTrials(
   if (kept.length === 0) return null
   const shown = kept.slice(0, enough)
   const dataAsOf = Math.min(...shown.map((c) => checkedAt.get(c.trial.nctId) ?? 0))
-  return { source: 'saved', kept: shown, dataAsOf }
+  return { source: 'saved', kept: shown, dataAsOf, listed: { total: null, read: shown.length } }
 }
 
 function byDistance(a: Candidate, b: Candidate): number {
@@ -107,11 +127,12 @@ export async function search(services: Services, profile: Profile): Promise<Sear
 
   let found: Found
   try {
-    const fetched = await fetchTrials(services, {
+    const { trials: fetched, total } = await fetchTrials(services, {
       condition: profile.cancerType,
       ...origin,
-      distanceKm: profile.maxDistanceKm,
+      distanceKm: searchRadiusKm(profile.maxDistanceKm),
     })
+    const listed = { total, read: fetched.length }
     // Every recruiting trial is saved, not only those that fit this patient, so the copy
     // served during an outage covers other patients too.
     await services.store.save(fetched.filter((t) => t.status === 'RECRUITING'))
@@ -124,9 +145,10 @@ export async function search(services: Services, profile: Profile): Promise<Sear
         checked: { questions: 0, requests: 0, cacheHits: 0, model: null },
         source: 'live',
         dataAsOf: services.now(),
+        listed,
       }
     }
-    found = { source: 'live', kept, dataAsOf: services.now() }
+    found = { source: 'live', kept, dataAsOf: services.now(), listed }
   } catch (error) {
     if (!(error instanceof UpstreamError)) throw error
     const saved = await savedTrials(services, profile.cancerType, filters)
@@ -172,6 +194,7 @@ export async function search(services: Services, profile: Profile): Promise<Sear
               distanceKm: Math.round(nearestSite.distanceKm),
             },
       eligibility: verdicts === undefined ? 'unsplittable' : 'split',
+      sexLimit: SEX_LIMITS[trial.eligibility.sex],
       counts:
         verdicts === undefined
           ? UNSPLITTABLE_COUNTS
@@ -194,5 +217,6 @@ export async function search(services: Services, profile: Profile): Promise<Sear
     },
     source: found.source,
     dataAsOf: found.dataAsOf,
+    listed: found.listed,
   }
 }
