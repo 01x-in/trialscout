@@ -118,6 +118,20 @@ const CASES: [CriterionVerdict['kind'], string, RegExp][] = [
     /where the cancer has spread/,
   ],
   ['exclusion', 'Major surgery within 4 weeks prior to randomization.', /treatments I have had/],
+  // From the PR #7 review.
+  [
+    'inclusion',
+    'No signs of extra hepatic metastatic disease or local recurrence according to CT scan+MRI+PET/CT scans.',
+    /where the cancer has spread/,
+  ],
+  [
+    'exclusion',
+    'The subject has not recovered to CTCAE v4.0 Grade ≤1 from AEs (except alopecia, anemia, and lymphopenia) due to antineoplastic agents, investigational drugs, or other medications that were administered prior to study.',
+    /treatments I have had/,
+  ],
+  // The reviewer's examples: no saved rule words them this way on its own.
+  ['inclusion', 'Stage IV with spinal metastases', /where the cancer has spread/],
+  ['exclusion', 'History of radiation-induced pneumonitis', /^Does this rule apply to me\?$/],
   // Saved rules that went wrong while the matching above was being fixed.
   ['exclusion', 'Known current metastatic disease.', /where the cancer has spread/],
   ['inclusion', 'Able to swallow oral medication.', /^Do I meet this rule\?$/],

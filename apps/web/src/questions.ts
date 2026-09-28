@@ -49,12 +49,12 @@ const TOPICS: Topic[] = [
     question: 'This rule depends on what my scans show. Do my scans meet it?',
   },
   {
-    pattern: /\b(brain|CNS|leptomeningeal|spinal cord compression)\b/i,
+    pattern: /\b(brain|CNS|leptomeningeal|spinal cord compression|spin(al|e) metasta\w*)\b/i,
     question: SPREAD,
   },
   {
     pattern:
-      /\b(cardiac|heart|QTc?|ECG|LVEF|echocardiogram|ejection fraction|myocardial|arrhythmi\w*|hepatic|liver function|renal|kidney)\b/i,
+      /\b(cardiac|heart|QTc?|ECG|LVEF|echocardiogram|ejection fraction|myocardial|arrhythmi\w*|hepatic(?![\s-]+metasta)|liver function|renal|kidney)\b/i,
     question: 'This rule is about how well my heart, liver or kidneys work. Do I meet it?',
   },
   {
@@ -89,7 +89,7 @@ const TOPICS: Topic[] = [
   // pneumonitis is a lung problem, not a treatment.
   {
     pattern:
-      /\b(therapy|chemotherapy|immunotherapy|radiotherapy|radiation(?!\s+pneumonitis)|surgery|major surgical|anti-?cancer|investigational (agents?|compounds?)|corticosteroids?|vaccines?)\b/i,
+      /\b(therapy|chemotherapy|immunotherapy|radiotherapy|radiation(?![\s-]+(induced[\s-]+)?pneumonitis)|surgery|major surgical|anti-?cancer|antineoplastic|investigational (agents?|compounds?|drugs?)|corticosteroids?|vaccines?)\b/i,
     question: TREATMENTS,
   },
   {
