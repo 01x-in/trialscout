@@ -10,6 +10,10 @@ export type CancerStage = 'I' | 'II' | 'III' | 'IV' | 'unknown'
 // ask the doctor.
 export type Sex = 'female' | 'male' | 'other'
 
+// The most maxDistanceKm allows, which the form offers as "Any distance". It means no limit:
+// the search reaches past the far side of the Earth (about 20,015 km away).
+export const ANY_DISTANCE_KM = 20000
+
 export type Profile = {
   // Free text, e.g. "non-small cell lung cancer".
   cancerType: string & tags.MinLength<2> & tags.MaxLength<120>

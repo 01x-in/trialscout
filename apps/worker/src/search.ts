@@ -6,7 +6,13 @@ import {
 } from '@trialscout/contract'
 import { studyUrl, type Trial, type TrialSex } from './trial.ts'
 import { conditionTerms } from './fallback.ts'
-import { applyHardFilters, type Candidate, explainEmpty, type HardFilterInput } from './filters.ts'
+import {
+  applyHardFilters,
+  type Candidate,
+  explainEmpty,
+  type HardFilterInput,
+  searchRadiusKm,
+} from './filters.ts'
 import { locate } from './geo/locate.ts'
 import type { JudgeTrial } from './judge/judge.ts'
 import { countVerdicts, UNSPLITTABLE_COUNTS } from './judge/verdict.ts'
@@ -124,7 +130,7 @@ export async function search(services: Services, profile: Profile): Promise<Sear
     const { trials: fetched, total } = await fetchTrials(services, {
       condition: profile.cancerType,
       ...origin,
-      distanceKm: profile.maxDistanceKm,
+      distanceKm: searchRadiusKm(profile.maxDistanceKm),
     })
     const listed = { total, read: fetched.length }
     // Every recruiting trial is saved, not only those that fit this patient, so the copy

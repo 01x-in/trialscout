@@ -153,17 +153,20 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
     )
   }
 
-  // Three groups, each in the API's order. "Nothing likely rules you out" is only claimed
-  // for a trial whose every rule was checked: one with rules left unchecked (the search's
-  // Jev budget ran out) or unreadable may still hold a likely fail. Trials with a likely fail
-  // come last, as the API ranks them. Pages run through the groups in this order.
+  // Four groups, each in the API's order. "Nothing likely rules you out" is only claimed for
+  // a trial whose every rule was checked. One with rules left unchecked (the search's Jev
+  // budget ran out) may still hold a likely fail, and opening it checks the rest. One whose
+  // rules could not be read cannot be checked at all: ask the doctor. Trials with a likely
+  // fail come last, as the API ranks them. Pages run through the groups in this order.
   const fails = (t: TrialResult): boolean => t.counts.likely_fails > 0
-  const complete = (t: TrialResult): boolean =>
-    t.eligibility === 'split' && t.counts.not_checked === 0
-  const clear = response.results.filter((t) => !fails(t) && complete(t))
-  const partly = response.results.filter((t) => !fails(t) && !complete(t))
+  const unread = (t: TrialResult): boolean => t.eligibility === 'unsplittable'
+  const clear = response.results.filter(
+    (t) => !fails(t) && !unread(t) && t.counts.not_checked === 0,
+  )
+  const partly = response.results.filter((t) => !fails(t) && !unread(t) && t.counts.not_checked > 0)
+  const unreadable = response.results.filter((t) => !fails(t) && unread(t))
   const out = response.results.filter(fails)
-  const all = [...clear, ...partly, ...out]
+  const all = [...clear, ...partly, ...unreadable, ...out]
   const visible = new Set(all.slice(0, shown).map((t) => t.nctId))
   const left = all.length - shown
   const next = Math.min(PAGE, left)
@@ -197,6 +200,14 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
         title={`Not fully checked (${partly.length})`}
         note="The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest."
         trials={partly.filter((t) => visible.has(t.nctId))}
+        profile={profile}
+        checkTrial={checkTrial}
+      />
+      <TrialGroup
+        id="trials-unread"
+        title={`Rules we could not read (${unreadable.length})`}
+        note="We could not turn these trials' rules into a checklist. Ask your doctor about them."
+        trials={unreadable.filter((t) => visible.has(t.nctId))}
         profile={profile}
         checkTrial={checkTrial}
       />

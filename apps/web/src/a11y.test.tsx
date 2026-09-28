@@ -237,6 +237,13 @@ const PAIRS: [string, string, number][] = [
   ...GROUNDS.map((bg): [string, string, number] => ['accent', bg, 3]),
 ]
 
+// A filter chip needs a boundary that stands out from the card (WCAG 1.4.11): its border
+// is --control, which reaches 3:1 on every ground above.
+it('gives filter chips a --control border', () => {
+  const chip = /\.chip\s*\{([^}]*)\}/.exec(CSS)?.[1] ?? ''
+  expect(chip).toMatch(/border:\s*1px solid var\(--control\)/)
+})
+
 describe.each(['light', 'dark'] as const)('colour contrast, %s scheme', (scheme) => {
   const colours = tokens(scheme)
 

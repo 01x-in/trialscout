@@ -135,7 +135,9 @@ describe('the results list', () => {
     ])
 
     const clear = screen.getByRole('region', { name: 'Nothing likely rules you out (1)' })
-    const partly = screen.getByRole('region', { name: 'Not fully checked (2)' })
+    const partly = screen.getByRole('region', { name: 'Not fully checked (1)' })
+    // Opening an unsplittable trial checks nothing more, so it gets its own group.
+    const unread = screen.getByRole('region', { name: 'Rules we could not read (1)' })
     expect(
       within(clear)
         .getAllByRole('article')
@@ -145,7 +147,15 @@ describe('the results list', () => {
       within(partly)
         .getAllByRole('article')
         .map((a) => a.id),
-    ).toEqual(['trial-NCT00000002', 'trial-NCT00000003'])
+    ).toEqual(['trial-NCT00000002'])
+    expect(
+      within(unread)
+        .getAllByRole('article')
+        .map((a) => a.id),
+    ).toEqual(['trial-NCT00000003'])
+    expect(unread).toHaveTextContent(
+      "We could not turn these trials' rules into a checklist. Ask your doctor about them.",
+    )
     // Says what the search found, so a card that later finds a likely fail does not
     // contradict it.
     expect(partly).toHaveTextContent(

@@ -1,5 +1,11 @@
+import { ANY_DISTANCE_KM } from '@trialscout/contract'
 import { describe, expect, it } from 'vitest'
-import { applyHardFilters, explainEmpty, type HardFilterInput } from '../src/filters.ts'
+import {
+  applyHardFilters,
+  explainEmpty,
+  type HardFilterInput,
+  searchRadiusKm,
+} from '../src/filters.ts'
 import { haversineKm } from '../src/geo/distance.ts'
 import type { Site, Trial } from '../src/trial.ts'
 
@@ -113,6 +119,22 @@ describe('applyHardFilters', () => {
 
     expect(kept.map((c) => c.trial.nctId)).toEqual(['NCT00000011', 'NCT00000012'])
     expect(removed.sex).toBe(0)
+  })
+
+  // "Any distance" (the most a profile allows) has no limit, even on the far side of the Earth.
+  it('keeps a site at the antipode when the patient can travel any distance', () => {
+    const antipode = { lat: -PUNE.lat, lon: PUNE.lon - 180 }
+    const far = trial('NCT00000013', {}, [site(antipode)])
+
+    expect(
+      applyHardFilters([far], { ...PATIENT, maxDistanceKm: ANY_DISTANCE_KM }).kept,
+    ).toHaveLength(1)
+    expect(applyHardFilters([far], { ...PATIENT, maxDistanceKm: 19000 }).kept).toHaveLength(0)
+  })
+
+  it('asks ClinicalTrials.gov for more than half the way round the Earth for any distance', () => {
+    expect(searchRadiusKm(ANY_DISTANCE_KM)).toBeGreaterThan(20016)
+    expect(searchRadiusKm(300)).toBe(300)
   })
 
   it('treats the age limits as inclusive', () => {

@@ -1,4 +1,4 @@
-import type { Profile, VerdictCounts } from '@trialscout/contract'
+import { ANY_DISTANCE_KM, type Profile, type VerdictCounts } from '@trialscout/contract'
 
 /** "Phase 2", "Phase 1/2", "Early phase 1"; null when ClinicalTrials.gov gives no phase. */
 export function phaseLabel(phases: string[]): string | null {
@@ -58,9 +58,8 @@ export function profileSummary(profile: Profile): string {
   return `${profile.cancerType}, ${stage}, age ${profile.age}, ${sex}.`
 }
 
-/** The furthest a search reaches (Profile.maxDistanceKm's limit): about half the way round
- * the Earth, so no trial site is further. The form offers it as "Any distance". */
-export const ANY_DISTANCE_KM = 20000
+// The most maxDistanceKm allows, offered as "Any distance": no limit at all.
+export { ANY_DISTANCE_KM }
 
 /** What the distance field shows for ANY_DISTANCE_KM; the search itself gets the number. */
 export const ANY_DISTANCE_LABEL = 'Any distance'
