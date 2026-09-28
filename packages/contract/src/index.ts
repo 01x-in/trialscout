@@ -1,3 +1,5 @@
+export { DISCLAIMER } from './disclaimer.ts'
+export { ANY_DISTANCE_KM } from './profile.ts'
 export type { CancerStage, Profile, Sex } from './profile.ts'
 export type {
   EmptyExplanation,

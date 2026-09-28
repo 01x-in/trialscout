@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 and M2 are merged. M3 is complete on `milestone/m3-resilience-accessibility-privacy`. The GATE 1 verdict review (`docs/gate-1-review.md`) is still owed, since M2 and M3 were started at the user's request before it. Next is GATE 2, the human wording and safety review, then M4.
+M1 to M4 and the UI facelift of the form, results and checklist are merged; nothing is deployed yet. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Deploying, by following [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md), waits for both.
 
 ## context-mode (mandatory)
 
@@ -57,12 +57,18 @@ make test          # worker (workerd pool) then web (jsdom)
 make lint          # biome format:check + oxlint + typecheck (tsc 7)
 make format        # biome format --write
 make db-local      # local D1: migrations + GeoNames cities (downloads ~3 MB once)
+make db-remote     # deployed D1: migrations only
 make db-generate   # new Drizzle migration after editing apps/worker/src/db/schema.ts
 make check-deploy  # vite build + wrangler deploy --dry-run for both Workers
 make deploy        # API Worker, then web Worker
 ```
 
-Run `make db-local` once before `make -j2 dev`, and put `TYPESAFE_API_KEY` in `apps/worker/.dev.vars`. M4 adds `make smoke URL=…`.
+Run `make db-local` once before `make -j2 dev`, and put `TYPESAFE_API_KEY` in `apps/worker/.dev.vars`.
+
+Node 22.18+ (`.nvmrc`): the tools in `apps/worker/scripts` run as `.ts` directly, with no build step.
+
+- **First launch:** follow [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md) step by step. It deploys the API Worker alone, then sets the secret, the TypeSafe spending cap and the rate-limiting rule before the web Worker makes the site public. Do not use `make deploy` for it.
+- **Later updates:** `make db-remote` if there is a new migration, then `make deploy`, then `make smoke URL=https://trialscout.cc`. The smoke test makes one real search and trial check against live ClinicalTrials.gov and Jev; the guide shows how to run it locally.
 
 ## Stack
 
@@ -148,7 +154,7 @@ These are the safety mechanism. Every change must preserve them.
 
 ## Design
 
-- Calm, plain-spoken; the red strip is the only loud element. Warm neutral background, one restrained accent.
+- Calm, plain-spoken; the red strip is the only loud element. Warm neutral background, one restrained accent: deep teal (`--accent`), never a verdict colour, so no button reads as "ask your doctor".
 - No clinical medical blue, no stock doctor photos, no gamification or cheerful illustrations.
 - Verdict states distinguishable without colour (icon + label).
 - WCAG AA, readable on a phone, single column on mobile.

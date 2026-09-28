@@ -29,7 +29,7 @@ describe('checkProfile (Typia)', () => {
     ['a distance below the minimum', { ...profile, maxDistanceKm: 0 }, ['maxDistanceKm']],
     ['an unknown stage', { ...profile, stage: 'V' }, ['stage']],
     ['a too-short cancer type', { ...profile, cancerType: 'x' }, ['cancerType']],
-    ['two bad fields', { ...profile, sex: 'other', city: '' }, ['sex', 'city']],
+    ['two bad fields', { ...profile, sex: 'unknown', city: '' }, ['sex', 'city']],
   ])('names the field for %s', (_label, value, fields) => {
     expect(checkProfile(value)).toEqual({ ok: false, fields })
   })
@@ -54,6 +54,14 @@ describe('formToCandidate', () => {
 
   it('trims text, parses numbers and drops empty notes', () => {
     expect(formToCandidate(form(filled))).toEqual(profile)
+  })
+
+  // The field shows "Any distance"; the API gets the furthest a search reaches.
+  it.each(['Any distance', 'any', ' ANY '])('reads "%s" as 20,000 km', (value) => {
+    expect(formToCandidate(form({ ...filled, maxDistanceKm: value }))).toEqual({
+      ...profile,
+      maxDistanceKm: 20000,
+    })
   })
 
   it('keeps notes when given', () => {

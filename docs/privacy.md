@@ -58,4 +58,7 @@ The tests named below hold the result in place. Re-run this audit whenever a log
 
 - What ClinicalTrials.gov and TypeSafe AI keep is set by their own terms.
 - Cloudflare sees the client IP for every request, as with any site it serves.
-- The About page says the answers go to our server to check trials and are then thrown away.
+- What we tell people, and where:
+  - The search page says, right above "Find trials": "We don't store your answers. They stay in this browser tab. Each check sends them to our server, which uses them and then throws them away. No accounts, no tracking." It links to the About page's section.
+  - The About page's "Your answers stay with you" names the two things kept for a short time, neither holding answers: Jev's verdicts in KV for up to 7 days under a hashed key, and the client's IP address with search times in the rate limiter for up to a day. It also says ClinicalTrials.gov and TypeSafe AI keep what they get under their own terms.
+  - Keep both in step with the table above whenever it changes.

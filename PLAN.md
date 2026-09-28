@@ -29,6 +29,7 @@ profile (browser session only)
 
 - Query ClinicalTrials.gov API v2 live with `query.cond`, `filter.overallStatus=RECRUITING` and `filter.geo=distance(lat,lon,Nmi)`.
 - Apply age and sex from `eligibilityModule` (`minimumAge`, `maximumAge`, `sex`) in code.
+  - Decision (2026-09-28, UI facelift): the form offers female, male and other. For "other", a trial limited to one sex is kept, not removed: it would be an assumed fail. Its card says "ClinicalTrials.gov lists this trial for female/male patients only. Ask your doctor whether it could include you." Jev gets `sex: other`. Check a sample of "other" profiles at GATE 1, including how Jev reads sex-specific rules such as pregnancy.
 - Resolve city to lat/lon from a GeoNames cities table in D1. No third-party geocoder sees profile data.
 - Compute the nearest site distance with haversine over the trial's site coordinates.
 - If zero trials survive, say which filter to relax (distance, stage).
@@ -163,13 +164,26 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - Two new questions: "This rule is about the stage of the cancer. Does my stage meet it?" and "This rule is about other health problems I may have. Does it apply to me?"
   - Topic order changed. Past-treatment words ("prior", "received", "progression on") now decide before the stage and the spread; "metastatic setting" and "prior to randomization" no longer count; spread to the brain or spine still comes first.
   - Against the 2,539 rules saved by that day's searches, 317 got a different question. Check a sample of them, as well as the four reported cases in `questions.test.ts`.
+- Review the copy the UI facelift (01x-in/trialscout#6) added:
+  - the "How it works" steps;
+  - the form section headings: "About the cancer", "About you", "Where you are", "Anything else (optional)";
+  - the notes line "Stays in this browser tab. We don't store it.";
+  - the privacy note above "Find trials" ("We don't store your answers…", linking to the About page), and the About page's list of the two things kept for a short time (cached Jev answers for 7 days, internet address and search times for a day);
+  - the results headings "Nothing likely rules you out" (only for trials with every rule checked), "Not fully checked", "Rules we could not read" (note: "We could not turn these trials' rules into a checklist. Ask your doctor about them.") and "Something likely rules you out", and their notes "The search found nothing that likely rules you out, but it did not check every rule of these trials. Opening a trial checks the rest." and "Listed last, not hidden. A likely fail can be wrong: your doctor can check it.";
+  - the filter chips ("All", "Ask your doctor", "Likely fails", "Likely meets", "Not checked yet"), "None of these rules." and "Showing n of m rules.";
+  - the sex choice "Female / Male / Other", its error "Choose female, male or other.", and the card note for "other" on a single-sex trial;
+  - the distance quick picks after "Or choose:", and "Any distance" (the field shows those words; it means no distance limit), the summary's "at any distance from …", and its note when ClinicalTrials.gov lists more trials than a search reads ("We checked the first 100 it gave us, which are not always the nearest. Choose a smaller distance to check the nearest ones.");
+  - "Official page", and the card line "Checking every rule found something that likely rules you out." shown when opening a trial finds a likely fail the search did not.
 
 Record the result in `docs/gate-2-review.md`.
 
 ### M4 Launch
 
-- Write `docs/deploy-cloudflare.md` covering D1, KV, secrets, the Durable Object, the Cloudflare rate-limit rule, the TypeSafe spending cap and the trialscout.cc domain.
-- Run `make smoke URL=…` against production.
+- M4.1 `make smoke URL=…`: with a made-up profile, check the home and About pages, the exact disclaimer in the app bundle and its print styles, a 422 Problem Details for a bad request, and one live search and opened trial end to end. Tested against the real API with recorded trials, and run against a local production build.
+  - The disclaimer text moved to `@trialscout/contract`, so the smoke test checks the same string the app renders.
+- M4.2 `docs/deploy-cloudflare.md` covering D1, KV, secrets, the Durable Object, the Cloudflare rate-limit rule, the TypeSafe spending cap and the trialscout.cc domain; `make db-remote` for the deployed D1.
+  - The web Worker is served only on `trialscout.cc` (`workers_dev: false`), so nothing gets around the zone's rate-limiting rule.
+- Human, after GATE 1 and GATE 2: follow the guide, then run `make smoke URL=https://trialscout.cc` and record its output.
 
 ## Open questions
 
@@ -180,4 +194,4 @@ Record the result in `docs/gate-2-review.md`.
 - Should KV cache keys be narrowed further, to the profile fields each criterion needs? M1.8 already leaves out location and distance, and keys per trial and phase to keep KV operations low. This is not worth it until real hit rates are known.
 - How should `not_applicable` criteria show on the M2 checklist? They are left out of the counts, and CLAUDE.md allows exactly three verdicts. For now (M2.2) they are listed apart under "Rules for other groups of patients", quoted with no verdict label and a note that the doctor can confirm; they are left off the doctor sheet. Confirm or change this at GATE 2.
 - ~~Is cancer stage a hard filter?~~ No (M1.7). ClinicalTrials.gov has no structured stage field, so Jev judges stage criteria and a mismatch shows as `likely fails`. The trial is ranked down, never removed. Zero-result hints therefore only suggest a larger distance.
-- Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue?
+- Do large ClinicalTrials.gov result pages fit the Worker CPU budget, or does paging need a queue? The deploy guide requires Workers Paid (30 s of CPU per request by default, against the Free plan's 10 ms), and its step 11 checks the CPU time of real searches after launch.

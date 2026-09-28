@@ -1,4 +1,9 @@
-import type { EmptyExplanation, EmptyReason } from '@trialscout/contract'
+import {
+  ANY_DISTANCE_KM,
+  type EmptyExplanation,
+  type EmptyReason,
+  type Sex,
+} from '@trialscout/contract'
 import { haversineKm, type Point } from './geo/distance.ts'
 import type { Site, Trial } from './trial.ts'
 
@@ -13,9 +18,18 @@ import type { Site, Trial } from './trial.ts'
 
 export type HardFilterInput = {
   age: number
-  sex: 'female' | 'male'
+  sex: Sex
   origin: Point
   maxDistanceKm: number
+}
+
+// Further than any two points on Earth (at most about 20,015 km apart, the antipodes), so
+// "any distance" misses no site at all.
+const PAST_THE_ANTIPODE_KM = 20040
+
+/** The radius to ask ClinicalTrials.gov for: past the far side of the Earth for "any". */
+export function searchRadiusKm(maxDistanceKm: number): number {
+  return maxDistanceKm >= ANY_DISTANCE_KM ? PAST_THE_ANTIPODE_KM : maxDistanceKm
 }
 
 export type NearestSite = Site & { distanceKm: number }
@@ -48,13 +62,16 @@ function check(trial: Trial, input: HardFilterInput): Removal | Candidate {
   const { minimumAgeYears, maximumAgeYears, sex } = trial.eligibility
   if (minimumAgeYears !== null && input.age < minimumAgeYears) return 'age'
   if (maximumAgeYears !== null && input.age > maximumAgeYears) return 'age'
-  if (sex === 'FEMALE' && input.sex !== 'female') return 'sex'
-  if (sex === 'MALE' && input.sex !== 'male') return 'sex'
+  // Only the other of female and male is ruled out; "other" keeps both (the card says to ask).
+  if (sex === 'FEMALE' && input.sex === 'male') return 'sex'
+  if (sex === 'MALE' && input.sex === 'female') return 'sex'
 
   const open = trial.sites.filter(recruiting)
   if (open.length === 0) return 'distance'
   const site = nearest(open, input.origin)
-  if (site !== null && site.distanceKm <= input.maxDistanceKm) return { trial, nearestSite: site }
+  const reach =
+    input.maxDistanceKm >= ANY_DISTANCE_KM ? Number.POSITIVE_INFINITY : input.maxDistanceKm
+  if (site !== null && site.distanceKm <= reach) return { trial, nearestSite: site }
   // No mapped recruiting site is close enough, but an unmapped one might be.
   if (open.some((s) => s.lat === null || s.lon === null)) return { trial, nearestSite: null }
   return 'distance'

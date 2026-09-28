@@ -1,5 +1,6 @@
 import type { Profile } from '@trialscout/contract'
 import typia from 'typia'
+import { ANY_DISTANCE_KM } from './format.ts'
 
 // The profile lives only in this browser tab's sessionStorage; it is sent to the API only
 // in the body of a search, and the server never stores it.
@@ -40,7 +41,10 @@ export function formToCandidate(form: FormData): unknown {
     sex: text(form, 'sex'),
     country: text(form, 'country'),
     city: text(form, 'city'),
-    maxDistanceKm: wholeNumber(form, 'maxDistanceKm'),
+    // The field shows "Any distance" (or the patient types "any"); the search gets the number.
+    maxDistanceKm: /^any\b/i.test(text(form, 'maxDistanceKm'))
+      ? ANY_DISTANCE_KM
+      : wholeNumber(form, 'maxDistanceKm'),
     ...(notes === '' ? {} : { notes }),
   }
 }

@@ -1,5 +1,7 @@
-/* Calm and plain: warm neutral ground, one restrained accent, and the red strip as the
-   only loud element. No clinical blue. */
+/* Calm and plain: warm neutral ground, one restrained deep-teal accent, and the red strip
+   as the only loud element. No clinical blue. The accent is never a verdict colour, so a
+   button never reads as "ask your doctor". Colour tokens are 6-digit hex: a11y.test.tsx
+   reads them from this file to check contrast. */
 :root {
   --bg: #faf7f2;
   --fg: #1f1b16;
@@ -8,14 +10,34 @@
   /* Borders that mark a field or button: 3:1 against the page and cards. */
   --control: #857b6f;
   --surface: #ffffff;
-  --accent: #7a4424;
+  /* The summary bar and the "To ask" callout: one step off the page. */
+  --surface-2: #f2ede5;
+  --accent: #0f5f5c;
+  --on-accent: #ffffff;
+  /* A selected filter chip or distance pick. */
+  --accent-soft: #dcefec;
   --error: #9f1d1d;
   --caution-bg: #b91c1c;
   --caution-fg: #ffffff;
   --meets: #166534;
+  --meets-bg: #e3f1e6;
   --fails: #9f1d1d;
+  --fails-bg: #f9e3e1;
   --ask: #7a4424;
+  --ask-bg: #f7e9dd;
   --unchecked: #5c554c;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --radius-sm: 0.4rem;
+  --radius: 0.75rem;
+  /* Controls reach 44px, a comfortable touch target. */
+  --control-height: 2.75rem;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 1.125rem;
   line-height: 1.5;
@@ -31,13 +53,19 @@
     --line: #463f37;
     --control: #8a8074;
     --surface: #26221e;
-    --accent: #e0a47c;
+    --surface-2: #2f2a25;
+    --accent: #6fcdc4;
+    --on-accent: #10201f;
+    --accent-soft: #1d3a37;
     --error: #fca5a5;
     --caution-bg: #7f1d1d;
     --caution-fg: #fee2e2;
     --meets: #86efac;
+    --meets-bg: #1c3325;
     --fails: #fca5a5;
+    --fails-bg: #3d2222;
     --ask: #e0a47c;
+    --ask-bg: #3a2a1f;
     --unchecked: #b3aa9e;
   }
 }
@@ -77,7 +105,7 @@ a {
 
 .page {
   box-sizing: border-box;
-  max-width: 40rem;
+  max-width: 42rem;
   /* Long trial titles and sponsor names wrap rather than widen the page on a phone. */
   overflow-wrap: break-word;
   margin: 0 auto;
@@ -105,25 +133,73 @@ h1 {
 }
 
 .lede {
-  margin: 0 0 2rem;
+  margin: 0 0 var(--space-5);
   color: var(--muted);
+}
+
+/* How it works: three numbered steps, one row on wider screens. */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  font-size: 0.95rem;
+}
+
+.steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  counter-increment: step;
+}
+
+.steps li::before {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 700;
+  content: counter(step);
 }
 
 .profile-form {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-5);
+}
+
+/* Each section is a card with a plain heading. */
+.form-section {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.form-section h2 {
+  margin: 0;
+  font-size: 1.15rem;
 }
 
 .field {
   display: grid;
-  gap: 0.3rem;
+  gap: var(--space-1);
   align-content: start;
 }
 
 .field-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .profile-form label {
@@ -141,43 +217,334 @@ h1 {
 .profile-form textarea {
   box-sizing: border-box;
   width: 100%;
-  padding: 0.6rem 0.7rem;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
   font: inherit;
+  line-height: 1.25;
   color: var(--fg);
-  background: var(--surface);
+  /* A shade off the section card, so each field reads as a place to type. */
+  background: var(--bg);
   border: 1px solid var(--control);
-  border-radius: 0.4rem;
+  border-radius: var(--radius-sm);
 }
 
+/* One height for every single-line field. Browsers draw menus natively at their own
+   height (Safari ignores ours), so menus drop that drawing and get the arrow below. */
+.profile-form input,
+.profile-form select {
+  height: var(--control-height);
+}
+
+.profile-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.75rem;
+  cursor: pointer;
+}
+
+.select {
+  position: relative;
+}
+
+/* The menu arrow, drawn in CSS: no image, so nothing loads from anywhere. */
+.select::after {
+  position: absolute;
+  top: 50%;
+  right: 1.1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+  content: '';
+}
+
+.profile-form textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+/* An invalid field gets a thicker edge without changing its size. */
 .profile-form [aria-invalid='true'] {
   border-color: var(--error);
-}
-
-.profile-form :focus-visible,
-.profile-form button:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
+  box-shadow: 0 0 0 1px var(--error);
 }
 
 .field-error {
   margin: 0;
   color: var(--error);
+  font-weight: 600;
 }
 
-.profile-form button {
-  justify-self: start;
-  margin-top: 0.5rem;
-  padding: 0.7rem 1.4rem;
-  font: inherit;
+/* A choice of a few options (sex): plain radio buttons on one line, as tall as a field so
+   they line up with the field beside them. Each label is a 44px touch target. */
+.field-label {
+  margin: 0;
   font-weight: 600;
-  color: var(--bg);
-  background: var(--accent);
-  border: 0;
-  border-radius: 0.4rem;
+}
+
+.radios {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-5);
+  min-height: var(--control-height);
+}
+
+.profile-form .radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  font-weight: 400;
   cursor: pointer;
 }
 
-.profile-form button:disabled {
+/* The browser's own radio, sized and in the accent colour; not the text-field styles. */
+.profile-form input[type='radio'] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.profile-form input[type='radio'][aria-invalid='true'] {
+  outline: 2px solid var(--error);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Distance quick picks: plain text buttons, like links, after "Or choose:". Each still has
+   a 44px touch target; the chosen one is bold, with a tick, and not underlined. */
+.quick-picks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-1);
+  font-size: 0.95rem;
+}
+
+.quick-picks-lead {
+  margin-right: var(--space-1);
+  color: var(--muted);
+}
+
+.text-pick {
+  min-height: var(--control-height);
+  padding: 0 var(--space-2);
+  font: inherit;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.text-pick[aria-pressed='true'] {
+  color: var(--fg);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.text-pick[aria-pressed='true']::before {
+  color: var(--accent);
+  content: '✓ ';
+}
+
+/* Chips: the checklist filters. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  min-height: 2.5rem;
+  padding: var(--space-1) var(--space-4);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--fg);
+  /* A soft ground, and a --control border so the chip stands out from the card (3:1). */
+  background: var(--surface-2);
+  border: 1px solid var(--control);
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chip:hover {
+  background: var(--line);
+}
+
+.chip[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* A tick, so the chosen chip is not told apart by colour alone. */
+.chip[aria-pressed='true']::before {
+  content: '✓ ';
+}
+
+.field-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.field-foot p {
+  margin: 0;
+}
+
+/* "We don't store your answers", said plainly right above the button that sends them. */
+.privacy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.privacy-note .icon {
+  margin-top: 0.2rem;
+  color: var(--accent);
+}
+
+.privacy-note p {
+  margin: 0;
+}
+
+.form-errors {
+  padding: var(--space-3) var(--space-4);
+  background: var(--fails-bg);
+  border: 2px solid var(--error);
+  border-radius: var(--radius-sm);
+}
+
+.form-errors p {
+  margin: 0 0 var(--space-1);
+  font-weight: 700;
+}
+
+.form-errors ul {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.form-errors a {
+  color: var(--fg);
+}
+
+.form-actions .button {
+  min-width: 12rem;
+}
+
+/* On a phone, "Find trials" stays in reach at the bottom while the form scrolls. */
+@media (max-width: 40rem) {
+  .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin-inline: calc(-1 * var(--space-4));
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+  }
+
+  .form-actions .button {
+    width: 100%;
+  }
+}
+
+/* Placeholder cards while a search runs. The only motion is this pulse, and it stops for
+   anyone who asks for less motion. */
+.skeleton-list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.skeleton-card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.skeleton-line {
+  height: 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--line);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-title {
+  width: 80%;
+  height: 1.2rem;
+}
+
+.skeleton-short {
+  width: 45%;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-line {
+    animation: none;
+  }
+}
+
+/* Buttons: one primary (filled accent) per view, everything else secondary (outlined). */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-4);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.25;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.button-primary {
+  color: var(--on-accent);
+  background: var(--accent);
+  border: 2px solid var(--accent);
+}
+
+.button-secondary {
+  color: var(--fg);
+  background: transparent;
+  border: 2px solid var(--control);
+}
+
+.button-secondary:hover {
+  border-color: var(--fg);
+}
+
+.button:disabled {
   opacity: 0.6;
   cursor: progress;
 }
@@ -196,9 +563,32 @@ h1 {
   white-space: nowrap;
 }
 
+/* Focused from code when results arrive: no ring on a heading nobody tabbed to. */
+.results h2:focus {
+  outline: none;
+}
+
 .results h2 {
-  margin: 2.5rem 0 0.5rem;
+  margin: var(--space-6) 0 var(--space-3);
   font-size: 1.5rem;
+}
+
+/* The search at a glance, one step off the page. */
+.results-summary {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.results-summary p {
+  margin: 0;
+}
+
+.results-summary .button {
+  margin-top: var(--space-2);
 }
 
 .results-note {
@@ -208,122 +598,222 @@ h1 {
 
 /* Saved copy served during a ClinicalTrials.gov outage: calm, but hard to miss. */
 .results-saved {
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
   color: var(--fg);
   border-left: 4px solid var(--accent);
   background: var(--surface);
 }
 
-.trial-list {
-  display: grid;
-  gap: 1rem;
-  margin-top: 1.5rem;
+.trial-group > h3 {
+  margin: var(--space-6) 0 var(--space-1);
+  font-size: 1.2rem;
 }
 
-.trial-card {
-  padding: 1.1rem 1.2rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 0.5rem;
-}
-
-.trial-title {
-  margin: 0 0 0.4rem;
-  font-size: 1.15rem;
-  line-height: 1.35;
-}
-
-.trial-title a {
-  color: var(--fg);
-}
-
-.trial-title a:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.trial-meta,
-.trial-site {
-  margin: 0.2rem 0;
+.trial-group-note {
+  margin: 0;
   color: var(--muted);
   font-size: 0.95rem;
 }
 
-.trial-meta span + span::before {
-  content: ' · ';
+.trial-list {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.show-more {
+  width: 100%;
+  margin-top: var(--space-5);
+}
+
+.trial-card {
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.trial-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.trial-title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+/* Phase and trial ID as small tags, then the sponsor. */
+.trial-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.tag {
+  padding: 0.1rem var(--space-2);
+  color: var(--fg);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.tag-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 400;
+}
+
+.trial-sponsor {
+  color: var(--muted);
+}
+
+.trial-site {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.icon {
+  flex: none;
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The counts in proportion. Hidden from screen readers: the counts below say it in words. */
+.verdict-bar {
+  display: flex;
+  gap: 2px;
+  height: 0.4rem;
+  margin: var(--space-4) 0 var(--space-2);
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.verdict-bar span {
+  flex-basis: 0;
+}
+
+.verdict-bar-likely_meets {
+  background: var(--meets);
+}
+
+.verdict-bar-likely_fails {
+  background: var(--fails);
+}
+
+.verdict-bar-ask_your_doctor {
+  background: var(--ask);
+}
+
+.verdict-bar-not_checked {
+  background: var(--line);
 }
 
 .verdict-counts {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 1.2rem;
-  margin: 0.8rem 0 0;
+  gap: var(--space-2);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* Each count is a soft pill: icon, number and label, never colour alone. */
 .count {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-1);
+  padding: 0.15rem var(--space-3) 0.15rem var(--space-1);
+  border-radius: 999px;
+  font-size: 0.95rem;
   font-weight: 600;
 }
 
 .count-icon {
   display: inline-grid;
   place-items: center;
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.3rem;
+  height: 1.3rem;
   border: 2px solid currentColor;
   border-radius: 50%;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   line-height: 1;
 }
 
 .count-likely_meets {
   color: var(--meets);
+  background: var(--meets-bg);
 }
 
 .count-likely_fails {
   color: var(--fails);
+  background: var(--fails-bg);
 }
 
 .count-ask_your_doctor {
   color: var(--ask);
+  background: var(--ask-bg);
 }
 
 .count-not_checked {
   color: var(--unchecked);
+  background: var(--surface-2);
   font-weight: 400;
 }
 
 .trial-unsplit {
-  margin: 0.8rem 0 0;
+  margin: var(--space-4) 0 0;
   color: var(--ask);
 }
 
-/* A trial's rules, opened from its card. Motion only for expanding. */
-.trial-toggle {
-  margin-top: 1rem;
-  padding: 0.5rem 0.9rem;
+.trial-sex-limit {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
   color: var(--fg);
-  background: transparent;
-  border: 2px solid var(--control);
-  border-radius: 0.4rem;
-  font: inherit;
+  background: var(--surface-2);
+  border-left: 3px solid var(--ask);
+}
+
+.trial-new-fail {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  color: var(--fails);
+  background: var(--fails-bg);
+  border-radius: var(--radius-sm);
   font-weight: 600;
-  cursor: pointer;
 }
 
-.trial-toggle:hover {
-  border-color: var(--fg);
+.trial-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin-top: var(--space-4);
 }
 
-.trial-toggle:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
+.trial-official {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--control-height);
+  font-weight: 600;
 }
 
+/* A trial's rules, opened from its card. Motion only for expanding. */
 .trial-details:not([hidden]) {
   animation: expand 180ms ease-out;
 }
@@ -341,9 +831,41 @@ h1 {
   }
 }
 
+.trial-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 var(--space-3);
+}
+
+.checklist-filters {
+  margin: var(--space-2) 0 0;
+}
+
+.filter-status {
+  margin: var(--space-2) 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.filter-status:empty {
+  display: none;
+}
+
 .checklist h4 {
-  margin: 1.4rem 0 0.5rem;
+  margin: var(--space-5) 0 var(--space-2);
   font-size: 1.05rem;
+}
+
+.rule-count {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.criteria-empty {
+  margin: 0;
+  color: var(--muted);
 }
 
 .criteria {
@@ -355,18 +877,25 @@ h1 {
 }
 
 .criterion {
-  padding: 0.7rem 0.8rem;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-left-width: 4px;
-  border-radius: 0.4rem;
+  border-radius: var(--radius-sm);
 }
 
+/* The verdict as a soft pill, then Jev's confidence in muted text. */
 .criterion-verdict {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem;
-  margin: 0 0 0.4rem;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
   font-weight: 600;
+}
+
+.criterion-verdict > span:nth-child(2) {
+  margin-left: calc(-1 * var(--space-1));
 }
 
 .criterion-confidence {
@@ -387,6 +916,10 @@ h1 {
   color: var(--meets);
 }
 
+.criterion-likely_meets .count-icon {
+  background: var(--meets-bg);
+}
+
 .criterion-likely_fails {
   border-left-color: var(--fails);
 }
@@ -395,12 +928,20 @@ h1 {
   color: var(--fails);
 }
 
+.criterion-likely_fails .count-icon {
+  background: var(--fails-bg);
+}
+
 .criterion-ask_your_doctor {
   border-left-color: var(--ask);
 }
 
 .criterion-ask_your_doctor .criterion-verdict {
   color: var(--ask);
+}
+
+.criterion-ask_your_doctor .count-icon {
+  background: var(--ask-bg);
 }
 
 .criterion-not_checked .criterion-verdict {
@@ -440,33 +981,27 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
+/* Rules for other groups of patients: no verdict, so quieter than the rest. */
+.criterion-other {
+  background: transparent;
+  border-style: dashed;
+  border-left-width: 1px;
+}
+
+/* "To ask": a callout, set apart from the quoted rule it belongs to. */
 .criterion-question {
-  margin: 0.5rem 0 0;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-left: 3px solid var(--ask);
 }
 
 .checked-for {
-  color: var(--muted);
-}
-
-.link-button {
-  padding: 0;
-  color: var(--accent);
-  background: none;
-  border: 0;
-  font: inherit;
   font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.link-button:focus-visible,
-.trial-source a:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
 }
 
 .trial-source {
-  margin: 1.2rem 0 0;
+  margin: var(--space-5) 0 0;
 }
 
 .trial-source a {
@@ -549,7 +1084,11 @@ h1 {
     background: none !important;
   }
 
-  .trial-toggle {
+  .trial-toggle,
+  .trial-toolbar,
+  .checklist-filters,
+  .show-more,
+  .form-actions {
     display: none;
   }
 

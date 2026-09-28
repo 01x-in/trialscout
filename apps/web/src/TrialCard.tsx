@@ -13,6 +13,24 @@ function siteLabel(trial: TrialResult): string {
   return `${place === '' ? 'Nearest site' : place} · ${site.distanceKm} km`
 }
 
+// Small line icons, drawn inline so no icon font or third-party asset loads.
+function PinIcon(): JSX.Element {
+  return (
+    <svg className="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </svg>
+  )
+}
+
+function ExternalIcon(): JSX.Element {
+  return (
+    <svg className="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+    </svg>
+  )
+}
+
 type Check = { kind: 'idle' } | { kind: 'checking' } | { kind: 'done'; outcome: TrialOutcome }
 
 function checkMessage(check: Check): string {
@@ -39,6 +57,15 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
   const [check, setCheck] = useState<Check>({ kind: 'idle' })
   const [printing, setPrinting] = useState(false)
   const phase = phaseLabel(trial.phases)
+  // Once every rule is checked, the card shows that check: the search may have left rules
+  // "not checked yet", and one of them may be a likely fail. The card stays where it is.
+  const counts =
+    check.kind === 'done' && check.outcome.kind === 'verdicts'
+      ? check.outcome.response.counts
+      : trial.counts
+  // The card sits in the group the search put it in; say so when the full check finds a
+  // likely fail the search did not.
+  const newFail = trial.counts.likely_fails === 0 && counts.likely_fails > 0
   const detailsId = `${trial.nctId}-details`
 
   // While printing, the sheet is the only thing on the page (index.css); afterwards it goes.
@@ -71,56 +98,104 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
   }
 
   return (
-    <article className="trial-card" aria-labelledby={`${trial.nctId}-title`}>
+    <article
+      id={`trial-${trial.nctId}`}
+      className="trial-card"
+      aria-labelledby={`${trial.nctId}-title`}
+      // Focusable from code only: "Show more" moves focus to the first new card.
+      tabIndex={-1}
+    >
       <h3 id={`${trial.nctId}-title`} className="trial-title">
-        <a href={trial.url} target="_blank" rel="noreferrer">
-          {trial.title}
-          <span className="visually-hidden">
-            {' '}
-            (official ClinicalTrials.gov page, opens in a new tab)
-          </span>
-        </a>
+        {trial.title}
       </h3>
-      <p className="trial-meta">
-        {phase !== null && <span>{phase}</span>}
-        {trial.sponsor !== null && <span>{trial.sponsor}</span>}
-        <span>{trial.nctId}</span>
+      <ul className="trial-tags" aria-label="About this trial">
+        {phase !== null && <li className="tag">{phase}</li>}
+        <li className="tag tag-id">{trial.nctId}</li>
+        {trial.sponsor !== null && <li className="trial-sponsor">{trial.sponsor}</li>}
+      </ul>
+      <p className="trial-site">
+        <PinIcon />
+        {siteLabel(trial)}
       </p>
-      <p className="trial-site">{siteLabel(trial)}</p>
       {trial.eligibility === 'unsplittable' ? (
         <p className="trial-unsplit">
           We could not turn this trial's rules into a checklist. Ask your doctor about it.
         </p>
       ) : (
-        <ul
-          className="verdict-counts"
-          aria-label="How your profile compares with this trial's rules"
-        >
-          {countParts(trial.counts).map((part) => (
-            <li key={part.verdict} className={`count count-${part.verdict}`}>
-              <span className="count-icon" aria-hidden="true">
-                {VERDICT_ICONS[part.verdict]}
-              </span>
-              <span>{part.label}</span>
-            </li>
-          ))}
-        </ul>
+        <>
+          {/* Proportions at a glance; the counts below carry the meaning in words. */}
+          <div className="verdict-bar" aria-hidden="true">
+            {countParts(counts).map((part) => (
+              <span
+                key={part.verdict}
+                className={`verdict-bar-${part.verdict}`}
+                style={{ flexGrow: part.count }}
+              />
+            ))}
+          </div>
+          <ul
+            className="verdict-counts"
+            aria-label="How your profile compares with this trial's rules"
+          >
+            {countParts(counts).map((part) => (
+              <li key={part.verdict} className={`count count-${part.verdict}`}>
+                <span className="count-icon" aria-hidden="true">
+                  {VERDICT_ICONS[part.verdict]}
+                </span>
+                <span>{part.label}</span>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
-      <button
-        type="button"
-        className="trial-toggle"
-        aria-expanded={open}
-        aria-controls={detailsId}
-        onClick={() => void toggle()}
-      >
-        {open ? 'Hide the rules' : 'Check each rule'}
-      </button>
+      {/* "Other" keeps single-sex trials in; say which sex the trial lists, and to ask. */}
+      {profile.sex === 'other' && trial.sexLimit !== null && (
+        <p className="trial-sex-limit">
+          ClinicalTrials.gov lists this trial for {trial.sexLimit} patients only. Ask your doctor
+          whether it could include you.
+        </p>
+      )}
+      {newFail && (
+        <p className="trial-new-fail">
+          Checking every rule found something that likely rules you out.
+        </p>
+      )}
+      <div className="trial-actions">
+        <button
+          type="button"
+          className="button button-secondary trial-toggle"
+          aria-expanded={open}
+          aria-controls={detailsId}
+          onClick={() => void toggle()}
+        >
+          {open ? 'Hide the rules' : 'Check each rule'}
+        </button>
+        <a
+          className="trial-official"
+          href={trial.url}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Official page for ${trial.title} (opens in a new tab)`}
+        >
+          Official page
+          <ExternalIcon />
+        </a>
+      </div>
       <div id={detailsId} className="trial-details" hidden={!open}>
         <p role="status" className="status">
           {open ? checkMessage(check) : ''}
         </p>
         {open && check.kind === 'done' && check.outcome.kind === 'verdicts' && (
           <>
+            <div className="trial-toolbar">
+              <button
+                type="button"
+                className="button button-secondary trial-toggle"
+                onClick={print}
+              >
+                Print questions for your doctor
+              </button>
+            </div>
             <Checklist trial={check.outcome.response} />
             <p className="trial-source">
               <a href={trial.url} target="_blank" rel="noreferrer">
@@ -128,9 +203,6 @@ export function TrialCard({ trial, profile, checkTrial }: Props): JSX.Element {
                 <span className="visually-hidden"> (opens in a new tab)</span>
               </a>
             </p>
-            <button type="button" className="trial-toggle" onClick={print}>
-              Print questions for your doctor
-            </button>
           </>
         )}
       </div>
