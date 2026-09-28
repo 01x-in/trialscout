@@ -37,7 +37,7 @@ Type this in the form, exactly:
 | 0:45 | Press **Hide the rules**, then **Show 10 more** until the heading "Something likely rules you out", with "Listed last, not hidden." Open **NCT06119581**, *A Study of First-Line Olomorasib… KRAS G12C-Mutant Non-small Cell Lung Cancer*, press the **Likely fails** chip, and zoom on *Must have disease with evidence of KRAS G12C mutation.* | A trial that likely rules you out is moved to the bottom. It is never hidden. |
 | 0:55 | Press **Print questions for your doctor**, at the top of the opened trial. Record the browser's print preview: the disclaimer at the top, "Rules that may keep me out", and under the KRAS rule, "The check suggests I do not meet this rule. Is that right?" | Take a question sheet to your doctor. The warning prints too. |
 | 1:05 | *Optional, cut first if long.* Close the preview. **Change your answers**: `glioblastoma`, Stage "Not sure", age `45`, Male, `Argentina`, `Ushuaia`, `50` km, no notes. **Find trials**: "No trials to show… Try a larger travel distance, or a broader cancer type such as "lung cancer"." | When nothing is nearby, it says what to change. |
-| 1:12 | Footer: **About this demo**. Scroll past "What it cannot do" and "Why no doctor has checked these results". Then the end card (added in the edit). | TrialScout is a demo, not medical advice. Rule checks by TypeSafe Jev. Trial data from ClinicalTrials.gov. |
+| 1:12 | Header: **About this demo**. Scroll past "What it cannot do" and "Why no doctor has checked these results". Then the end card (added in the edit). | TrialScout is a demo, not medical advice. Rule checks by TypeSafe Jev. Trial data from ClinicalTrials.gov. |
 
 ## What each beat showed on 2026-09-27
 

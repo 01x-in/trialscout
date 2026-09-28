@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 to M4 and the UI facelift of the form, results and checklist are merged; nothing is deployed yet. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Deploying, by following [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md), waits for both.
+M1 to M4, the UI facelift and its Tailwind and shadcn/ui restyle are built. Both Workers were first deployed to trialscout.cc on 2026-09-28, but the site is not announced yet. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Announcing the site waits for both; later deploys follow the "Later updates" steps below.
 
 ## context-mode (mandatory)
 
@@ -75,6 +75,11 @@ Node 22.18+ (`.nvmrc`): the tools in `apps/worker/scripts` run as `.ts` directly
 - TypeScript strict; npm workspaces; Biome (format) + oxlint (lint).
 - API: Hono on Cloudflare Workers; routes validated with `@hono/typia-validator`; web calls the API through `hc<AppType>` (typed RPC).
 - Client: Vite + React served by a web Worker with static assets, `run_worker_first: ["/api/*"]`, service binding `API` → API Worker. Not Cloudflare Pages.
+- UI: Tailwind 4 (`@tailwindcss/vite`; theme in `src/index.css` under `@theme inline`, no config file) and shadcn/ui components in `src/components/ui`, imported through `@/`. Add them with the shadcn CLI (`components.json`: new-york, stone), then match the repo: `.ts`/`.tsx` import extensions, explicit return types, our solid focus ring, 44px controls.
+  - Keep native controls where tests rely on the HTML: `<input type=radio>`, `<select>` (NativeSelect) and `<button aria-pressed>`, not Radix RadioGroup, Select or ToggleGroup.
+  - Colour tokens stay 6-digit hex under our own names (`--bg`, `--fg`, `--muted` is text, `--accent` is teal) and are mapped to shadcn's names in `@theme inline`; shadcn's `accent` is the quiet hover ground, `primary` is our teal.
+  - Plain CSS stays for class names something reads: `.demo-caution` and `.sheet-caution` (smoke test), print rules, `.chip` (a11y test), `.verdict-bar-*`, `.criterion-question` and the doctor sheet.
+  - Geist comes from `@fontsource-variable/geist`, bundled into our own assets.
 - Data: D1 + Drizzle (trials, sites, criteria, GeoNames cities); KV `CACHE` (Jev verdicts). No raw SQL.
 - Rate limit: Durable Object `SEARCH_LIMITER` (per IP; an alarm deletes its state after the longest window). Daily cron (`src/refresh.ts`) refreshes saved trials; when ClinicalTrials.gov is down, searches serve saved trials (`source: 'saved'`).
 - Data source: ClinicalTrials.gov API v2.
@@ -154,7 +159,7 @@ These are the safety mechanism. Every change must preserve them.
 
 ## Design
 
-- Calm, plain-spoken; the red strip is the only loud element. Warm neutral background, one restrained accent: deep teal (`--accent`), never a verdict colour, so no button reads as "ask your doctor".
+- Calm, plain-spoken; the red strip is the only loud element. Warm stone neutrals, the Geist font, one restrained accent: deep teal (`--accent`), never a verdict colour, so no button reads as "ask your doctor".
 - No clinical medical blue, no stock doctor photos, no gamification or cheerful illustrations.
 - Verdict states distinguishable without colour (icon + label).
 - WCAG AA, readable on a phone, single column on mobile.

@@ -174,6 +174,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - the sex choice "Female / Male / Other", its error "Choose female, male or other.", and the card note for "other" on a single-sex trial;
   - the distance quick picks after "Or choose:", and "Any distance" (the field shows those words; it means no distance limit), the summary's "at any distance from …", and its note when ClinicalTrials.gov lists more trials than a search reads ("We checked the first 100 it gave us, which are not always the nearest. Choose a smaller distance to check the nearest ones.");
   - "Official page", and the card line "Checking every rule found something that likely rules you out." shown when opening a trial finds a likely fail the search did not.
+- The Tailwind and shadcn/ui restyle (2026-09-28) adds no new copy. The "About this demo" link moves from the footer to a header, which the disclaimer strip still sits above on every page. Confirm the strip still reads as the loudest thing on the page, in light and dark, and on a phone, where the strip and header stay in view together.
 
 Record the result in `docs/gate-2-review.md`.
 
