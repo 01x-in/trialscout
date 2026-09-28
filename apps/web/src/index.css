@@ -124,25 +124,12 @@
   }
 }
 
-/* The hand-written styles from before Tailwind, moved screen by screen into the
-   components; what is left here is removed at the end of the move. */
-:root {
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --radius-sm: 0.4rem;
-  /* Controls reach 44px, a comfortable touch target. */
-  --control-height: 2.75rem;
-}
-
-/* The disclaimer strip: plain CSS, since the deploy smoke test (scripts/lib/smoke.ts) reads
-   this rule and its print rule below. SiteHeader keeps it in view. */
+/* Plain CSS where a class name matters beyond looks: the disclaimer strip and the doctor
+   sheet, which the deploy smoke test (scripts/lib/smoke.ts) reads, the print rules, and
+   hooks the tests and print rules find by name. Everything else is Tailwind in the
+   components. */
 @layer components {
+  /* SiteHeader keeps the strip in view. */
   .demo-caution {
     padding: 0.5rem 1rem;
     text-align: center;
@@ -152,39 +139,34 @@
     background: var(--caution-bg);
   }
 
-  /* Chips: the checklist filters. */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
+  /* The checklist filters. A --control border so each chip stands out from the card (3:1,
+     checked by a11y.test.tsx), and a tick on the chosen one so colour is not the only
+     signal. */
   .chip {
     min-height: 2.5rem;
-    padding: var(--space-1) var(--space-4);
-    font: inherit;
-    font-size: 0.95rem;
-    font-weight: 600;
+    padding: 0.25rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
     color: var(--fg);
-    /* A soft ground, and a --control border so the chip stands out from the card (3:1). */
-    background: var(--surface-2);
+    background: var(--surface);
     border: 1px solid var(--control);
     border-radius: 999px;
     cursor: pointer;
     touch-action: manipulation;
+    transition: background-color 150ms;
   }
 
   .chip:hover {
-    background: var(--line);
+    background: var(--surface-2);
   }
 
   .chip[aria-pressed='true'] {
     color: var(--accent);
+    font-weight: 600;
     background: var(--accent-soft);
     border-color: var(--accent);
   }
 
-  /* A tick, so the chosen chip is not told apart by colour alone. */
   .chip[aria-pressed='true']::before {
     content: '✓ ';
   }
@@ -219,17 +201,6 @@
     background: var(--line);
   }
 
-  .count-icon {
-    display: inline-grid;
-    place-items: center;
-    width: 1.3rem;
-    height: 1.3rem;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-    font-size: 0.75rem;
-    line-height: 1;
-  }
-
   /* A trial's rules, opened from its card. Motion only for expanding. */
   .trial-details:not([hidden]) {
     animation: expand 180ms ease-out;
@@ -248,116 +219,7 @@
     }
   }
 
-  .checklist-filters {
-    margin: var(--space-2) 0 0;
-  }
-
-  .filter-status {
-    margin: var(--space-2) 0 0;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }
-
-  .filter-status:empty {
-    display: none;
-  }
-
-  .checklist h4 {
-    margin: var(--space-5) 0 var(--space-2);
-    font-size: 1.05rem;
-  }
-
-  .rule-count {
-    color: var(--muted);
-    font-weight: 400;
-  }
-
-  .criteria-empty {
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .criteria {
-    display: grid;
-    gap: 0.6rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .criterion {
-    padding: var(--space-3) var(--space-4);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-left-width: 4px;
-    border-radius: var(--radius-sm);
-  }
-
-  /* The verdict as a soft pill, then Jev's confidence in muted text. */
-  .criterion-verdict {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-    margin: 0 0 var(--space-2);
-    font-weight: 600;
-  }
-
-  .criterion-verdict > span:nth-child(2) {
-    margin-left: calc(-1 * var(--space-1));
-  }
-
-  .criterion-confidence {
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 400;
-  }
-
-  .criterion-confidence::before {
-    content: '· ';
-  }
-
-  .criterion-likely_meets {
-    border-left-color: var(--meets);
-  }
-
-  .criterion-likely_meets .criterion-verdict {
-    color: var(--meets);
-  }
-
-  .criterion-likely_meets .count-icon {
-    background: var(--meets-bg);
-  }
-
-  .criterion-likely_fails {
-    border-left-color: var(--fails);
-  }
-
-  .criterion-likely_fails .criterion-verdict {
-    color: var(--fails);
-  }
-
-  .criterion-likely_fails .count-icon {
-    background: var(--fails-bg);
-  }
-
-  .criterion-ask_your_doctor {
-    border-left-color: var(--ask);
-  }
-
-  .criterion-ask_your_doctor .criterion-verdict {
-    color: var(--ask);
-  }
-
-  .criterion-ask_your_doctor .count-icon {
-    background: var(--ask-bg);
-  }
-
-  .criterion-not_checked .criterion-verdict {
-    color: var(--unchecked);
-    font-weight: 400;
-  }
-
+  /* A rule, quoted word for word, on screen and on the sheet. */
   .criterion-text {
     margin: 0;
     white-space: pre-line;
@@ -373,41 +235,37 @@
   }
 
   .criterion-raw {
-    margin-top: 0.6rem;
-    padding: 0.7rem 0.8rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
     border: 1px solid var(--line);
-    border-radius: 0.4rem;
+    border-radius: 0.5rem;
   }
 
-  .criterion-group,
-  .criteria-note {
-    margin: 0.4rem 0 0;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  .criteria-note {
-    margin-bottom: 0.5rem;
-  }
-
-  /* Rules for other groups of patients: no verdict, so quieter than the rest. */
-  .criterion-other {
-    background: transparent;
-    border-style: dashed;
-    border-left-width: 1px;
-  }
-
-  /* "To ask": a callout, set apart from the quoted rule it belongs to. */
-  .criterion-question {
-    margin: var(--space-3) 0 0;
-    padding: var(--space-2) var(--space-3);
-    background: var(--surface-2);
-    border-left: 3px solid var(--ask);
-  }
-
-  /* The doctor sheet exists only while printing, and is never shown on screen. */
+  /* The doctor sheet exists only while printing, and is never shown on screen. Tailwind's
+     reset takes away heading sizes, list numbers and spacing, so the sheet sets its own. */
   .print-root {
     display: none;
+  }
+
+  .doctor-sheet {
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  .doctor-sheet h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .doctor-sheet h3 {
+    margin: 1.25rem 0 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .doctor-sheet p {
+    margin: 0.5rem 0;
   }
 
   .sheet-layout {
@@ -431,6 +289,7 @@
     display: grid;
     grid-template-columns: max-content 1fr;
     gap: 0.2rem 1rem;
+    margin: 0 0 1rem;
   }
 
   .sheet-trial dt {
@@ -440,6 +299,11 @@
   .sheet-trial dd {
     margin: 0;
     overflow-wrap: anywhere;
+  }
+
+  .sheet-list {
+    padding-left: 1.5rem;
+    list-style: decimal;
   }
 
   .sheet-list li {
