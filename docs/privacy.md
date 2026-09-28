@@ -8,7 +8,7 @@ The tests named below hold the result in place. Re-run this audit whenever a log
 
 | Place | What it gets | Kept? |
 | --- | --- | --- |
-| Browser `sessionStorage` (`trialscout.profile`) | The whole profile | Until the tab closes. No `localStorage`, no cookies. |
+| Browser `sessionStorage` (`trialscout.profile`) | The whole profile | Until the tab closes. No cookies. `localStorage` holds only the viewer's theme pick (`trialscout.theme`: `light` or `dark`), never anything from the profile. |
 | `POST /api/search`, `POST /api/trials/:nctId/verdicts` | The whole profile, in the JSON body, never the URL | No. Used for the request, then dropped. |
 | ClinicalTrials.gov | The condition as typed, the city's coordinates (from GeoNames, in our own D1) and the distance | Their server logs, under their terms. No age, sex, stage or notes. |
 | Jev (TypeSafe AI) | Cancer type, stage, age, sex and notes, with the trial's title and conditions | Their service, under their terms. No city, country or distance. |
@@ -52,7 +52,7 @@ The tests named below hold the result in place. Re-run this audit whenever a log
   - the outage log names no condition or place.
 - `apps/web/src/privacy.test.tsx`:
   - no third-party assets, and the font files are served from our own site;
-  - the profile stays in `sessionStorage` only;
+  - the profile stays in `sessionStorage` only, and `localStorage` holds nothing but the theme pick;
   - the profile is sent only to our own `/api`, in the body.
 
 ## Not covered here

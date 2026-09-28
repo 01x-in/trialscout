@@ -34,10 +34,14 @@
   --ask-bg: #f7e9dd;
   --unchecked: #57534e;
   --radius: 0.75rem;
+  color-scheme: light;
 }
 
+/* Dark: from the system setting, unless the viewer picked light in the header, or when they
+   picked dark. The two blocks must stay the same (ThemeToggle.test.tsx checks). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
     --bg: #0c0a09;
     --fg: #fafaf9;
     --muted: #a8a29e;
@@ -59,6 +63,30 @@
     --ask-bg: #3a2a1f;
     --unchecked: #a8a29e;
   }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0c0a09;
+  --fg: #fafaf9;
+  --muted: #a8a29e;
+  --line: #35302c;
+  --control: #7d7570;
+  --surface: #1c1917;
+  --surface-2: #292524;
+  --accent: #6fcdc4;
+  --on-accent: #10201f;
+  --accent-soft: #1d3a37;
+  --error: #fca5a5;
+  --caution-bg: #7f1d1d;
+  --caution-fg: #fee2e2;
+  --meets: #86efac;
+  --meets-bg: #1c3325;
+  --fails: #fca5a5;
+  --fails-bg: #3d2222;
+  --ask: #e0a47c;
+  --ask-bg: #3a2a1f;
+  --unchecked: #a8a29e;
 }
 
 @theme inline {
@@ -352,7 +380,8 @@
       display: none;
     }
 
-    :root {
+    :root,
+    :root[data-theme] {
       --bg: #ffffff;
       --fg: #000000;
       --muted: #000000;

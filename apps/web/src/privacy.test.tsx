@@ -60,6 +60,18 @@ describe('privacy (browser)', () => {
     expect(Object.keys(sessionStorage)).toEqual(['trialscout.profile'])
   })
 
+  it('keeps nothing of the profile in localStorage: it holds only the theme choice', async () => {
+    sessionStorage.setItem('trialscout.profile', JSON.stringify(PROFILE))
+    render(<App search={async () => ({ kind: 'unavailable' })} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to dark theme' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+    await screen.findByText(/could not check trials right now/i)
+
+    expect({ ...localStorage }).toEqual({ 'trialscout.theme': 'dark' })
+    localStorage.clear()
+    delete document.documentElement.dataset.theme
+  })
+
   it('sends the profile only to our own API, in the body, never in the URL', async () => {
     const seen: { url: string; body: string }[] = []
     await searchTrials(PROFILE, async (input, init) => {
