@@ -1,5 +1,5 @@
 import { type JSX, type ReactNode, useEffect } from 'react'
-import { DemoCaution } from './DemoCaution.tsx'
+import { SiteHeader } from './SiteHeader.tsx'
 
 // "About this demo": how the check works, what Jev is, its limits and why no clinician has
 // checked the results. Plain words for an 8th-grade reader; no promises of a place on a trial.
@@ -14,8 +14,13 @@ function Section({
   children: ReactNode
 }): JSX.Element {
   return (
-    <section className="about-section" aria-labelledby={id}>
-      <h2 id={id}>{title}</h2>
+    <section
+      className="space-y-3 border-t pt-8 [&_li]:pl-1 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6"
+      aria-labelledby={id}
+    >
+      <h2 id={id} className="font-semibold text-xl tracking-tight">
+        {title}
+      </h2>
       {children}
     </section>
   )
@@ -30,16 +35,20 @@ export function About(): JSX.Element {
   }, [])
   return (
     <>
-      <DemoCaution />
-      <main className="page about">
-        <p>
-          <a href="/">Back to the trial search</a>
-        </p>
-        <h1>About this demo</h1>
-        <p className="lede">
-          TrialScout is a demo. It shows how an AI model can check the rules of a cancer trial
-          against what a patient tells it. It is not a medical service.
-        </p>
+      <SiteHeader page="about" />
+      <main className="mx-auto max-w-3xl space-y-8 px-4 pt-8 pb-16 text-base leading-relaxed [overflow-wrap:break-word]">
+        <div className="space-y-3">
+          <p className="text-sm">
+            <a href="/" className="font-medium">
+              Back to the trial search
+            </a>
+          </p>
+          <h1 className="font-semibold text-3xl tracking-tight sm:text-4xl">About this demo</h1>
+          <p className="text-lg text-muted-foreground">
+            TrialScout is a demo. It shows how an AI model can check the rules of a cancer trial
+            against what a patient tells it. It is not a medical service.
+          </p>
+        </div>
 
         <Section id="about-how" title="How the check works">
           <p>You tell us about your cancer, your age, your sex and where you live.</p>

@@ -1,11 +1,15 @@
 import type { EmptyReason, Profile, SearchResponse, TrialResult } from '@trialscout/contract'
 import { type JSX, type ReactNode, useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button.tsx'
 import type { CheckTrial } from './api.ts'
 import { dateLabel, profileSummary, whereLabel } from './format.ts'
 import { TrialCard } from './TrialCard.tsx'
 
 // Trials shown at first, and added by each "Show more".
 const PAGE = 10
+
+// Focused from code when results arrive: no ring on a heading nobody tabbed to.
+const HEADING = 'scroll-mt-40 font-semibold text-2xl tracking-tight focus:outline-none'
 
 function emptyMessage(reason: EmptyReason, where: string): string {
   switch (reason) {
@@ -33,14 +37,16 @@ function DataAsOf({ response }: { response: SearchResponse }): JSX.Element {
   const date = dateLabel(response.dataAsOf)
   if (response.source === 'saved') {
     return (
-      <p className="results-note results-saved">
+      <p className="rounded-md border-primary border-l-4 bg-card px-4 py-3">
         ClinicalTrials.gov is not answering right now, so these trials come from our saved copy,
         last checked on {date}. Some may have changed or closed since. Check the official page of
         any trial before you talk to your doctor.
       </p>
     )
   }
-  return <p className="results-note">Trial details from ClinicalTrials.gov, {date}.</p>
+  return (
+    <p className="text-muted-foreground text-sm">Trial details from ClinicalTrials.gov, {date}.</p>
+  )
 }
 
 // A search reads a fixed number of trials in ClinicalTrials.gov's own order, which is not by
@@ -57,7 +63,7 @@ function Coverage({
   if (listed.total === null || listed.total <= listed.read) return null
   const n = (x: number): string => x.toLocaleString('en-GB')
   return (
-    <p className="results-note">
+    <p className="text-muted-foreground text-sm">
       ClinicalTrials.gov lists {n(listed.total)} recruiting trials {whereLabel(maxDistanceKm, city)}
       . We checked the first {n(listed.read)} it gave us, which are not always the nearest. Choose a
       smaller distance to check the nearest ones.
@@ -73,8 +79,11 @@ function Summary({
   children,
 }: Pick<Props, 'response' | 'profile' | 'onEdit'> & { children: ReactNode }): JSX.Element {
   return (
-    <section className="results-summary" aria-label="Your search">
-      <p className="checked-for">Checked for: {profileSummary(profile)}</p>
+    <section
+      className="mt-4 grid justify-items-start gap-2 rounded-xl bg-muted p-5"
+      aria-label="Your search"
+    >
+      <p className="font-semibold">Checked for: {profileSummary(profile)}</p>
       {children}
       <Coverage
         listed={response.listed}
@@ -82,9 +91,9 @@ function Summary({
         city={response.location.city}
       />
       <DataAsOf response={response} />
-      <button type="button" className="button button-secondary" onClick={onEdit}>
+      <Button type="button" variant="outline" className="mt-2" onClick={onEdit}>
         Change your answers
-      </button>
+      </Button>
     </section>
   )
 }
@@ -103,10 +112,12 @@ function TrialGroup({
 } & Pick<Props, 'profile' | 'checkTrial'>): JSX.Element | null {
   if (trials.length === 0) return null
   return (
-    <section className="trial-group" aria-labelledby={id}>
-      <h3 id={id}>{title}</h3>
-      {note && <p className="trial-group-note">{note}</p>}
-      <div className="trial-list">
+    <section className="mt-10" aria-labelledby={id}>
+      <h3 id={id} className="font-semibold text-xl tracking-tight">
+        {title}
+      </h3>
+      {note && <p className="mt-1 text-muted-foreground text-sm">{note}</p>}
+      <div className="mt-4 grid gap-4">
         {trials.map((trial) => (
           <TrialCard key={trial.nctId} trial={trial} {...card} />
         ))}
@@ -136,8 +147,8 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
 
   if (response.empty !== null || response.results.length === 0) {
     return (
-      <section className="results" aria-labelledby="results-heading">
-        <h2 id="results-heading" tabIndex={-1}>
+      <section className="mt-10" aria-labelledby="results-heading">
+        <h2 id="results-heading" tabIndex={-1} className={HEADING}>
           No trials to show
         </h2>
         <Summary response={response} profile={profile} onEdit={onEdit}>
@@ -178,8 +189,8 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
 
   const count = all.length
   return (
-    <section className="results" aria-labelledby="results-heading">
-      <h2 id="results-heading" tabIndex={-1}>
+    <section className="mt-10" aria-labelledby="results-heading">
+      <h2 id="results-heading" tabIndex={-1} className={HEADING}>
         Trials worth discussing with your doctor
       </h2>
       <Summary response={response} profile={profile} onEdit={onEdit}>
@@ -220,9 +231,14 @@ export function Results({ response, profile, checkTrial, onEdit }: Props): JSX.E
         checkTrial={checkTrial}
       />
       {left > 0 && (
-        <button type="button" className="button button-secondary show-more" onClick={showMore}>
+        <Button
+          type="button"
+          variant="outline"
+          className="show-more mt-6 w-full"
+          onClick={showMore}
+        >
           Show {next} more{left > next ? ` (${left} left)` : ''}
-        </button>
+        </Button>
       )}
     </section>
   )

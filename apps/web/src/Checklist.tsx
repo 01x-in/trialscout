@@ -1,7 +1,10 @@
 import type { CriterionVerdict, TrialVerdictsResponse } from '@trialscout/contract'
 import { type JSX, useState } from 'react'
-import { type CountVerdict, VERDICT_ICONS, VERDICT_LABELS } from './format.ts'
+import { Badge } from '@/components/ui/badge.tsx'
+import { cn } from '@/lib/utils.ts'
+import { type CountVerdict, VERDICT_LABELS } from './format.ts'
 import { doctorQuestion } from './questions.ts'
+import { VerdictIcon } from './VerdictIcon.tsx'
 
 // Every rule of a trial, each verdict (icon and label) next to the verbatim text it was
 // judged against. Medical terms appear only inside those quotes.
@@ -13,19 +16,27 @@ function isJudged(c: CriterionVerdict): c is Judged {
 }
 
 function Group({ group }: { group: string | null }): JSX.Element | null {
-  return group === null ? null : <p className="criterion-group">For: {group}</p>
+  return group === null ? null : <p className="mt-2 text-muted-foreground text-sm">For: {group}</p>
+}
+
+// Each rule has an edge in its verdict's colour; the badge says the verdict in words.
+const EDGES: Record<CountVerdict, string> = {
+  likely_meets: 'border-l-meets',
+  likely_fails: 'border-l-fails',
+  ask_your_doctor: 'border-l-ask',
+  not_checked: 'border-l-border',
 }
 
 function Rule({ criterion }: { criterion: Judged }): JSX.Element {
   return (
-    <li className={`criterion criterion-${criterion.verdict}`}>
-      <p className="criterion-verdict">
-        <span className="count-icon" aria-hidden="true">
-          {VERDICT_ICONS[criterion.verdict]}
-        </span>
-        <span>{VERDICT_LABELS[criterion.verdict]}</span>
+    <li className={cn('rounded-lg border border-l-4 bg-card px-4 py-3', EDGES[criterion.verdict])}>
+      <p className="mb-2 flex flex-wrap items-center gap-2">
+        <Badge variant={criterion.verdict} className="rounded-full py-1 pr-3 pl-1.5">
+          <VerdictIcon verdict={criterion.verdict} />
+          <span>{VERDICT_LABELS[criterion.verdict]}</span>
+        </Badge>
         {criterion.confidence !== null && (
-          <span className="criterion-confidence">
+          <span className="text-muted-foreground text-sm">
             AI confidence {Math.round(criterion.confidence * 100)}%
           </span>
         )}
@@ -33,7 +44,7 @@ function Rule({ criterion }: { criterion: Judged }): JSX.Element {
       <blockquote className="criterion-text">{criterion.text}</blockquote>
       <Group group={criterion.group} />
       {criterion.verdict === 'ask_your_doctor' && (
-        <p className="criterion-question">
+        <p className="criterion-question mt-3 rounded-md border-ask border-l-4 bg-muted px-3 py-2">
           <strong>To ask:</strong> {doctorQuestion(criterion)}
         </p>
       )}
@@ -60,13 +71,14 @@ function Rules({ id, label, rules, filter }: RulesProps): JSX.Element | null {
   const shown = filter === 'all' ? rules : rules.filter((c) => c.verdict === filter)
   return (
     <>
-      <h4>
-        <span id={id}>{label}</span> <span className="rule-count">({rules.length})</span>
+      <h4 className="mt-6 mb-3 font-semibold text-base">
+        <span id={id}>{label}</span>{' '}
+        <span className="font-normal text-muted-foreground">({rules.length})</span>
       </h4>
       {shown.length === 0 ? (
-        <p className="criteria-empty">None of these rules.</p>
+        <p className="text-muted-foreground">None of these rules.</p>
       ) : (
-        <ul className="criteria" aria-labelledby={id}>
+        <ul className="grid gap-3" aria-labelledby={id}>
           {shown.map((c, i) => (
             <Rule key={`${i}-${c.text}`} criterion={c} />
           ))}
@@ -80,7 +92,7 @@ export function Checklist({ trial }: { trial: TrialVerdictsResponse }): JSX.Elem
   if (trial.eligibility === 'unsplittable') {
     return (
       <div className="checklist">
-        <p className="trial-unsplit">
+        <p className="text-ask">
           We could not turn this trial's rules into a checklist, so here they are as written. Ask
           your doctor about them.
         </p>
@@ -111,7 +123,11 @@ function Checked({ trial }: { trial: TrialVerdictsResponse }): JSX.Element {
       {/* Filters only help when the rules have more than one verdict. */}
       {found.length > 1 && (
         <>
-          <div role="group" aria-label="Show rules" className="chips checklist-filters">
+          <div
+            role="group"
+            aria-label="Show rules"
+            className="checklist-filters mt-3 flex flex-wrap gap-2"
+          >
             {chips.map((chip) => (
               <button
                 key={chip.filter}
@@ -124,7 +140,7 @@ function Checked({ trial }: { trial: TrialVerdictsResponse }): JSX.Element {
               </button>
             ))}
           </div>
-          <p role="status" className="filter-status">
+          <p role="status" className="mt-2 text-muted-foreground text-sm empty:hidden">
             {filter === 'all' ? '' : `Showing ${count(filter)} of ${judged.length} rules.`}
           </p>
         </>
@@ -143,14 +159,19 @@ function Checked({ trial }: { trial: TrialVerdictsResponse }): JSX.Element {
       />
       {filter === 'all' && other.length > 0 && (
         <>
-          <h4 id={`${trial.nctId}-other`}>Rules for other groups of patients</h4>
-          <p className="criteria-note">
+          <h4 id={`${trial.nctId}-other`} className="mt-6 mb-1 font-semibold text-base">
+            Rules for other groups of patients
+          </h4>
+          <p className="mb-3 text-muted-foreground text-sm">
             These seem to be for a different group of patients, such as another cancer type, so they
             are not counted. Your doctor can confirm.
           </p>
-          <ul className="criteria" aria-labelledby={`${trial.nctId}-other`}>
+          <ul className="grid gap-3" aria-labelledby={`${trial.nctId}-other`}>
             {other.map((c, i) => (
-              <li key={`${i}-${c.text}`} className="criterion criterion-other">
+              <li
+                key={`${i}-${c.text}`}
+                className="rounded-lg border border-dashed px-4 py-3 text-muted-foreground"
+              >
                 <blockquote className="criterion-text">{c.text}</blockquote>
                 <Group group={c.group} />
               </li>

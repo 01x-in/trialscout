@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 import type { Profile } from '@trialscout/contract'
 import { fireEvent, render, screen } from '@testing-library/react'
@@ -28,7 +29,24 @@ describe('privacy (browser)', () => {
     const css = readFileSync(resolve(import.meta.dirname, 'index.css'), 'utf8')
 
     expect(html).not.toMatch(/(src|href)="(https?:)?\/\//i)
-    expect(css).not.toMatch(/@import|url\(/i)
+    // Only the two packages Vite bundles into our own stylesheet, and no url() at all.
+    const imports = [...css.matchAll(/@import\s+([^;]+);/g)].map((m) => m[1]?.trim())
+    expect(imports).toEqual(["'tailwindcss'", "'tw-animate-css'"])
+    expect(css).not.toMatch(/url\(/i)
+  })
+
+  it('serves the Geist font from this site', () => {
+    const main = readFileSync(resolve(import.meta.dirname, 'main.tsx'), 'utf8')
+    const fonts = readFileSync(
+      createRequire(import.meta.url).resolve('@fontsource-variable/geist/index.css'),
+      'utf8',
+    )
+
+    expect(main).toContain("import '@fontsource-variable/geist'")
+    // Vite copies each file next to the page's own assets.
+    const urls = [...fonts.matchAll(/url\(([^)]+)\)/g)].map((m) => m[1] ?? '')
+    expect(urls.length).toBeGreaterThan(0)
+    for (const url of urls) expect(url).toMatch(/^['"]?\.\/files\//)
   })
 
   it('keeps the profile in sessionStorage only: no localStorage, no cookies', async () => {

@@ -15,6 +15,8 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    /* shadcn/ui components import through `@/`, as in vite.config.ts `resolve.alias` */
+    "paths": { "@/*": ["./src/*"] },
 
     /* Linting */
     "strict": true,

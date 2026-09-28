@@ -32,7 +32,8 @@ The tests named below hold the result in place. Re-run this audit whenever a log
   - *Fixed in this audit:* a client that never came back left its IP and hit times in its Durable Object forever.
   - The object now sets an alarm for when its last hit leaves the longest window, and then deletes all its storage.
 - **No analytics or third-party assets.**
-  - `index.html` and `index.css` load nothing from another origin: no scripts, fonts, images or `@import`.
+  - `index.html` and `index.css` load nothing from another origin: no scripts, fonts or images. `index.css` imports only Tailwind and `tw-animate-css`, which Vite bundles into our own stylesheet.
+  - The Geist font comes from the `@fontsource-variable/geist` package. Vite copies its files into our own `/assets`, so the browser fetches it from trialscout.cc and never from a font service.
   - The web Worker only forwards `/api/*` to the API Worker and serves static files. It logs nothing.
 - **Cache and store.** The KV key is a hash of the model, question version, trial, criteria and normalised profile without location. The value holds answers only. D1 rows come from ClinicalTrials.gov and GeoNames only.
 
@@ -50,7 +51,7 @@ The tests named below hold the result in place. Re-run this audit whenever a log
   - Jev never sees the city, country or distance;
   - the outage log names no condition or place.
 - `apps/web/src/privacy.test.tsx`:
-  - no third-party assets;
+  - no third-party assets, and the font files are served from our own site;
   - the profile stays in `sessionStorage` only;
   - the profile is sent only to our own `/api`, in the body.
 

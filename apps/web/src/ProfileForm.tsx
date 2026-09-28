@@ -1,5 +1,14 @@
 import type { CancerStage, Profile, Sex } from '@trialscout/contract'
+import { CheckIcon, LockKeyholeIcon } from 'lucide-react'
 import { type JSX, type ReactNode, type SubmitEvent, useState } from 'react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx'
+import { Button } from '@/components/ui/button.tsx'
+import { Card } from '@/components/ui/card.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import { Label } from '@/components/ui/label.tsx'
+import { NativeSelect } from '@/components/ui/native-select.tsx'
+import { Textarea } from '@/components/ui/textarea.tsx'
+import { cn } from '@/lib/utils.ts'
 import { ANY_DISTANCE_KM, ANY_DISTANCE_LABEL, distanceText } from './format.ts'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
@@ -88,10 +97,10 @@ function Field({ id, hint, error, describedBy = [], after, children }: FieldProp
   const described = [hint ? `${id}-hint` : null, ...describedBy, error ? `${id}-error` : null]
   const ids = described.filter((d): d is string => d !== null)
   return (
-    <div className="field">
-      <label htmlFor={id}>{LABELS[id]}</label>
+    <div className="grid content-start gap-2">
+      <Label htmlFor={id}>{LABELS[id]}</Label>
       {hint && (
-        <p id={`${id}-hint`} className="field-hint">
+        <p id={`${id}-hint`} className="-mt-1 text-muted-foreground text-sm">
           {hint}
         </p>
       )}
@@ -101,7 +110,7 @@ function Field({ id, hint, error, describedBy = [], after, children }: FieldProp
       })}
       {after}
       {error && (
-        <p id={`${id}-error`} className="field-error">
+        <p id={`${id}-error`} className="font-medium text-destructive text-sm">
           {error}
         </p>
       )}
@@ -109,9 +118,11 @@ function Field({ id, hint, error, describedBy = [], after, children }: FieldProp
   )
 }
 
-// A few options, all in view, one tap each: plain radio buttons on one line. A group with a
-// label, not a <fieldset>/<legend>, so every browser lays it out like the other fields. The
-// first radio carries the field's id, so the error summary's link lands on it.
+// A few options, all in view, one tap each: a segmented control, as tall as a field, built
+// from the browser's own radio buttons (hidden visually, still focused and read as radios).
+// The chosen one gets a tick as well as its colour. A group with a label, not a
+// <fieldset>/<legend>, so every browser lays it out like the other fields. The first radio
+// carries the field's id, so the error summary's link lands on it.
 function Choice<T extends string>({
   id,
   options,
@@ -125,31 +136,41 @@ function Choice<T extends string>({
 }): JSX.Element {
   return (
     <div
-      className="field"
+      className="grid content-start gap-2"
       role="radiogroup"
       aria-labelledby={`${id}-label`}
       aria-describedby={error ? `${id}-error` : undefined}
     >
-      <p id={`${id}-label`} className="field-label">
+      <p id={`${id}-label`} className="font-medium text-base leading-snug">
         {LABELS[id]}
       </p>
-      <div className="radios">
+      <div
+        className={cn(
+          'grid h-11 auto-cols-fr grid-flow-col gap-1 rounded-md border border-input bg-background p-1 shadow-xs',
+          error !== null && 'border-destructive ring-1 ring-destructive',
+        )}
+      >
         {options.map((option, i) => (
-          <label key={option.value} className="radio">
+          <label
+            key={option.value}
+            className="relative flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] text-sm transition-colors hover:bg-accent has-checked:bg-primary-soft has-checked:font-semibold has-checked:text-primary has-focus-visible:outline-3 has-focus-visible:outline-primary has-focus-visible:outline-offset-2 [&:not(:has(:checked))>svg]:hidden"
+          >
             <input
               type="radio"
+              className="sr-only"
               id={i === 0 ? id : undefined}
               name={id}
               value={option.value}
               defaultChecked={checked === option.value}
               aria-invalid={error !== null}
             />
+            <CheckIcon aria-hidden="true" className="size-4" />
             {option.label}
           </label>
         ))}
       </div>
       {error && (
-        <p id={`${id}-error`} className="field-error">
+        <p id={`${id}-error`} className="font-medium text-destructive text-sm">
           {error}
         </p>
       )}
@@ -162,10 +183,12 @@ function Choice<T extends string>({
 function Section({ title, children }: { title: string; children: ReactNode }): JSX.Element {
   const id = `section-${title.toLowerCase().replace(/[^a-z]+/g, '-')}`
   return (
-    <div role="group" aria-labelledby={id} className="form-section">
-      <h2 id={id}>{title}</h2>
+    <Card role="group" aria-labelledby={id} className="gap-5 px-5 sm:px-6">
+      <h2 id={id} className="font-semibold text-lg tracking-tight">
+        {title}
+      </h2>
       {children}
-    </div>
+    </Card>
   )
 }
 
@@ -203,7 +226,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
   }
 
   return (
-    <form className="profile-form" onSubmit={submit} noValidate aria-label="Your profile">
+    <form className="grid gap-6" onSubmit={submit} noValidate aria-label="Your profile">
       <Section title="About the cancer">
         <Field
           id="cancerType"
@@ -211,31 +234,35 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           error={error('cancerType')}
         >
           {(aria) => (
-            <input id="cancerType" name="cancerType" defaultValue={initial?.cancerType} {...aria} />
+            <Input id="cancerType" name="cancerType" defaultValue={initial?.cancerType} {...aria} />
           )}
         </Field>
 
         <Field id="stage" error={error('stage')}>
           {(aria) => (
-            <div className="select">
-              <select id="stage" name="stage" defaultValue={initial?.stage ?? ''} {...aria}>
-                <option value="">Choose…</option>
-                {STAGES.map((stage) => (
-                  <option key={stage.value} value={stage.value}>
-                    {stage.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <NativeSelect
+              wrapperClassName="select"
+              id="stage"
+              name="stage"
+              defaultValue={initial?.stage ?? ''}
+              {...aria}
+            >
+              <option value="">Choose…</option>
+              {STAGES.map((stage) => (
+                <option key={stage.value} value={stage.value}>
+                  {stage.label}
+                </option>
+              ))}
+            </NativeSelect>
           )}
         </Field>
       </Section>
 
       <Section title="About you">
-        <div className="field-row">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Field id="age" error={error('age')}>
             {(aria) => (
-              <input
+              <Input
                 id="age"
                 name="age"
                 inputMode="numeric"
@@ -250,10 +277,10 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
       </Section>
 
       <Section title="Where you are">
-        <div className="field-row">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Field id="country" error={error('country')}>
             {(aria) => (
-              <input
+              <Input
                 id="country"
                 name="country"
                 autoComplete="country-name"
@@ -265,7 +292,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
 
           <Field id="city" error={error('city')}>
             {(aria) => (
-              <input
+              <Input
                 id="city"
                 name="city"
                 autoComplete="address-level2"
@@ -281,19 +308,26 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           hint="We look for trial sites within this distance of your city."
           error={error('maxDistanceKm')}
           after={
-            <div role="group" aria-label="Distance quick picks" className="quick-picks">
+            <div
+              role="group"
+              aria-label="Distance quick picks"
+              className="flex flex-wrap items-center gap-x-1 text-sm"
+            >
               {/* The group has its own name; this is for sighted readers. */}
-              <span className="quick-picks-lead" aria-hidden="true">
+              <span className="mr-1 text-muted-foreground" aria-hidden="true">
                 Or choose:
               </span>
               {DISTANCE_PICKS.map((pick) => (
+                // Plain text buttons, like links; the chosen one is bold, with a tick, and not
+                // underlined. Each is a 44px touch target.
                 <button
                   key={pick.km}
                   type="button"
-                  className="text-pick"
+                  className="text-pick inline-flex h-11 cursor-pointer touch-manipulation items-center gap-1 px-2 text-primary underline underline-offset-4 aria-pressed:font-semibold aria-pressed:text-foreground aria-pressed:no-underline [&:not([aria-pressed=true])>svg]:hidden"
                   aria-pressed={pickedKm(distance) === pick.km}
                   onClick={() => setDistance(distanceText(pick.km))}
                 >
+                  <CheckIcon aria-hidden="true" className="size-4 text-primary" />
                   {pick.label}
                 </button>
               ))}
@@ -301,7 +335,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           }
         >
           {(aria) => (
-            <input
+            <Input
               id="maxDistanceKm"
               name="maxDistanceKm"
               inputMode="numeric"
@@ -320,16 +354,16 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           error={error('notes')}
           describedBy={['notes-privacy', 'notes-count']}
           after={
-            <div className="field-foot">
+            <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 text-muted-foreground text-sm">
               <p id="notes-privacy">Stays in this browser tab. We don't store it.</p>
-              <p id="notes-count">
+              <p id="notes-count" className="tabular-nums">
                 {number(notesLength)} of {number(NOTES_LIMIT)} characters
               </p>
             </div>
           }
         >
           {(aria) => (
-            <textarea
+            <Textarea
               id="notes"
               name="notes"
               rows={5}
@@ -342,43 +376,45 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
       </Section>
 
       {/* Said plainly before anything is sent. The details are on the About page. */}
-      <div role="note" aria-label="Your privacy" className="privacy-note">
-        <svg className="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <rect x="5" y="11" width="14" height="10" rx="2" />
-          <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-        </svg>
-        <p>
-          We don't store your answers. They stay in this browser tab. Each check sends them to our
-          server, which uses them and then throws them away. No accounts, no tracking.{' '}
-          <a href="/about#about-privacy">How we handle your answers</a>
-        </p>
-      </div>
+      <Alert role="note" aria-label="Your privacy" variant="muted">
+        <LockKeyholeIcon aria-hidden="true" />
+        <AlertDescription>
+          <p>
+            We don't store your answers. They stay in this browser tab. Each check sends them to our
+            server, which uses them and then throws them away. No accounts, no tracking.{' '}
+            <a href="/about#about-privacy">How we handle your answers</a>
+          </p>
+        </AlertDescription>
+      </Alert>
 
       {invalid.length > 0 && (
-        <div role="alert" className="form-errors">
-          <p>Some answers need a look:</p>
-          <ul>
-            {invalid.map((field) => (
-              <li key={field}>
-                <a
-                  href={`#${field}`}
-                  onClick={(event) => {
-                    event.preventDefault()
-                    focusField(field)
-                  }}
-                >
-                  {LABELS[field]}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Alert role="alert" variant="destructive">
+          <AlertTitle>Some answers need a look:</AlertTitle>
+          <AlertDescription>
+            <ul className="list-disc pl-5">
+              {invalid.map((field) => (
+                <li key={field}>
+                  <a
+                    href={`#${field}`}
+                    className="text-foreground"
+                    onClick={(event) => {
+                      event.preventDefault()
+                      focusField(field)
+                    }}
+                  >
+                    {LABELS[field]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </AlertDescription>
+        </Alert>
       )}
-      {/* On a phone the button stays in reach while the form scrolls. */}
-      <div className="form-actions">
-        <button type="submit" className="button button-primary" disabled={busy}>
+      {/* On a phone the button stays in reach at the bottom while the form scrolls. */}
+      <div className="form-actions max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-4 max-sm:border-t max-sm:bg-background/95 max-sm:px-4 max-sm:py-3 max-sm:backdrop-blur">
+        <Button type="submit" size="lg" className="w-full sm:w-auto sm:min-w-48" disabled={busy}>
           Find trials
-        </button>
+        </Button>
       </div>
     </form>
   )
