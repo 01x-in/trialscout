@@ -172,6 +172,11 @@ describe('axe (WCAG 2.2 A and AA)', () => {
     expect(await violations()).toEqual([])
   })
 
+  it('finds nothing on the landing page', async () => {
+    render(<Root pathname="/" />)
+    expect(await violations()).toEqual([])
+  })
+
   it('finds nothing on the about page', async () => {
     render(<Root pathname="/about" />)
     expect(await violations()).toEqual([])
