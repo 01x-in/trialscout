@@ -66,7 +66,48 @@ describe('theme styles', () => {
     expect(block(":root[data-theme='dark']")).toBe(block(":root:not([data-theme='light'])"))
   })
 
-  it('applies a saved choice before the first paint, from the same key', () => {
-    expect(html).toContain(`localStorage.getItem('${THEME_KEY}')`)
+  // Runs index.html's inline script, as the browser does before the first paint.
+  function runHeadScript(): void {
+    const script = /<script>([\s\S]*?)<\/script>/.exec(html)?.[1]
+    expect(script, 'the inline theme script').toBeDefined()
+    new Function(script ?? '')()
+  }
+
+  it.each(['light', 'dark'])('applies a saved %s pick before the first paint', (theme) => {
+    localStorage.setItem(THEME_KEY, theme)
+    runHeadScript()
+
+    expect(document.documentElement.dataset.theme).toBe(theme)
+  })
+
+  it('ignores anything else saved under the key, and follows the system', () => {
+    localStorage.setItem(THEME_KEY, 'purple')
+    runHeadScript()
+
+    expect(document.documentElement.dataset.theme).toBeUndefined()
+  })
+
+  // The colour tokens sit outside any @layer, and a layered rule never beats an unlayered
+  // one, so the print reset must sit outside too, after the dark blocks, and match both.
+  it('prints on white in every theme, the system dark one included', () => {
+    const at = css.indexOf('@media print {')
+    const depth = [...css.slice(0, at)].reduce(
+      (d, c) => d + (c === '{' ? 1 : c === '}' ? -1 : 0),
+      0,
+    )
+    const open = css.indexOf('{', at)
+    const [selectors = '', body = ''] = css.slice(open + 1, css.indexOf('}', open)).split('{')
+
+    expect(depth, 'the first @media print block is outside any layer').toBe(0)
+    expect(at).toBeGreaterThan(css.indexOf(":root[data-theme='dark']"))
+    expect(selectors.split(',').map((s) => s.trim())).toEqual(
+      expect.arrayContaining([
+        ':root',
+        ":root:not([data-theme='light'])",
+        ":root[data-theme='dark']",
+      ]),
+    )
+    expect(body).toMatch(/color-scheme:\s*light/)
+    expect(body).toMatch(/--bg:\s*#ffffff/)
   })
 })

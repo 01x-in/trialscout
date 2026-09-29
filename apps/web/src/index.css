@@ -89,6 +89,19 @@
   --unchecked: #a8a29e;
 }
 
+/* Printed pages are black on white in every theme. Outside any @layer, after the dark
+   blocks and matching their selectors, or the dark colours would win. */
+@media print {
+  :root,
+  :root:not([data-theme='light']),
+  :root[data-theme='dark'] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --fg: #000000;
+    --muted: #000000;
+  }
+}
+
 @theme inline {
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--bg);
@@ -378,13 +391,6 @@
     .show-more,
     .form-actions {
       display: none;
-    }
-
-    :root,
-    :root[data-theme] {
-      --bg: #ffffff;
-      --fg: #000000;
-      --muted: #000000;
     }
 
     .demo-caution {
