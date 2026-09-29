@@ -9,7 +9,7 @@ import { ThemeToggle } from './ThemeToggle.tsx'
 type Page = 'home' | 'search' | 'about'
 
 const LINK =
-  'rounded-md px-2 py-2 font-medium text-muted-foreground text-sm no-underline hover:text-foreground aria-[current=page]:text-foreground'
+  'whitespace-nowrap rounded-md px-1.5 py-2 font-medium sm:px-2 text-muted-foreground text-sm no-underline hover:text-foreground aria-[current=page]:text-foreground'
 
 // The strip wraps to more lines on a narrow screen, so the height of the sticky top is
 // measured and published as --header-h. Anchors (scroll-padding) and the search page's
@@ -39,7 +39,7 @@ export function SiteHeader({ page }: { page: Page }): JSX.Element {
     <div ref={top} className="sticky top-0 z-20 print:static">
       <DemoCaution />
       <header className="border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-        <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-4 px-4">
+        <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
           <a
             href="/"
             className="flex items-center gap-2 font-semibold text-foreground text-lg tracking-tight no-underline"
@@ -54,10 +54,11 @@ export function SiteHeader({ page }: { page: Page }): JSX.Element {
           </a>
           <div className="flex items-center gap-1">
             <nav aria-label="Site" className="flex items-center">
+              {/* On a phone there is no room for it; the page's own buttons lead there. */}
               <a
                 href="/search"
                 aria-current={page === 'search' ? 'page' : undefined}
-                className={LINK}
+                className={`${LINK} max-sm:hidden`}
               >
                 Try it now
               </a>

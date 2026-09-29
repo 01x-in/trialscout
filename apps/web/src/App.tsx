@@ -61,41 +61,57 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
   return (
     <>
       <SiteHeader page="search" />
-      <main className="mx-auto max-w-3xl px-4 pt-8 pb-16 [overflow-wrap:break-word]">
-        {/* The header names the site, so the page opens with what it does, said once. */}
-        <h1 className="mb-8 text-balance font-semibold text-2xl leading-snug tracking-tight sm:text-3xl">
-          Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule,
-          and show which ones are worth discussing with your doctor.
-        </h1>
-        <ProfileForm
-          initial={initial}
-          onSubmit={(profile) => void run(profile)}
-          busy={state.kind === 'searching'}
-          placeError={placeError}
-        />
-        <p role="status" className="mt-4 min-h-6 text-muted-foreground">
-          {statusText(state)}
-        </p>
-        {state.kind === 'searching' && (
-          // Placeholder cards while the search runs; the status line says what is happening.
-          <div className="skeleton-list mt-4 grid gap-4" aria-hidden="true">
-            {[0, 1, 2].map((i) => (
-              <Card key={i} className="skeleton-card gap-3 px-5">
-                <Skeleton className="h-5 w-4/5" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-2/5" />
-              </Card>
-            ))}
-          </div>
-        )}
-        {state.kind === 'done' && state.outcome.kind === 'results' && (
-          <Results
-            response={state.outcome.response}
-            profile={state.profile}
-            checkTrial={checkTrial}
-            onEdit={editProfile}
+      {/* From 1024px the page splits in thirds: the form on the left, staying in view and
+          scrolling on its own, and the results on the right. Below that it is one column. */}
+      <main className="mx-auto max-w-7xl px-4 pt-6 pb-16 sm:px-6 lg:grid lg:grid-cols-3 lg:items-start lg:gap-8 [overflow-wrap:break-word]">
+        <section
+          aria-labelledby="search-title"
+          className="lg:sticky lg:top-[calc(var(--header-h,8rem)+1rem)] lg:-mx-1 lg:max-h-[calc(100dvh-var(--header-h,8rem)-2rem)] lg:overflow-y-auto lg:px-1"
+        >
+          <h1
+            id="search-title"
+            className="mb-5 font-semibold text-xl tracking-tight sm:text-2xl lg:text-xl"
+          >
+            Check trials near you
+          </h1>
+          <ProfileForm
+            initial={initial}
+            onSubmit={(profile) => void run(profile)}
+            busy={state.kind === 'searching'}
+            placeError={placeError}
           />
-        )}
+        </section>
+        <section aria-label="Results" className="min-w-0 lg:col-span-2">
+          <p role="status" className="mt-4 min-h-6 text-muted-foreground lg:mt-0">
+            {statusText(state)}
+          </p>
+          {state.kind === 'idle' && (
+            <p className="mt-4 hidden rounded-xl border border-dashed p-8 text-center text-muted-foreground lg:block">
+              Trials worth discussing with your doctor will show here, each rule next to the trial's
+              own words.
+            </p>
+          )}
+          {state.kind === 'searching' && (
+            // Placeholder cards while the search runs; the status line says what is happening.
+            <div className="skeleton-list mt-4 grid gap-4" aria-hidden="true">
+              {[0, 1, 2].map((i) => (
+                <Card key={i} className="skeleton-card gap-3 px-5">
+                  <Skeleton className="h-5 w-4/5" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/5" />
+                </Card>
+              ))}
+            </div>
+          )}
+          {state.kind === 'done' && state.outcome.kind === 'results' && (
+            <Results
+              response={state.outcome.response}
+              profile={state.profile}
+              checkTrial={checkTrial}
+              onEdit={editProfile}
+            />
+          )}
+        </section>
       </main>
     </>
   )

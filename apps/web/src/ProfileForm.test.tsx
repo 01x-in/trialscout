@@ -19,15 +19,36 @@ function group(name: string): HTMLElement {
 }
 
 describe('the profile form', () => {
-  // The header already names the site, so the page opens with what it does, said once.
-  it('opens with one heading that says what it does, and no repeated steps', () => {
+  // The header names the site and the landing page says what it does, so this page opens with
+  // a short heading for the form.
+  it('opens with one short heading, and no repeated steps', () => {
     renderApp()
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule, and show which ones are worth discussing with your doctor.',
-    )
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Check trials near you')
     expect(screen.queryByRole('heading', { name: 'TrialScout' })).toBeNull()
     expect(screen.queryByRole('list', { name: 'How it works' })).toBeNull()
+  })
+
+  it('has the form and the results as two labelled parts', () => {
+    renderApp()
+    const formPart = screen.getByRole('region', { name: 'Check trials near you' })
+    const resultsPart = screen.getByRole('region', { name: 'Results' })
+
+    expect(formPart).toContainElement(screen.getByRole('form', { name: 'Your profile' }))
+    expect(resultsPart).not.toContainElement(screen.getByRole('form', { name: 'Your profile' }))
+    // The form comes first, so on a phone it is above the results.
+    expect(formPart.compareDocumentPosition(resultsPart) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+  })
+
+  it('says where the trials will show, until a search has run', async () => {
+    renderApp(async () => ({ kind: 'unavailable' }))
+    const results = within(screen.getByRole('region', { name: 'Results' }))
+    const hint =
+      "Trials worth discussing with your doctor will show here, each rule next to the trial's own words."
+
+    expect(results.getByText(hint)).toBeInTheDocument()
   })
 
   it('groups the questions under plain headings', () => {

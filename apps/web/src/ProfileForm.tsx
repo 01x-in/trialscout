@@ -226,7 +226,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
   }
 
   return (
-    <form className="grid gap-6" onSubmit={submit} noValidate aria-label="Your profile">
+    <form className="@container grid gap-6" onSubmit={submit} noValidate aria-label="Your profile">
       <Section title="About the cancer">
         <Field
           id="cancerType"
@@ -259,7 +259,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
       </Section>
 
       <Section title="About you">
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 @md:grid-cols-2">
           <Field id="age" error={error('age')}>
             {(aria) => (
               <Input
@@ -277,7 +277,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
       </Section>
 
       <Section title="Where you are">
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 @md:grid-cols-2">
           <Field id="country" error={error('country')}>
             {(aria) => (
               <Input
@@ -410,9 +410,15 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           </AlertDescription>
         </Alert>
       )}
-      {/* On a phone the button stays in reach at the bottom while the form scrolls. */}
-      <div className="form-actions max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-4 max-sm:border-t max-sm:bg-background/95 max-sm:px-4 max-sm:py-3 max-sm:backdrop-blur">
-        <Button type="submit" size="lg" className="w-full sm:w-auto sm:min-w-48" disabled={busy}>
+      {/* On a phone, and in the split layout, the button stays in reach at the bottom while the
+          form scrolls. */}
+      <div className="form-actions max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-4 max-sm:border-t max-sm:bg-background/95 max-sm:px-4 max-sm:py-3 max-sm:backdrop-blur lg:sticky lg:bottom-0 lg:z-10 lg:border-t lg:bg-background/95 lg:py-3 lg:backdrop-blur">
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full sm:w-auto sm:min-w-48 lg:w-full"
+          disabled={busy}
+        >
           Find trials
         </Button>
       </div>
