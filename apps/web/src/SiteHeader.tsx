@@ -1,8 +1,9 @@
 import type { JSX } from 'react'
 import { DemoCaution } from './DemoCaution.tsx'
+import { ThemeToggle } from './ThemeToggle.tsx'
 
 // The top of every page: the red disclaimer strip first, then a quiet header with the
-// wordmark and the About link. Both stay in view while the page scrolls; the strip is the
+// wordmark, the About link and the theme switch. Both stay in view while the page scrolls; the strip is the
 // only loud part.
 
 type Page = 'search' | 'about'
@@ -25,15 +26,18 @@ export function SiteHeader({ page }: { page: Page }): JSX.Element {
             </span>
             TrialScout
           </a>
-          <nav aria-label="Site">
-            <a
-              href="/about"
-              aria-current={page === 'about' ? 'page' : undefined}
-              className="rounded-md px-2 py-2 font-medium text-muted-foreground text-sm no-underline hover:text-foreground aria-[current=page]:text-foreground"
-            >
-              About this demo
-            </a>
-          </nav>
+          <div className="flex items-center gap-1">
+            <nav aria-label="Site">
+              <a
+                href="/about"
+                aria-current={page === 'about' ? 'page' : undefined}
+                className="rounded-md px-2 py-2 font-medium text-muted-foreground text-sm no-underline hover:text-foreground aria-[current=page]:text-foreground"
+              >
+                About this demo
+              </a>
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
     </div>
