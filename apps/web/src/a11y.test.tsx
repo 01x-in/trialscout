@@ -125,12 +125,12 @@ async function search(): Promise<void> {
 
 describe('axe (WCAG 2.2 A and AA)', () => {
   it('finds nothing on the empty search page', async () => {
-    render(<Root pathname="/" />)
+    render(<Root pathname="/search" />)
     expect(await violations()).toEqual([])
   })
 
   it('finds nothing when the form shows its errors', async () => {
-    render(<Root pathname="/" />)
+    render(<Root pathname="/search" />)
     fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
     expect(document.querySelector('[aria-invalid="true"]')).not.toBeNull()
     expect(await violations()).toEqual([])

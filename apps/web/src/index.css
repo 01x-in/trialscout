@@ -147,7 +147,7 @@
   /* The disclaimer strip and the header are sticky: keep a focused or jumped-to element
      clear of them (WCAG 2.4.11). On a phone the strip wraps to three lines. */
   html {
-    scroll-padding-top: 9rem;
+    scroll-padding-top: calc(var(--header-h, 8rem) + 1rem);
   }
 
   body {

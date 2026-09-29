@@ -74,15 +74,15 @@ describe('About this demo', () => {
     const { unmount } = render(<Root pathname="/about" />)
     expect(screen.getByRole('link', { name: 'Back to the trial search' })).toHaveAttribute(
       'href',
-      '/',
+      '/search',
     )
     unmount()
 
-    render(<Root pathname="/" />)
+    render(<Root pathname="/search" />)
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       /^Tell us about your cancer/,
     )
     expect(screen.getByRole('link', { name: 'About this demo' })).toHaveAttribute('href', '/about')
-    expect(document.title).toBe('TrialScout')
+    expect(document.title).toBe('Check trials · TrialScout')
   })
 })

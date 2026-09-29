@@ -19,7 +19,7 @@ afterEach(() => {
 
 describe('theme switcher', () => {
   it('follows the system theme until the viewer picks one', () => {
-    render(<Root pathname="/" />)
+    render(<Root pathname="/search" />)
 
     // jsdom reports no dark preference, so the page is light.
     expect(toggle()).toHaveAccessibleName('Switch to dark theme')
@@ -42,7 +42,7 @@ describe('theme switcher', () => {
 
   it('shows the theme the page was opened with', () => {
     document.documentElement.dataset.theme = 'dark'
-    render(<Root pathname="/" />)
+    render(<Root pathname="/search" />)
 
     expect(toggle()).toHaveAccessibleName('Switch to light theme')
   })
