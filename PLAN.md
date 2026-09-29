@@ -165,7 +165,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - Topic order changed. Past-treatment words ("prior", "received", "progression on") now decide before the stage and the spread; "metastatic setting" and "prior to randomization" no longer count; spread to the brain or spine still comes first.
   - Against the 2,539 rules saved by that day's searches, 317 got a different question. Check a sample of them, as well as the four reported cases in `questions.test.ts`.
 - Review the copy the UI facelift (01x-in/trialscout#6) added:
-  - the "How it works" steps;
+  - the search page's heading: since 2026-09-29 it is the intro sentence ("Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule, and show which ones are worth discussing with your doctor."). The big "TrialScout" heading and the "How it works" steps were removed, as they repeated the header and that sentence;
   - the form section headings: "About the cancer", "About you", "Where you are", "Anything else (optional)";
   - the notes line "Stays in this browser tab. We don't store it.";
   - the privacy note above "Find trials" ("We don't store your answers…", linking to the About page), and the About page's list of the two things kept for a short time (cached Jev answers for 7 days, internet address and search times for a day);

@@ -19,17 +19,15 @@ function group(name: string): HTMLElement {
 }
 
 describe('the profile form', () => {
-  it('explains the three steps before the form', () => {
+  // The header already names the site, so the page opens with what it does, said once.
+  it('opens with one heading that says what it does, and no repeated steps', () => {
     renderApp()
-    const steps = within(screen.getByRole('list', { name: 'How it works' })).getAllByRole(
-      'listitem',
-    )
 
-    expect(steps.map((s) => s.textContent)).toEqual([
-      'Tell us about the cancer',
-      'We check every rule of nearby recruiting trials',
-      'Take your questions to your doctor',
-    ])
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule, and show which ones are worth discussing with your doctor.',
+    )
+    expect(screen.queryByRole('heading', { name: 'TrialScout' })).toBeNull()
+    expect(screen.queryByRole('list', { name: 'How it works' })).toBeNull()
   })
 
   it('groups the questions under plain headings', () => {

@@ -62,29 +62,11 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
     <>
       <SiteHeader page="search" />
       <main className="mx-auto max-w-3xl px-4 pt-8 pb-16 [overflow-wrap:break-word]">
-        <h1 className="font-semibold text-3xl tracking-tight sm:text-4xl">TrialScout</h1>
-        <p className="mt-3 text-lg text-muted-foreground leading-relaxed">
+        {/* The header names the site, so the page opens with what it does, said once. */}
+        <h1 className="mb-8 text-balance font-semibold text-2xl leading-snug tracking-tight sm:text-3xl">
           Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule,
           and show which ones are worth discussing with your doctor.
-        </p>
-        {/* The step numbers are drawn by CSS, so each step reads as its words alone. */}
-        <ol
-          className="mt-6 mb-8 grid gap-3 text-sm [counter-reset:step] sm:grid-cols-3"
-          aria-label="How it works"
-        >
-          {[
-            'Tell us about the cancer',
-            'We check every rule of nearby recruiting trials',
-            'Take your questions to your doctor',
-          ].map((step) => (
-            <li
-              key={step}
-              className="flex items-start gap-3 [counter-increment:step] before:grid before:size-7 before:shrink-0 before:place-items-center before:rounded-full before:bg-primary-soft before:font-semibold before:text-primary before:content-[counter(step)]"
-            >
-              <span className="pt-1">{step}</span>
-            </li>
-          ))}
-        </ol>
+        </h1>
         <ProfileForm
           initial={initial}
           onSubmit={(profile) => void run(profile)}
