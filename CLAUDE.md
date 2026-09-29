@@ -42,7 +42,8 @@ Always route work through the context-mode MCP tools so raw output never floods 
 ```
 apps/worker/       Hono API Worker, built by Vite + @cloudflare/vite-plugin (src/app.ts exports AppType;
                    tsconfig.rpc.json emits its declarations for the web app's hc<AppType>)
-apps/web/          Vite + React; worker/index.ts is the web Worker serving dist/ and forwarding /api/*
+apps/web/          Vite + React; worker/index.ts is the web Worker serving dist/, forwarding /api/* and
+                   answering Range requests for /demo/* (static assets ignore Range, and Safari needs it)
                    Pages by path: `/` landing (demo video in public/demo), `/search` (form left, results right from 1024px), `/about`.
 packages/contract/ shared plain TS types with Typia tags (Profile)
 docs/              jev-budget.md, privacy.md (audit; re-run when adding logs, storage or third parties),
