@@ -7,7 +7,7 @@ Public demo (trialscout.cc) that checks a patient's plain-language profile again
 
 ## Status
 
-M1 to M4, the UI facelift and its Tailwind and shadcn/ui restyle are built. Both Workers were first deployed to trialscout.cc on 2026-09-28, but the site is not announced yet. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Announcing the site waits for both; later deploys follow the "Later updates" steps below.
+M1 to M4, the UI facelift, its Tailwind and shadcn/ui restyle, and the landing page with the split search are built. Both Workers were first deployed to trialscout.cc on 2026-09-28, but the site is not announced yet. The GATE 1 verdict review (`docs/gate-1-review.md`) and the GATE 2 wording and safety review (`docs/gate-2-review.md`) are still owed, since M2 to M4 were built at the user's request before them. Announcing the site waits for both; later deploys follow the "Later updates" steps below.
 
 ## context-mode (mandatory)
 
@@ -43,6 +43,7 @@ Always route work through the context-mode MCP tools so raw output never floods 
 apps/worker/       Hono API Worker, built by Vite + @cloudflare/vite-plugin (src/app.ts exports AppType;
                    tsconfig.rpc.json emits its declarations for the web app's hc<AppType>)
 apps/web/          Vite + React; worker/index.ts is the web Worker serving dist/ and forwarding /api/*
+                   Pages by path: `/` landing (demo video in public/demo), `/search` (form left, results right from 1024px), `/about`.
 packages/contract/ shared plain TS types with Typia tags (Profile)
 docs/              jev-budget.md, privacy.md (audit; re-run when adding logs, storage or third parties),
                    gate reviews, deploy-cloudflare.md
@@ -162,7 +163,7 @@ These are the safety mechanism. Every change must preserve them.
 - Calm, plain-spoken; the red strip is the only loud element. Warm stone neutrals, the Geist font, one restrained accent: deep teal (`--accent`), never a verdict colour, so no button reads as "ask your doctor".
 - No clinical medical blue, no stock doctor photos, no gamification or cheerful illustrations.
 - Verdict states distinguishable without colour (icon + label).
-- WCAG AA, readable on a phone, single column on mobile.
+- WCAG AA, readable on a phone, single column on mobile. On `/search` from 1024px the form takes the left third, stays in view and scrolls on its own, and the results fill the right two thirds.
 - Motion only for loading and expanding criteria.
 - Print stylesheet for the doctor sheet: clean black-and-white, disclaimer included.
 

@@ -2,7 +2,7 @@
 
 A recorded screen demo for LinkedIn and X. Most feed video plays muted, so the captions carry the story; the voice-over is optional.
 
-The app is one column, so it records well at 16:9 with the page centred, and crops cleanly to 4:5 or 9:16. The red disclaimer strip stays on screen in every shot. Keep it there; it is part of the message.
+Record on `/search`. From 1024px it shows the form in the left third and the results in the right two thirds, which fills a 16:9 frame; below that it is one column, which crops cleanly to 4:5 or 9:16. The landing page (`/`) hosts the finished video, so do not record it. The red disclaimer strip stays on screen in every shot. Keep it there; it is part of the message.
 
 The patient is **made up**. Never record a real person's details.
 
@@ -27,10 +27,10 @@ Type this in the form, exactly:
 
 | Time | Screen | Caption (burned in) |
 |---|---|---|
-| 0:00 | Empty form under the red strip. Hold on the opening heading. | A cancer trial can list 30 rules for who can join. Which ones apply to you? |
+| 0:00 | Empty form under the red strip, with "Trials worth discussing…" on the right. Hold on the opening heading. | A cancer trial can list 30 rules for who can join. Which ones apply to you? |
 | 0:05 | Fill the four sections (speed it up 2–3×). Tap the **300 km** quick pick. Linger on the notes box and its line "Stays in this browser tab. We don't store it." | A made-up patient: lung cancer, stage IV, near Pune. Plain words, and nothing is stored. |
 | 0:14 | Press **Find trials**. Cut the wait: placeholder cards and "Checking trials against your profile…", about 5 s the first time. | |
-| 0:17 | The page jumps to the results. Hold on the summary bar ("Checked for: …", "24 recruiting trials within 300 km of Pune…") and the group headings ("Nothing likely rules you out", "Not fully checked"). Scroll slowly past the cards: tags, nearest site, the counts bar and pills. | 24 recruiting trials nearby, each checked against every rule. |
+| 0:17 | The results load in the right two thirds. Hold on the summary bar ("Checked for: …", "24 recruiting trials within 300 km of Pune…") and the group headings ("Nothing likely rules you out", "Not fully checked"). Scroll slowly past the cards: tags, nearest site, the counts bar and pills. | 24 recruiting trials nearby, each checked against every rule. |
 | 0:25 | Stop on **NCT06417814**, *A Study to Investigate the Efficacy and Safety of Dato-DXd With or Without Osimertinib…*, "Research Site, Pune · 0 km" (press **Show 10 more** first if it is past the first ten). Press **Check each rule**. | |
 | 0:28 | Zoom on the one **likely meets**: *Must have evidence of documented pre-existing EGFRm information…* | Every answer sits next to the trial's own words, quoted exactly. |
 | 0:35 | Press the **Ask your doctor (17)** filter chip ("Showing 17 of 18 rules."). Zoom on *Less than or equal to (<=2) prior lines of EGFR TKIs (osimertinib is the only permitted prior third generation EGFR TKI).* and its callout "To ask: This rule is about treatments I have had before. Does my treatment history affect it?" | Not enough to go on? It says ask your doctor. It never guesses. |
@@ -65,7 +65,7 @@ Type this in the form, exactly:
 
 ## Before recording
 
-1. **Run the app locally:** `make -j2 dev`, then open http://localhost:5173. `make db-local` must have run once, for the city data. Nothing is deployed yet; if you record after launch, use https://trialscout.cc and skip step 3.
+1. **Run the app locally:** `make -j2 dev`, then open http://localhost:5173/search. `make db-local` must have run once, for the city data. Nothing is deployed yet; if you record after launch, use https://trialscout.cc/search and skip step 3.
 2. **Do one full dry run of every beat**, then check the cards, counts and quotes still match the section above. It also fills the verdict cache, so the takes load instantly and cost nothing more.
 3. **Raise the per-client limits for the session.** The app allows 5 searches a minute and 20 trial checks a minute. Add these to `apps/worker/.dev.vars`:
 

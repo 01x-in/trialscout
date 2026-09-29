@@ -1,8 +1,9 @@
 import { DISCLAIMER, type Profile } from '@trialscout/contract'
 import type { Fetch } from '../../src/http.ts'
 
-// The deploy smoke test (M4): the site serves the app with the exact disclaimer strip,
-// the API rejects a bad request, and one live search and one opened trial work end to end.
+// The deploy smoke test (M4): the site serves the app with the exact disclaimer strip, the
+// landing page's demo video plays in pieces (Safari needs Range requests), the API rejects a
+// bad request, and one live search and one opened trial work end to end.
 // Runs under plain Node, so answers are checked by hand rather than with Typia.
 //
 // The search is real: it asks ClinicalTrials.gov and Jev (well under a cent, at the rates in
@@ -172,10 +173,35 @@ export async function smoke(baseUrl: string, fetch: Fetch): Promise<SmokeResult>
   const home = await check('home page', async () => ['ok', await page('/')])
   if (home === null) return { ok, lines }
 
+  // The web Worker serves the app for any path; the app then shows that page.
+  await check('search page', async () => {
+    if (!(await page('/search')).includes('id="root"')) throw new Failed('not the app')
+    return ['ok', null]
+  })
+
   await check('about page', async () => {
-    // The web Worker serves the app for any path; the app then shows the About page.
     if (!(await page('/about')).includes('id="root"')) throw new Failed('not the app')
     return ['ok', null]
+  })
+
+  await check('demo video', async () => {
+    for (const path of ['/demo/poster.jpg', '/demo/captions.vtt']) {
+      const response = await fetch(at(path))
+      await response.body?.cancel()
+      if (!response.ok) throw new Failed(`${path}: HTTP ${response.status}`)
+    }
+    const video = '/demo/trialscout-demo.mp4'
+    const response = await fetch(at(video), { headers: { Range: 'bytes=0-1' } })
+    await response.body?.cancel()
+    if (!response.ok) throw new Failed(`${video}: HTTP ${response.status}`)
+    // Safari will not play a video from a server that ignores Range and answers 200.
+    if (response.status !== 206) {
+      throw new Failed(`the video answered a Range request with HTTP ${response.status}, not 206`)
+    }
+    return [
+      'video, poster and captions are served; the video answers a Range request with 206',
+      null,
+    ]
   })
 
   await check('disclaimer', async () => {

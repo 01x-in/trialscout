@@ -165,7 +165,7 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - Topic order changed. Past-treatment words ("prior", "received", "progression on") now decide before the stage and the spread; "metastatic setting" and "prior to randomization" no longer count; spread to the brain or spine still comes first.
   - Against the 2,539 rules saved by that day's searches, 317 got a different question. Check a sample of them, as well as the four reported cases in `questions.test.ts`.
 - Review the copy the UI facelift (01x-in/trialscout#6) added:
-  - the search page's heading: since 2026-09-29 it is the intro sentence ("Tell us about your cancer. We check recruiting trials on ClinicalTrials.gov, rule by rule, and show which ones are worth discussing with your doctor."). The big "TrialScout" heading and the "How it works" steps were removed, as they repeated the header and that sentence;
+  - the search page's heading, "Check trials near you" (since 2026-09-29 the intro sentence sat there; it moved to the landing page, so the page says what it does once);
   - the form section headings: "About the cancer", "About you", "Where you are", "Anything else (optional)";
   - the notes line "Stays in this browser tab. We don't store it.";
   - the privacy note above "Find trials" ("We don't store your answers…", linking to the About page), and the About page's list of the two things kept for a short time (cached Jev answers for 7 days, internet address and search times for a day);
@@ -175,13 +175,22 @@ The review sets the confidence threshold and is recorded in `docs/gate-1-review.
   - the distance quick picks after "Or choose:", and "Any distance" (the field shows those words; it means no distance limit), the summary's "at any distance from …", and its note when ClinicalTrials.gov lists more trials than a search reads ("We checked the first 100 it gave us, which are not always the nearest. Choose a smaller distance to check the nearest ones.");
   - "Official page", and the card line "Checking every rule found something that likely rules you out." shown when opening a trial finds a likely fail the search did not.
 - The Tailwind and shadcn/ui restyle (2026-09-28) adds no new copy. The "About this demo" link moves from the footer to a header, which the disclaimer strip still sits above on every page. Confirm the strip still reads as the loudest thing on the page, in light and dark, and on a phone, where the strip and header stay in view together.
+- The landing page (2026-09-29): `/` is now a landing page and the search moved to `/search`, split in thirds on a wide screen (form left, results right). Review its copy:
+  - the heading "Which cancer trials are worth asking your doctor about?" and the line under it ("Tell us about the cancer in plain words. TrialScout checks every rule of the recruiting trials near you on ClinicalTrials.gov, and shows each answer next to the trial's own words.");
+  - "Try it now", in the header, the hero and the close;
+  - the video caption "A two-minute demo with a made-up patient." and the video's captions (`apps/web/public/demo/captions.vtt`, the same words as the voice-over, which says "prototype" and "not medical advice");
+  - the three steps ("Tell us about the cancer", "We check every rule of nearby recruiting trials", "Take your questions to your doctor");
+  - "Built to be careful" and its four cards: "Every answer quotes the trial", "It says "ask your doctor"", "Listed last, not hidden" ("Trials where something likely rules you out stay on the list, at the end. The AI can be wrong."), "Nothing is stored";
+  - the close, "A demo, not medical advice. No doctor has checked its answers.";
+  - the empty-results hint beside the form: "Trials worth discussing with your doctor will show here, each rule next to the trial's own words.";
+  - the strip is still the first thing on the page, on the landing page and on a phone.
 - The theme switch (2026-09-28) in the header: a sun or moon button whose screen-reader name is "Switch to light theme" or "Switch to dark theme". It remembers the pick in `localStorage` (`trialscout.theme`), which holds nothing else; see docs/privacy.md.
 
 Record the result in `docs/gate-2-review.md`.
 
 ### M4 Launch
 
-- M4.1 `make smoke URL=…`: with a made-up profile, check the home and About pages, the exact disclaimer in the app bundle and its print styles, a 422 Problem Details for a bad request, and one live search and opened trial end to end. Tested against the real API with recorded trials, and run against a local production build.
+- M4.1 `make smoke URL=…`: with a made-up profile, check the home, search and About pages, the demo video (which must answer a Range request with 206), the exact disclaimer in the app bundle and its print styles, a 422 Problem Details for a bad request, and one live search and opened trial end to end. Tested against the real API with recorded trials, and run against a local production build.
   - The disclaimer text moved to `@trialscout/contract`, so the smoke test checks the same string the app renders.
 - M4.2 `docs/deploy-cloudflare.md` covering D1, KV, secrets, the Durable Object, the Cloudflare rate-limit rule, the TypeSafe spending cap and the trialscout.cc domain; `make db-remote` for the deployed D1.
   - The web Worker is served only on `trialscout.cc` (`workers_dev: false`), so nothing gets around the zone's rate-limiting rule.
