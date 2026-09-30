@@ -42,12 +42,23 @@ type Seen = { url: string; method: string; body: string | null }
 const VIDEO = '/demo/trialscout-demo.mp4'
 const VIDEO_BYTES = new Uint8Array([0, 0, 0, 24, 102, 116, 121, 112])
 
-/** How the static assets answer for the demo video: `ranges` like Cloudflare, `whole` never 206. */
-type Demo = 'ranges' | 'whole' | 'missing'
+/**
+ * How the static assets answer for the demo files: `ranges` like a healthy site, `whole` never
+ * 206, `missing` a 404, `spa` the app's index.html for every path (what a deployment without
+ * the files gives), `html-video` and `html-captions` everything good but that one file.
+ */
+type Demo = 'ranges' | 'whole' | 'missing' | 'spa' | 'html-video' | 'html-captions'
 
 function demoFile(pathname: string, init: RequestInit | undefined, demo: Demo): Response | null {
   if (!pathname.startsWith('/demo/')) return null
   if (demo === 'missing') return new Response('not found', { status: 404 })
+  if (demo === 'spa') return new Response(HTML, { headers: type('text/html; charset=utf-8') })
+  if (demo === 'html-video' && pathname === VIDEO) {
+    return new Response(HTML, { status: 206, headers: type('text/html; charset=utf-8') })
+  }
+  if (demo === 'html-captions' && pathname === '/demo/captions.vtt') {
+    return new Response(HTML, { headers: type('text/html; charset=utf-8') })
+  }
   if (pathname === '/demo/poster.jpg') return new Response('jpg', { headers: type('image/jpeg') })
   if (pathname === '/demo/captions.vtt')
     return new Response('WEBVTT', { headers: type('text/vtt') })
@@ -111,6 +122,33 @@ describe('the deploy smoke test', () => {
     expect(result.ok).toBe(false)
     expect(result.lines).toContain(
       'demo video: FAILED: the video answered a Range request with HTTP 200, not 206',
+    )
+  })
+
+  it("fails when the demo files come back as the app's page, which a missing file does with a 200", async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'spa'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'demo video: FAILED: /demo/poster.jpg is not an image (text/html; charset=utf-8)',
+    )
+  })
+
+  it("fails when the captions come back as the app's page", async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'html-captions'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'demo video: FAILED: /demo/captions.vtt is not captions (text/html; charset=utf-8)',
+    )
+  })
+
+  it('fails when the video is not a video, even if it answers a range', async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'html-video'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'demo video: FAILED: /demo/trialscout-demo.mp4 is not a video (text/html; charset=utf-8)',
     )
   })
 

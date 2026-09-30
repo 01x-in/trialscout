@@ -185,18 +185,28 @@ export async function smoke(baseUrl: string, fetch: Fetch): Promise<SmokeResult>
   })
 
   await check('demo video', async () => {
-    for (const path of ['/demo/poster.jpg', '/demo/captions.vtt']) {
-      const response = await fetch(at(path))
+    // A file missing from the deployment is answered with the app's index.html and HTTP 200,
+    // so the type is checked as well as the status.
+    const video = '/demo/trialscout-demo.mp4'
+    const kinds: [path: string, is: (type: string) => boolean, what: string][] = [
+      ['/demo/poster.jpg', (t) => t.startsWith('image/'), 'an image'],
+      ['/demo/captions.vtt', (t) => t.startsWith('text/vtt'), 'captions'],
+      [video, (t) => t.startsWith('video/'), 'a video'],
+    ]
+    for (const [path, is, what] of kinds) {
+      // The video is asked for in parts, as Safari does.
+      const response = await fetch(
+        at(path),
+        path === video ? { headers: { Range: 'bytes=0-1' } } : {},
+      )
       await response.body?.cancel()
       if (!response.ok) throw new Failed(`${path}: HTTP ${response.status}`)
-    }
-    const video = '/demo/trialscout-demo.mp4'
-    const response = await fetch(at(video), { headers: { Range: 'bytes=0-1' } })
-    await response.body?.cancel()
-    if (!response.ok) throw new Failed(`${video}: HTTP ${response.status}`)
-    // Safari will not play a video from a server that ignores Range and answers 200.
-    if (response.status !== 206) {
-      throw new Failed(`the video answered a Range request with HTTP ${response.status}, not 206`)
+      const type = response.headers.get('Content-Type') ?? 'no type'
+      if (!is(type)) throw new Failed(`${path} is not ${what} (${type})`)
+      // Safari will not play a video from a server that ignores Range and answers 200.
+      if (path === video && response.status !== 206) {
+        throw new Failed(`the video answered a Range request with HTTP ${response.status}, not 206`)
+      }
     }
     return [
       'video, poster and captions are served; the video answers a Range request with 206',
