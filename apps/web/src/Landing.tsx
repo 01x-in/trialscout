@@ -55,8 +55,8 @@ export function Landing(): JSX.Element {
   return (
     <>
       <SiteHeader page="home" />
-      <main className="mx-auto max-w-5xl space-y-16 px-4 pt-10 pb-20 sm:px-6 sm:pt-14 [overflow-wrap:break-word]">
-        <section className="max-w-3xl space-y-5">
+      <main className="mx-auto max-w-5xl space-y-20 px-4 pt-12 pb-24 sm:space-y-28 sm:px-6 sm:pt-20 sm:pb-32 [overflow-wrap:break-word]">
+        <section className="max-w-3xl space-y-6">
           <h1 className="text-balance font-semibold text-3xl leading-tight tracking-tight sm:text-4xl">
             Which cancer trials are worth asking your doctor about?
           </h1>
@@ -68,7 +68,7 @@ export function Landing(): JSX.Element {
           <TryItNow />
         </section>
 
-        <section aria-label="Demo" className="space-y-3">
+        <section aria-label="Demo" className="space-y-4">
           {/* No autoplay: motion is kept for loading and expanding. Captions are on. */}
           <video
             aria-label="Demo video"
@@ -84,12 +84,12 @@ export function Landing(): JSX.Element {
           <p className="text-muted-foreground text-sm">A two-minute demo with a made-up patient.</p>
         </section>
 
-        <section aria-labelledby="how-title" className="space-y-5">
+        <section aria-labelledby="how-title" className="space-y-8">
           <h2 id="how-title" className="font-semibold text-2xl tracking-tight">
             How it works
           </h2>
           {/* The step numbers are drawn by CSS, so each step reads as its words alone. */}
-          <ol className="grid gap-4 [counter-reset:step] sm:grid-cols-3" aria-label="How it works">
+          <ol className="grid gap-6 [counter-reset:step] sm:grid-cols-3" aria-label="How it works">
             {STEPS.map((step) => (
               <li
                 key={step}
@@ -101,13 +101,13 @@ export function Landing(): JSX.Element {
           </ol>
         </section>
 
-        <section aria-labelledby="careful-title" className="space-y-5">
+        <section aria-labelledby="careful-title" className="space-y-8">
           <h2 id="careful-title" className="font-semibold text-2xl tracking-tight">
             Built to be careful
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2">
             {PROMISES.map(({ title, text, icon: Icon }) => (
-              <Card key={title} className="gap-2 px-5">
+              <Card key={title} className="gap-3 px-6 py-7">
                 <Icon aria-hidden="true" className="size-5 text-primary" />
                 <h3 className="font-semibold text-lg tracking-tight">{title}</h3>
                 <p className="text-muted-foreground">{text}</p>
@@ -116,7 +116,7 @@ export function Landing(): JSX.Element {
           </div>
         </section>
 
-        <section className="space-y-4 border-t pt-10">
+        <section className="space-y-5 border-t pt-14">
           <TryItNow />
           <p className="text-muted-foreground text-sm">
             A demo, not medical advice. No doctor has checked its answers.
