@@ -66,7 +66,7 @@ export function App({ search = searchTrials, checkTrial = checkTrialApi }: Props
       <main className="mx-auto max-w-7xl px-4 pt-6 pb-16 sm:px-6 lg:grid lg:grid-cols-3 lg:items-start lg:gap-8 [overflow-wrap:break-word]">
         <section
           aria-labelledby="search-title"
-          className="lg:sticky lg:top-[calc(var(--header-h,8rem)+1rem)] lg:-mx-1 lg:max-h-[calc(100dvh-var(--header-h,8rem)-2rem)] lg:overflow-y-auto lg:px-1"
+          className="lg:sticky lg:top-[calc(var(--header-h,8rem)+1rem)] lg:-ml-1 lg:max-h-[calc(100dvh-var(--header-h,8rem)-2rem)] lg:overflow-y-auto lg:pr-4 lg:pl-1"
         >
           <h1
             id="search-title"

@@ -28,7 +28,7 @@ Type this in the form, exactly:
 | Time | Screen | Caption (burned in) |
 |---|---|---|
 | 0:00 | Empty form under the red strip, with "Trials worth discussing…" on the right. Hold on the opening heading. | A cancer trial can list 30 rules for who can join. Which ones apply to you? |
-| 0:05 | Fill the four sections (speed it up 2–3×). Tap the **300 km** quick pick. Linger on the notes box and its line "Stays in this browser tab. We don't store it." | A made-up patient: lung cancer, stage IV, near Pune. Plain words, and nothing is stored. |
+| 0:05 | Fill the form (speed it up 2–3×). Tap the **100 km** quick pick, or **500 km** for a wider search. Linger on the notes box and its line "Stays in this browser tab. We don't store it." | A made-up patient: lung cancer, stage IV, near Pune. Plain words, and nothing is stored. |
 | 0:14 | Press **Find trials**. Cut the wait: placeholder cards and "Checking trials against your profile…", about 5 s the first time. | |
 | 0:17 | The results load in the right two thirds. Hold on the summary bar ("Checked for: …", "24 recruiting trials within 300 km of Pune…") and the group headings ("Nothing likely rules you out", "Not fully checked"). Scroll slowly past the cards: tags, nearest site, the counts bar and pills. | 24 recruiting trials nearby, each checked against every rule. |
 | 0:25 | Stop on **NCT06417814**, *A Study to Investigate the Efficacy and Safety of Dato-DXd With or Without Osimertinib…*, "Research Site, Pune · 0 km" (press **Show 10 more** first if it is past the first ten). Press **Check each rule**. | |

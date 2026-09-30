@@ -105,33 +105,48 @@ describe('the profile form', () => {
     })
   })
 
-  it('groups the questions under plain headings', () => {
+  it('asks every question in one card, in order, with no section headings', () => {
+    renderApp()
+    const form = screen.getByRole('form', { name: 'Your profile' })
+    const labels = [
+      'Cancer type',
+      'Stage',
+      'Age',
+      'Sex',
+      'Country',
+      'City',
+      'How far can you travel? (km)',
+      'Past treatments, medicines and other conditions',
+    ]
+
+    expect(form.querySelectorAll('[data-slot="card"]')).toHaveLength(1)
+    expect(within(form).queryAllByRole('heading')).toEqual([])
+    const asked = labels.map((label) =>
+      label === 'Sex'
+        ? within(form).getByRole('radiogroup', { name: 'Sex' })
+        : within(form).getByLabelText(label),
+    )
+    // Document order is the order they are asked in.
+    asked.slice(1).forEach((field, i) => {
+      const before = asked[i] as HTMLElement
+      expect(before.compareDocumentPosition(field) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    })
+  })
+
+  it('shows the cancer type example as a placeholder, not as a line of help', () => {
     renderApp()
 
-    // Headings, not <legend>s: Safari draws a legend on the card's border.
-    for (const name of [
-      'About the cancer',
-      'About you',
-      'Where you are',
-      'Anything else (optional)',
-    ]) {
-      expect(group(name)).toContainElement(screen.getByRole('heading', { level: 2, name }))
-    }
+    expect(screen.getByLabelText('Cancer type')).toHaveAttribute(
+      'placeholder',
+      'non-small cell lung cancer',
+    )
+    expect(screen.queryByText(/As your doctor or report names it/)).toBeNull()
+  })
 
-    expect(within(group('About the cancer')).getByLabelText('Cancer type')).toBeInTheDocument()
-    expect(within(group('About the cancer')).getByLabelText('Stage')).toBeInTheDocument()
-    expect(within(group('About you')).getByLabelText('Age')).toBeInTheDocument()
-    expect(within(group('About you')).getByRole('radiogroup', { name: 'Sex' })).toBeInTheDocument()
-    expect(within(group('Where you are')).getByLabelText('Country')).toBeInTheDocument()
-    expect(within(group('Where you are')).getByLabelText('City')).toBeInTheDocument()
-    expect(
-      within(group('Where you are')).getByLabelText('How far can you travel? (km)'),
-    ).toBeInTheDocument()
-    expect(
-      within(group('Anything else (optional)')).getByLabelText(
-        'Past treatments, medicines and other conditions',
-      ),
-    ).toBeInTheDocument()
+  it('says the last question is optional', () => {
+    renderApp()
+
+    expect(screen.getByText(/^Optional\. In your own words/)).toBeInTheDocument()
   })
 
   // Safari draws its own menus at its own height, ignoring ours; the form turns that off
@@ -174,11 +189,11 @@ describe('the profile form', () => {
     const picks = within(group('Distance quick picks'))
     const distance = screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)')
 
-    fireEvent.click(picks.getByRole('button', { name: '300 km' }))
+    fireEvent.click(picks.getByRole('button', { name: '500 km' }))
 
-    expect(distance.value).toBe('300')
-    expect(picks.getByRole('button', { name: '300 km' })).toHaveAttribute('aria-pressed', 'true')
-    expect(picks.getByRole('button', { name: '50 km' })).toHaveAttribute('aria-pressed', 'false')
+    expect(distance.value).toBe('500')
+    expect(picks.getByRole('button', { name: '500 km' })).toHaveAttribute('aria-pressed', 'true')
+    expect(picks.getByRole('button', { name: '100 km' })).toHaveAttribute('aria-pressed', 'false')
 
     fireEvent.change(distance, { target: { value: '120' } })
     for (const pick of picks.getAllByRole('button')) {
@@ -186,11 +201,13 @@ describe('the profile form', () => {
     }
   })
 
-  it('shows the quick picks as plain text buttons after "Or choose:"', () => {
+  it('shows the quick picks as plain text buttons, with no lead-in and no line of help', () => {
     renderApp()
     const picks = group('Distance quick picks')
 
-    expect(picks).toHaveTextContent(/^Or choose:/)
+    expect(picks).toHaveTextContent(/^100 km/)
+    expect(screen.queryByText(/Or choose/)).toBeNull()
+    expect(screen.queryByText(/We look for trial sites/)).toBeNull()
     for (const pick of within(picks).getAllByRole('button')) expect(pick).toHaveClass('text-pick')
   })
 
@@ -199,9 +216,8 @@ describe('the profile form', () => {
     const picks = within(group('Distance quick picks'))
 
     expect(picks.getAllByRole('button').map((b) => b.textContent)).toEqual([
-      '50 km',
       '100 km',
-      '300 km',
+      '500 km',
       '1,000 km',
       'Any distance',
     ])
