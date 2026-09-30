@@ -51,6 +51,60 @@ describe('the profile form', () => {
     expect(results.getByText(hint)).toBeInTheDocument()
   })
 
+  describe('the country field', () => {
+    function suggestions(): string[] {
+      const country = screen.getByLabelText('Country')
+      const list = document.getElementById(country.getAttribute('list') ?? '')
+      expect(list?.tagName).toBe('DATALIST')
+      return [...(list?.querySelectorAll('option') ?? [])].map((o) => o.value)
+    }
+
+    // A text box with suggestions, not a picker: anything can still be typed.
+    it('is a text box that suggests country names as you type', () => {
+      renderApp()
+      const country = screen.getByLabelText('Country')
+
+      expect((country as HTMLInputElement).type).toBe('text')
+      expect(country).not.toHaveAttribute('readonly')
+      expect(suggestions()).toEqual(
+        expect.arrayContaining(['India', 'United States', 'Netherlands']),
+      )
+    })
+
+    it('lists each country once, in order, as a name the server can look up', () => {
+      renderApp()
+      const names = suggestions()
+
+      expect(names.length).toBeGreaterThan(200)
+      expect(new Set(names).size).toBe(names.length)
+      expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)))
+      for (const name of names) expect(name).toBe(name.trim())
+      // Countries that no longer exist, and the one GeoNames names "The Netherlands".
+      for (const gone of ['Netherlands Antilles', 'Serbia and Montenegro', 'The Netherlands']) {
+        expect(names).not.toContain(gone)
+      }
+    })
+
+    it('still searches with a country typed by hand that is not on the list', async () => {
+      const seen: Profile[] = []
+      renderApp(async (profile) => {
+        seen.push(profile)
+        return { kind: 'unavailable' }
+      })
+      fireEvent.change(screen.getByLabelText('Cancer type'), { target: { value: 'lung cancer' } })
+      fireEvent.change(screen.getByLabelText('Stage'), { target: { value: 'IV' } })
+      fireEvent.change(screen.getByLabelText('Age'), { target: { value: '58' } })
+      fireEvent.click(screen.getByLabelText('Female'))
+      fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'USA' } })
+      fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Honolulu' } })
+      fireEvent.click(screen.getByRole('button', { name: 'Any distance' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+
+      await screen.findByText(/could not check trials right now/i)
+      expect(seen[0]?.country).toBe('USA')
+    })
+  })
+
   it('groups the questions under plain headings', () => {
     renderApp()
 

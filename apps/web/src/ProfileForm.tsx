@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label.tsx'
 import { NativeSelect } from '@/components/ui/native-select.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { cn } from '@/lib/utils.ts'
+import { COUNTRIES } from './countries.ts'
 import { ANY_DISTANCE_KM, ANY_DISTANCE_LABEL, distanceText } from './format.ts'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
@@ -280,13 +281,22 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
         <div className="grid gap-5 @md:grid-cols-2">
           <Field id="country" error={error('country')}>
             {(aria) => (
-              <Input
-                id="country"
-                name="country"
-                autoComplete="country-name"
-                defaultValue={initial?.country}
-                {...aria}
-              />
+              <>
+                <Input
+                  id="country"
+                  name="country"
+                  list="country-suggestions"
+                  autoComplete="country-name"
+                  defaultValue={initial?.country}
+                  {...aria}
+                />
+                {/* Suggestions only: the box still takes anything typed, like "USA" or "UK". */}
+                <datalist id="country-suggestions">
+                  {COUNTRIES.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+              </>
             )}
           </Field>
 
