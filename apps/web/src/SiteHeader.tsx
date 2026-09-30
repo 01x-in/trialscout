@@ -40,16 +40,7 @@ export function SiteHeader({ page }: { page: Page }): JSX.Element {
       <DemoCaution />
       <header className="border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
-          <a
-            href="/"
-            className="flex items-center gap-2 font-semibold text-foreground text-lg tracking-tight no-underline"
-          >
-            <span
-              aria-hidden="true"
-              className="grid size-7 place-items-center rounded-md bg-primary font-bold text-primary-foreground text-sm"
-            >
-              T
-            </span>
+          <a href="/" className="font-semibold text-foreground text-lg tracking-tight no-underline">
             TrialScout
           </a>
           <div className="flex items-center gap-1">
