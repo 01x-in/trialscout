@@ -6,7 +6,7 @@ Record on `/search`, at 1440×900. From 1024px wide the page shows the form in t
 
 The patient is **made up**. Never record a real person's details.
 
-The beats below were last run against live ClinicalTrials.gov and Jev (`jev-1.13.0`) on 2026-09-29, with the local build of `task/landing-page`. ClinicalTrials.gov changes daily, so do the dry run in "Before recording" and check the beats still hold.
+The beats below were last run against live ClinicalTrials.gov and Jev (`jev-1.13.0`) on 2026-09-30, on trialscout.cc. ClinicalTrials.gov changes daily, so do the dry run in "Before recording" and check the beats still hold.
 
 ## The profile
 
@@ -16,11 +16,11 @@ Type this in the form, exactly:
 |---|---|
 | Cancer type | `breast cancer` |
 | Stage | Stage IV |
-| Age | `52` |
+| Age | `50` |
 | Sex | Female |
 | Country | type `Uni` and pick **United States** from the suggestions |
 | City | `Honolulu` |
-| How far can you travel? | the **100 km** pick |
+| How far can you travel? | the **500 km** pick |
 | Past treatments, medicines and other conditions | `ER-positive, HER2-negative. Just found it has spread to the bones. No treatment for it yet.` |
 
 ## Beats
@@ -28,9 +28,9 @@ Type this in the form, exactly:
 | Time | Screen | Caption (burned in) |
 |---|---|---|
 | 0:00 | Empty `/search`: the form in one card on the left, and "Trials worth discussing with your doctor will show here…" on the right. Hold. | A cancer trial can list 30 rules for who can join. Which ones apply to you? |
-| 0:06 | Fill the form (speed it up 2–3×). Show the country suggestions, then click the **100 km** pick. Linger on the notes box and its line "Stays in this browser tab. We don't store it." | A made-up patient: breast cancer, stage IV, in Honolulu. Plain words, and nothing is stored. |
+| 0:06 | Fill the form (speed it up 2–3×). Show the country suggestions, then click the **500 km** pick. Linger on the notes box and its line "Stays in this browser tab. We don't store it." | A made-up patient: breast cancer, stage IV, in Honolulu. Plain words, and nothing is stored. |
 | 0:20 | Click **Find trials**. Cut the wait: the placeholder cards on the right and "Checking trials against your profile…", about 5 s the first time. | |
-| 0:26 | The results land on the right while the form stays in view on the left. Hold on the summary ("Checked for: breast cancer, stage IV, age 52, female", "17 recruiting trials within 100 km of Honolulu…") and the group headings. Scroll the results slowly: tags, nearest site, counts bar and pills. | 17 recruiting trials nearby, each checked against every rule. |
+| 0:26 | The results land on the right while the form stays in view on the left. Hold on the summary ("Checked for: breast cancer, stage IV, age 50, female", "18 recruiting trials within 500 km of Honolulu…") and the group headings. Scroll the results slowly: tags, nearest site, counts bar and pills. | 18 recruiting trials nearby, each checked against every rule. |
 | 0:42 | Open **NCT07085767**, *Palazestrant in Combination With Ribociclib for the First-line Treatment of ER+/HER2-…*. Press **Check each rule**. | |
 | 0:48 | Zoom on the **likely meets** rule *ER+, HER2- locally advanced or metastatic breast cancer…* | Every answer sits next to the trial's own words, quoted exactly. |
 | 0:56 | Press the **Ask your doctor** filter chip. Zoom on a rule with its callout, "To ask: This rule is about treatments I have had before. Does my treatment history affect it?" | Not enough to go on? It says ask your doctor. It never guesses. |
@@ -39,9 +39,9 @@ Type this in the form, exactly:
 | 1:28 | Close the preview and press **Official page**. Hold on the ClinicalTrials.gov page. | Every trial links back to its official page. |
 | 1:36 | *Optional.* Header: **About this demo**, scrolled past "What it cannot do". Then the end card (added in the edit). | TrialScout is a demo, not medical advice. Rule checks by TypeSafe Jev. Trial data from ClinicalTrials.gov. |
 
-## What the beats showed on 2026-09-29
+## What the beats showed on 2026-09-30 (the published video)
 
-- **Search:** 17 recruiting trials within 100 km of Honolulu; 8 of them with nothing that likely rules her out; the rest under "Something likely rules you out", listed last. The top card, **NCT07492641** (BGB-43395 plus letrozole), showed 3 likely meets and 5 ask your doctor.
+- **Search:** 18 recruiting trials within 500 km of Honolulu; 7 of them with nothing that likely rules her out; the rest under "Something likely rules you out", listed last (not scrolled to in the published video). The top card, **NCT07492641** (BGB-43395 plus letrozole), showed 3 likely meets and 5 ask your doctor, and was opened for its 8 rules.
 - **NCT07085767** (palazestrant plus ribociclib): opened, 14 rules (9 ask your doctor, 5 likely meets). *ER+, HER2- locally advanced or metastatic breast cancer that is not amenable to curative therapy* was likely meets at 99%.
 - The list order, the counts and the size of the "likely rules you out" section move from run to run as ClinicalTrials.gov and the cached verdicts change, so find the trial by NCT ID and re-read the numbers on the dry run.
 - Opening a trial checks the rules the search left "not checked yet", and the card's counts update to match. A trial with rules left unchecked sits under "Not fully checked", never under "Nothing likely rules you out".

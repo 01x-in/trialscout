@@ -1,76 +1,64 @@
 WEBVTT
 
-00:00:00.500 --> 00:00:04.175
+00:00:00.500 --> 00:00:04.994
 Clinical trials decide who can join with a long list of rules.
 
-00:00:04.175 --> 00:00:07.791
+00:00:04.994 --> 00:00:09.416
 Thirty, forty of them… written for doctors, not for patients.
 
-00:00:08.141 --> 00:00:10.227
+00:00:13.000 --> 00:00:15.064
 So here's a made-up patient.
 
-00:00:10.227 --> 00:00:15.664
-She's fifty-two, her breast cancer has spread, and she lives in Honolulu.
+00:00:15.064 --> 00:00:20.152
+She's fifty, her breast cancer has spread… and she lives in Honolulu.
 
-00:00:18.000 --> 00:00:23.526
-Then a line in her own words: ER-positive, HER2-negative… no treatment yet.
+00:00:24.000 --> 00:00:26.740
+She can travel up to five hundred kilometers.
 
-00:00:24.000 --> 00:00:26.528
+00:00:29.000 --> 00:00:31.268
 And none of this gets stored.
 
-00:00:26.528 --> 00:00:28.969
+00:00:31.268 --> 00:00:33.458
 It stays in her browser tab.
 
-00:00:29.319 --> 00:00:31.524
-TrialScout asks ClinicalTrials.
+00:00:34.500 --> 00:00:40.955
+Then a line in her own words: ER-positive, HER2-negative… no treatment yet.
 
-00:00:31.524 --> 00:00:37.214
-gov what's recruiting nearby… then checks her against every rule, one at a time.
+00:00:41.500 --> 00:00:44.487
+Eighteen trials within five hundred kilometers.
 
-00:00:42.000 --> 00:00:44.719
-Seventeen trials within a hundred kilometers.
+00:00:44.487 --> 00:00:47.537
+For seven of them, nothing likely rules her out.
 
-00:00:44.719 --> 00:00:47.619
-For eight of them, nothing likely rules her out.
-
-00:00:51.000 --> 00:00:57.548
+00:00:48.500 --> 00:00:54.816
 Each card adds it up: the rules she likely meets… and the ones only her doctor can answer.
 
-00:01:02.000 --> 00:01:05.506
-The trials where something likely rules her out?
+00:00:57.000 --> 00:00:58.123
+Let's open one.
 
-00:01:05.506 --> 00:01:07.113
-They go to the bottom.
-
-00:01:07.113 --> 00:01:10.034
-Not hidden… because the AI can be wrong.
-
-00:01:10.384 --> 00:01:11.561
-Let's open this one.
-
-00:01:11.561 --> 00:01:15.678
+00:00:58.123 --> 00:01:03.362
 Every answer sits right next to the trial's own words, quoted exactly.
 
-00:01:17.000 --> 00:01:21.226
-Advanced, ER-positive, HER2-negative… likely meets.
+00:01:06.000 --> 00:01:11.991
+This one's for ER-positive, HER2-negative breast cancer… and she likely meets it.
 
-00:01:21.576 --> 00:01:25.249
+00:01:13.500 --> 00:01:16.751
 And when it doesn't know enough, it doesn't guess.
 
-00:01:25.249 --> 00:01:29.657
+00:01:16.751 --> 00:01:20.652
 It says: ask your doctor… and gives her the question to ask.
 
-00:01:30.007 --> 00:01:34.279
+00:01:25.000 --> 00:01:28.158
 She can print those questions and take them to her next appointment.
 
-00:01:39.000 --> 00:01:45.873
-Every trial links back to its official page, so this is where the conversation starts… not where it ends.
+00:01:33.500 --> 00:01:36.717
+Every trial links back to its official page.
 
-00:01:47.000 --> 00:01:49.017
+00:01:36.717 --> 00:01:40.884
+This is where the conversation starts… not where it ends.
+
+00:01:42.900 --> 00:01:44.759
 TrialScout is a prototype.
 
-00:01:49.017 --> 00:01:50.878
+00:01:44.759 --> 00:01:46.476
 It's not medical advice.
-
-00:01:50.878 --> 00:01:54.059
-The rule checks come from TypeSafe's Jev.
