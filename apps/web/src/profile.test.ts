@@ -56,8 +56,8 @@ describe('formToCandidate', () => {
     expect(formToCandidate(form(filled))).toEqual(profile)
   })
 
-  // The field shows "Any distance"; the API gets the furthest a search reaches.
-  it.each(['Any distance', 'any', ' ANY '])('reads "%s" as 20,000 km', (value) => {
+  // The field shows "Any"; typing "Any distance" still works. The API gets the furthest a search reaches.
+  it.each(['Any', 'Any distance', 'any', ' ANY '])('reads "%s" as 20,000 km', (value) => {
     expect(formToCandidate(form({ ...filled, maxDistanceKm: value }))).toEqual({
       ...profile,
       maxDistanceKm: 20000,

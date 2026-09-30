@@ -58,13 +58,13 @@ export function profileSummary(profile: Profile): string {
   return `${profile.cancerType}, ${stage}, age ${profile.age}, ${sex}.`
 }
 
-// The most maxDistanceKm allows, offered as "Any distance": no limit at all.
+// The most maxDistanceKm allows, offered as "Any": no limit at all.
 export { ANY_DISTANCE_KM }
 
 /** What the distance field shows for ANY_DISTANCE_KM; the search itself gets the number. */
-export const ANY_DISTANCE_LABEL = 'Any distance'
+export const ANY_DISTANCE_LABEL = 'Any'
 
-/** The distance field's text for a distance: "300", or "Any distance". */
+/** The distance field's text for a distance: "300", or "Any". */
 export function distanceText(km: number): string {
   return km >= ANY_DISTANCE_KM ? ANY_DISTANCE_LABEL : String(km)
 }

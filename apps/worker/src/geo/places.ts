@@ -29,6 +29,7 @@ const COUNTRY_ALIASES: Record<string, string> = {
   wales: 'GB',
   'northern ireland': 'GB',
   'the netherlands': 'NL',
+  netherlands: 'NL',
   holland: 'NL',
   'south korea': 'KR',
   korea: 'KR',

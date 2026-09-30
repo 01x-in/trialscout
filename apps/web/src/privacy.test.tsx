@@ -7,6 +7,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { searchTrials } from './api.ts'
 import { App } from './App.tsx'
+import { Root } from './Root.tsx'
 
 // The privacy audit (docs/privacy.md), browser side: the profile stays in this tab's
 // sessionStorage, goes only to our own /api in a request body, and the page loads nothing
@@ -33,6 +34,19 @@ describe('privacy (browser)', () => {
     const imports = [...css.matchAll(/@import\s+([^;]+);/g)].map((m) => m[1]?.trim())
     expect(imports).toEqual(["'tailwindcss'", "'tw-animate-css'"])
     expect(css).not.toMatch(/url\(/i)
+  })
+
+  it('loads the landing page video, poster and captions from this site only', () => {
+    render(<Root pathname="/" />)
+    const urls = [...document.querySelectorAll('[src], [poster], link[href]')].flatMap((el) =>
+      ['src', 'poster', 'href']
+        .map((attr) => el.getAttribute(attr))
+        .filter((value): value is string => value !== null && el.tagName !== 'A'),
+    )
+
+    expect(urls.length).toBeGreaterThanOrEqual(3)
+    for (const url of urls)
+      expect(new URL(url, window.location.origin).origin).toBe(window.location.origin)
   })
 
   it('serves the Geist font from this site', () => {

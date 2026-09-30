@@ -39,7 +39,7 @@ export function About(): JSX.Element {
       <main className="mx-auto max-w-3xl space-y-8 px-4 pt-8 pb-16 text-base leading-relaxed [overflow-wrap:break-word]">
         <div className="space-y-3">
           <p className="text-sm">
-            <a href="/" className="font-medium">
+            <a href="/search" className="font-medium">
               Back to the trial search
             </a>
           </p>

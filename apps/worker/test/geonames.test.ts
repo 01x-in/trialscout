@@ -93,6 +93,7 @@ describe('countryCode', () => {
     ['United States of America', 'US'],
     ['UK', 'GB'],
     ['England', 'GB'],
+    ['Netherlands', 'NL'],
     ['Atlantis', null],
   ])('%j -> %j', (text, code) => {
     expect(countryCode(text, countries)).toBe(code)

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label.tsx'
 import { NativeSelect } from '@/components/ui/native-select.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { cn } from '@/lib/utils.ts'
+import { COUNTRIES } from './countries.ts'
 import { ANY_DISTANCE_KM, ANY_DISTANCE_LABEL, distanceText } from './format.ts'
 import { checkProfile, formToCandidate, type ProfileField, saveProfile } from './profile.ts'
 
@@ -52,7 +53,7 @@ const SEXES: { value: Sex; label: string }[] = [
 ]
 
 const DISTANCE_PICKS: { km: number; label: string }[] = [
-  ...[50, 100, 300, 1000].map((km) => ({ km, label: `${km.toLocaleString('en-GB')} km` })),
+  ...[100, 500, 1000].map((km) => ({ km, label: `${km.toLocaleString('en-GB')} km` })),
   { km: ANY_DISTANCE_KM, label: ANY_DISTANCE_LABEL },
 ]
 const NOTES_LIMIT = 4000
@@ -61,8 +62,8 @@ const number = (n: number): string => n.toLocaleString('en-GB')
 
 /**
  * The distance the field's text stands for, read as the form reads it on submit: "any" or
- * "Any distance" is ANY_DISTANCE_KM, and a whole number is itself. So typing "20000" shows
- * "Any distance" as chosen, since it is the same search.
+ * "Any" is ANY_DISTANCE_KM, and a whole number is itself. So typing "20000" shows
+ * "Any" as chosen, since it is the same search.
  */
 function pickedKm(text: string): number | null {
   const value = text.trim()
@@ -178,26 +179,12 @@ function Choice<T extends string>({
   )
 }
 
-// A titled group of questions. A heading rather than a <fieldset>/<legend>: Safari draws a
-// legend on the card's border, and headings let screen readers jump between sections.
-function Section({ title, children }: { title: string; children: ReactNode }): JSX.Element {
-  const id = `section-${title.toLowerCase().replace(/[^a-z]+/g, '-')}`
-  return (
-    <Card role="group" aria-labelledby={id} className="gap-5 px-5 sm:px-6">
-      <h2 id={id} className="font-semibold text-lg tracking-tight">
-        {title}
-      </h2>
-      {children}
-    </Card>
-  )
-}
-
 function focusField(field: ProfileField): void {
   document.getElementById(field)?.focus()
 }
 
-// The guided profile form, one page in four short sections. The profile is kept only in
-// this browser tab (sessionStorage).
+// The profile form: one card, eight questions. The profile is kept only in this browser tab
+// (sessionStorage).
 export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX.Element {
   const [invalid, setInvalid] = useState<ProfileField[]>([])
   const [distance, setDistance] = useState(
@@ -226,15 +213,17 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
   }
 
   return (
-    <form className="grid gap-6" onSubmit={submit} noValidate aria-label="Your profile">
-      <Section title="About the cancer">
-        <Field
-          id="cancerType"
-          hint='As your doctor or report names it, for example "non-small cell lung cancer".'
-          error={error('cancerType')}
-        >
+    <form className="@container grid gap-6" onSubmit={submit} noValidate aria-label="Your profile">
+      <Card className="gap-5 px-5 py-6 sm:px-6">
+        <Field id="cancerType" error={error('cancerType')}>
           {(aria) => (
-            <Input id="cancerType" name="cancerType" defaultValue={initial?.cancerType} {...aria} />
+            <Input
+              id="cancerType"
+              name="cancerType"
+              placeholder="non-small cell lung cancer"
+              defaultValue={initial?.cancerType}
+              {...aria}
+            />
           )}
         </Field>
 
@@ -256,10 +245,8 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
             </NativeSelect>
           )}
         </Field>
-      </Section>
 
-      <Section title="About you">
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 @md:grid-cols-2">
           <Field id="age" error={error('age')}>
             {(aria) => (
               <Input
@@ -274,19 +261,26 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
 
           <Choice id="sex" options={SEXES} checked={initial?.sex} error={error('sex')} />
         </div>
-      </Section>
 
-      <Section title="Where you are">
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 @md:grid-cols-2">
           <Field id="country" error={error('country')}>
             {(aria) => (
-              <Input
-                id="country"
-                name="country"
-                autoComplete="country-name"
-                defaultValue={initial?.country}
-                {...aria}
-              />
+              <>
+                <Input
+                  id="country"
+                  name="country"
+                  list="country-suggestions"
+                  autoComplete="country-name"
+                  defaultValue={initial?.country}
+                  {...aria}
+                />
+                {/* Suggestions only: the box still takes anything typed, like "USA" or "UK". */}
+                <datalist id="country-suggestions">
+                  {COUNTRIES.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+              </>
             )}
           </Field>
 
@@ -305,7 +299,6 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
 
         <Field
           id="maxDistanceKm"
-          hint="We look for trial sites within this distance of your city."
           error={error('maxDistanceKm')}
           after={
             <div
@@ -313,10 +306,6 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
               aria-label="Distance quick picks"
               className="flex flex-wrap items-center gap-x-1 text-sm"
             >
-              {/* The group has its own name; this is for sighted readers. */}
-              <span className="mr-1 text-muted-foreground" aria-hidden="true">
-                Or choose:
-              </span>
               {DISTANCE_PICKS.map((pick) => (
                 // Plain text buttons, like links; the chosen one is bold, with a tick, and not
                 // underlined. Each is a 44px touch target.
@@ -345,12 +334,10 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
             />
           )}
         </Field>
-      </Section>
 
-      <Section title="Anything else (optional)">
         <Field
           id="notes"
-          hint="In your own words: gene test results, medicines you take, treatments you have had. The more you tell us, the fewer rules we have to leave for your doctor."
+          hint="Optional. In your own words: gene test results, medicines you take, treatments you have had. The more you tell us, the fewer rules we have to leave for your doctor."
           error={error('notes')}
           describedBy={['notes-privacy', 'notes-count']}
           after={
@@ -373,7 +360,7 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
             />
           )}
         </Field>
-      </Section>
+      </Card>
 
       {/* Said plainly before anything is sent. The details are on the About page. */}
       <Alert role="note" aria-label="Your privacy" variant="muted">
@@ -410,9 +397,15 @@ export function ProfileForm({ initial, onSubmit, busy, placeError }: Props): JSX
           </AlertDescription>
         </Alert>
       )}
-      {/* On a phone the button stays in reach at the bottom while the form scrolls. */}
-      <div className="form-actions max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-4 max-sm:border-t max-sm:bg-background/95 max-sm:px-4 max-sm:py-3 max-sm:backdrop-blur">
-        <Button type="submit" size="lg" className="w-full sm:w-auto sm:min-w-48" disabled={busy}>
+      {/* On a phone, and in the split layout, the button stays in reach at the bottom while the
+          form scrolls. */}
+      <div className="form-actions max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-4 max-sm:border-t max-sm:bg-background/95 max-sm:px-4 max-sm:py-3 max-sm:backdrop-blur lg:sticky lg:bottom-0 lg:z-10 lg:border-t lg:bg-background/95 lg:py-3 lg:backdrop-blur">
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full sm:w-auto sm:min-w-48 lg:w-full"
+          disabled={busy}
+        >
           Find trials
         </Button>
       </div>

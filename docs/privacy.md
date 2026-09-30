@@ -33,8 +33,9 @@ The tests named below hold the result in place. Re-run this audit whenever a log
   - The object now sets an alarm for when its last hit leaves the longest window, and then deletes all its storage.
 - **No analytics or third-party assets.**
   - `index.html` and `index.css` load nothing from another origin: no scripts, fonts or images. `index.css` imports only Tailwind and `tw-animate-css`, which Vite bundles into our own stylesheet.
+  - The landing page's demo video, its poster and its captions are our own files (`apps/web/public/demo`), served from trialscout.cc by the web Worker. There is no third-party video player or embed, so watching it tells nobody else.
   - The Geist font comes from the `@fontsource-variable/geist` package. Vite copies its files into our own `/assets`, so the browser fetches it from trialscout.cc and never from a font service.
-  - The web Worker only forwards `/api/*` to the API Worker and serves static files. It logs nothing.
+  - The web Worker forwards `/api/*` to the API Worker and serves static files. It also cuts byte ranges out of `/demo/*` for the video. It logs nothing.
 - **Cache and store.** The KV key is a hash of the model, question version, trial, criteria and normalised profile without location. The value holds answers only. D1 rows come from ClinicalTrials.gov and GeoNames only.
 
 ## Tests
@@ -51,7 +52,7 @@ The tests named below hold the result in place. Re-run this audit whenever a log
   - Jev never sees the city, country or distance;
   - the outage log names no condition or place.
 - `apps/web/src/privacy.test.tsx`:
-  - no third-party assets, and the font files are served from our own site;
+  - no third-party assets, the font files are served from our own site, and so are the landing page's video, poster and captions;
   - the profile stays in `sessionStorage` only, and `localStorage` holds nothing but the theme pick;
   - the profile is sent only to our own `/api`, in the body.
 

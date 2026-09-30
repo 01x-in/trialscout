@@ -171,13 +171,16 @@ It checks, with a made-up profile and no free-text notes:
 - that the home and About pages load;
 - that the app carries the exact disclaimer text, and that no print style hides it on the page or the doctor sheet;
 - that a bad request gets a 422 Problem Details answer;
+- the demo video, its poster and its captions are served, and the video answers a Range request with 206 (Safari will not play it otherwise);
 - that one live search and one opened trial with split criteria work end to end.
 
 It passes like this:
 
 ```
 home page: ok
+search page: ok
 about page: ok
+demo video: video, poster and captions are served; the video answers a Range request with 206
 disclaimer: exact text in the app; the print styles keep it on the page and the doctor sheet
 bad request: 422 Problem Details
 search: 24 trials near Pune, live from ClinicalTrials.gov; 121 Jev questions in 18 requests, 30 from the cache

@@ -39,13 +39,49 @@ function realApi(options: TestOptions = {}): Api {
 
 type Seen = { url: string; method: string; body: string | null }
 
+const VIDEO = '/demo/trialscout-demo.mp4'
+const VIDEO_BYTES = new Uint8Array([0, 0, 0, 24, 102, 116, 121, 112])
+
+/**
+ * How the static assets answer for the demo files: `ranges` like a healthy site, `whole` never
+ * 206, `missing` a 404, `spa` the app's index.html for every path (what a deployment without
+ * the files gives), `html-video` and `html-captions` everything good but that one file.
+ */
+type Demo = 'ranges' | 'whole' | 'missing' | 'spa' | 'html-video' | 'html-captions'
+
+function demoFile(pathname: string, init: RequestInit | undefined, demo: Demo): Response | null {
+  if (!pathname.startsWith('/demo/')) return null
+  if (demo === 'missing') return new Response('not found', { status: 404 })
+  if (demo === 'spa') return new Response(HTML, { headers: type('text/html; charset=utf-8') })
+  if (demo === 'html-video' && pathname === VIDEO) {
+    return new Response(HTML, { status: 206, headers: type('text/html; charset=utf-8') })
+  }
+  if (demo === 'html-captions' && pathname === '/demo/captions.vtt') {
+    return new Response(HTML, { headers: type('text/html; charset=utf-8') })
+  }
+  if (pathname === '/demo/poster.jpg') return new Response('jpg', { headers: type('image/jpeg') })
+  if (pathname === '/demo/captions.vtt')
+    return new Response('WEBVTT', { headers: type('text/vtt') })
+  if (pathname !== VIDEO) return null
+  const range = new Headers(init?.headers).get('Range')
+  if (demo === 'ranges' && range === 'bytes=0-1') {
+    return new Response(VIDEO_BYTES.slice(0, 2), {
+      status: 206,
+      headers: { 'Content-Type': 'video/mp4', 'Content-Range': `bytes 0-1/${VIDEO_BYTES.length}` },
+    })
+  }
+  return new Response(VIDEO_BYTES, { headers: type('video/mp4') })
+}
+
 /** The web Worker: the static build, and /api/* passed to `api`. */
-function site(api: Api, build = BUILD, seen: Seen[] = []): Fetch {
+function site(api: Api, build = BUILD, seen: Seen[] = [], demo: Demo = 'ranges'): Fetch {
   return async (input, init) => {
     const body = typeof init?.body === 'string' ? init.body : null
     seen.push({ url: input, method: init?.method ?? 'GET', body })
     const { pathname } = new URL(input)
     if (pathname.startsWith('/api/')) return api(pathname, init)
+    const file = demoFile(pathname, init, demo)
+    if (file !== null) return file
     if (pathname === SCRIPT) return new Response(build.script, { headers: type('text/javascript') })
     if (pathname === STYLES) return new Response(build.styles, { headers: type('text/css') })
     return new Response(HTML, { headers: type('text/html; charset=utf-8') })
@@ -68,7 +104,9 @@ describe('the deploy smoke test', () => {
     expect(result.ok).toBe(true)
     expect(result.lines).toEqual([
       'home page: ok',
+      'search page: ok',
       'about page: ok',
+      'demo video: video, poster and captions are served; the video answers a Range request with 206',
       'disclaimer: exact text in the app; the print styles keep it on the page and the doctor sheet',
       'bad request: 422 Problem Details',
       expect.stringMatching(
@@ -76,6 +114,49 @@ describe('the deploy smoke test', () => {
       ),
       expect.stringMatching(/^trial NCT\d{8}: \d+ criteria, each next to its source text$/),
     ])
+  })
+
+  it('fails when the video cannot be fetched in parts, since Safari will not play it', async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'whole'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'demo video: FAILED: the video answered a Range request with HTTP 200, not 206',
+    )
+  })
+
+  it("fails when the demo files come back as the app's page, which a missing file does with a 200", async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'spa'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'demo video: FAILED: /demo/poster.jpg is not an image (text/html; charset=utf-8)',
+    )
+  })
+
+  it("fails when the captions come back as the app's page", async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'html-captions'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'demo video: FAILED: /demo/captions.vtt is not captions (text/html; charset=utf-8)',
+    )
+  })
+
+  it('fails when the video is not a video, even if it answers a range', async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'html-video'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain(
+      'demo video: FAILED: /demo/trialscout-demo.mp4 is not a video (text/html; charset=utf-8)',
+    )
+  })
+
+  it('fails when the demo files are missing', async () => {
+    const result = await smoke(SITE, site(realApi(), BUILD, [], 'missing'))
+
+    expect(result.ok).toBe(false)
+    expect(result.lines).toContain('demo video: FAILED: /demo/poster.jpg: HTTP 404')
   })
 
   it('sends the made-up profile only as a JSON body, never in a URL', async () => {

@@ -370,6 +370,18 @@ describe('App', () => {
     expect(screen.getByLabelText(/cancer type/i)).toHaveFocus()
   })
 
+  it('swaps the where-trials-will-show hint for the results once a search has run', async () => {
+    renderWith({ kind: 'results', response: response([result('NCT00000001')]) })
+    const hint = /^Trials worth discussing with your doctor will show here/
+    expect(screen.getByText(hint)).toBeInTheDocument()
+
+    fillProfile()
+    fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+    await screen.findAllByRole('article')
+
+    expect(screen.queryByText(hint)).toBeNull()
+  })
+
   it('closes rules checked against old answers when the search is run again', async () => {
     const checked: Checked[] = []
     const card = await searchAndOpen(

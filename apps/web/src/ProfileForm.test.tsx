@@ -19,46 +19,134 @@ function group(name: string): HTMLElement {
 }
 
 describe('the profile form', () => {
-  it('explains the three steps before the form', () => {
+  // The header names the site and the landing page says what it does, so this page opens with
+  // a short heading for the form.
+  it('opens with one short heading, and no repeated steps', () => {
     renderApp()
-    const steps = within(screen.getByRole('list', { name: 'How it works' })).getAllByRole(
-      'listitem',
-    )
 
-    expect(steps.map((s) => s.textContent)).toEqual([
-      'Tell us about the cancer',
-      'We check every rule of nearby recruiting trials',
-      'Take your questions to your doctor',
-    ])
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Check trials near you')
+    expect(screen.queryByRole('heading', { name: 'TrialScout' })).toBeNull()
+    expect(screen.queryByRole('list', { name: 'How it works' })).toBeNull()
   })
 
-  it('groups the questions under plain headings', () => {
+  it('has the form and the results as two labelled parts', () => {
     renderApp()
+    const formPart = screen.getByRole('region', { name: 'Check trials near you' })
+    const resultsPart = screen.getByRole('region', { name: 'Results' })
 
-    // Headings, not <legend>s: Safari draws a legend on the card's border.
-    for (const name of [
-      'About the cancer',
-      'About you',
-      'Where you are',
-      'Anything else (optional)',
-    ]) {
-      expect(group(name)).toContainElement(screen.getByRole('heading', { level: 2, name }))
+    expect(formPart).toContainElement(screen.getByRole('form', { name: 'Your profile' }))
+    expect(resultsPart).not.toContainElement(screen.getByRole('form', { name: 'Your profile' }))
+    // The form comes first, so on a phone it is above the results.
+    expect(formPart.compareDocumentPosition(resultsPart) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+  })
+
+  it('says where the trials will show, until a search has run', async () => {
+    renderApp(async () => ({ kind: 'unavailable' }))
+    const results = within(screen.getByRole('region', { name: 'Results' }))
+    const hint =
+      "Trials worth discussing with your doctor will show here, each rule next to the trial's own words."
+
+    expect(results.getByText(hint)).toBeInTheDocument()
+  })
+
+  describe('the country field', () => {
+    function suggestions(): string[] {
+      const country = screen.getByLabelText('Country')
+      const list = document.getElementById(country.getAttribute('list') ?? '')
+      expect(list?.tagName).toBe('DATALIST')
+      return [...(list?.querySelectorAll('option') ?? [])].map((o) => o.value)
     }
 
-    expect(within(group('About the cancer')).getByLabelText('Cancer type')).toBeInTheDocument()
-    expect(within(group('About the cancer')).getByLabelText('Stage')).toBeInTheDocument()
-    expect(within(group('About you')).getByLabelText('Age')).toBeInTheDocument()
-    expect(within(group('About you')).getByRole('radiogroup', { name: 'Sex' })).toBeInTheDocument()
-    expect(within(group('Where you are')).getByLabelText('Country')).toBeInTheDocument()
-    expect(within(group('Where you are')).getByLabelText('City')).toBeInTheDocument()
-    expect(
-      within(group('Where you are')).getByLabelText('How far can you travel? (km)'),
-    ).toBeInTheDocument()
-    expect(
-      within(group('Anything else (optional)')).getByLabelText(
-        'Past treatments, medicines and other conditions',
-      ),
-    ).toBeInTheDocument()
+    // A text box with suggestions, not a picker: anything can still be typed.
+    it('is a text box that suggests country names as you type', () => {
+      renderApp()
+      const country = screen.getByLabelText('Country')
+
+      expect((country as HTMLInputElement).type).toBe('text')
+      expect(country).not.toHaveAttribute('readonly')
+      expect(suggestions()).toEqual(
+        expect.arrayContaining(['India', 'United States', 'Netherlands']),
+      )
+    })
+
+    it('lists each country once, in order, as a name the server can look up', () => {
+      renderApp()
+      const names = suggestions()
+
+      expect(names.length).toBeGreaterThan(200)
+      expect(new Set(names).size).toBe(names.length)
+      expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)))
+      for (const name of names) expect(name).toBe(name.trim())
+      // Countries that no longer exist, and the one GeoNames names "The Netherlands".
+      for (const gone of ['Netherlands Antilles', 'Serbia and Montenegro', 'The Netherlands']) {
+        expect(names).not.toContain(gone)
+      }
+    })
+
+    it('still searches with a country typed by hand that is not on the list', async () => {
+      const seen: Profile[] = []
+      renderApp(async (profile) => {
+        seen.push(profile)
+        return { kind: 'unavailable' }
+      })
+      fireEvent.change(screen.getByLabelText('Cancer type'), { target: { value: 'lung cancer' } })
+      fireEvent.change(screen.getByLabelText('Stage'), { target: { value: 'IV' } })
+      fireEvent.change(screen.getByLabelText('Age'), { target: { value: '58' } })
+      fireEvent.click(screen.getByLabelText('Female'))
+      fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'USA' } })
+      fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Honolulu' } })
+      fireEvent.click(screen.getByRole('button', { name: 'Any' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
+
+      await screen.findByText(/could not check trials right now/i)
+      expect(seen[0]?.country).toBe('USA')
+    })
+  })
+
+  it('asks every question in one card, in order, with no section headings', () => {
+    renderApp()
+    const form = screen.getByRole('form', { name: 'Your profile' })
+    const labels = [
+      'Cancer type',
+      'Stage',
+      'Age',
+      'Sex',
+      'Country',
+      'City',
+      'How far can you travel? (km)',
+      'Past treatments, medicines and other conditions',
+    ]
+
+    expect(form.querySelectorAll('[data-slot="card"]')).toHaveLength(1)
+    expect(within(form).queryAllByRole('heading')).toEqual([])
+    const asked = labels.map((label) =>
+      label === 'Sex'
+        ? within(form).getByRole('radiogroup', { name: 'Sex' })
+        : within(form).getByLabelText(label),
+    )
+    // Document order is the order they are asked in.
+    asked.slice(1).forEach((field, i) => {
+      const before = asked[i] as HTMLElement
+      expect(before.compareDocumentPosition(field) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    })
+  })
+
+  it('shows the cancer type example as a placeholder, not as a line of help', () => {
+    renderApp()
+
+    expect(screen.getByLabelText('Cancer type')).toHaveAttribute(
+      'placeholder',
+      'non-small cell lung cancer',
+    )
+    expect(screen.queryByText(/As your doctor or report names it/)).toBeNull()
+  })
+
+  it('says the last question is optional', () => {
+    renderApp()
+
+    expect(screen.getByText(/^Optional\. In your own words/)).toBeInTheDocument()
   })
 
   // Safari draws its own menus at its own height, ignoring ours; the form turns that off
@@ -101,11 +189,11 @@ describe('the profile form', () => {
     const picks = within(group('Distance quick picks'))
     const distance = screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)')
 
-    fireEvent.click(picks.getByRole('button', { name: '300 km' }))
+    fireEvent.click(picks.getByRole('button', { name: '500 km' }))
 
-    expect(distance.value).toBe('300')
-    expect(picks.getByRole('button', { name: '300 km' })).toHaveAttribute('aria-pressed', 'true')
-    expect(picks.getByRole('button', { name: '50 km' })).toHaveAttribute('aria-pressed', 'false')
+    expect(distance.value).toBe('500')
+    expect(picks.getByRole('button', { name: '500 km' })).toHaveAttribute('aria-pressed', 'true')
+    expect(picks.getByRole('button', { name: '100 km' })).toHaveAttribute('aria-pressed', 'false')
 
     fireEvent.change(distance, { target: { value: '120' } })
     for (const pick of picks.getAllByRole('button')) {
@@ -113,38 +201,36 @@ describe('the profile form', () => {
     }
   })
 
-  it('shows the quick picks as plain text buttons after "Or choose:"', () => {
+  it('shows the quick picks as plain text buttons, with no lead-in and no line of help', () => {
     renderApp()
     const picks = group('Distance quick picks')
 
-    expect(picks).toHaveTextContent(/^Or choose:/)
+    expect(picks).toHaveTextContent(/^100 km/)
+    expect(screen.queryByText(/Or choose/)).toBeNull()
+    expect(screen.queryByText(/We look for trial sites/)).toBeNull()
     for (const pick of within(picks).getAllByRole('button')) expect(pick).toHaveClass('text-pick')
   })
 
-  it('offers "Any distance", for a patient who can travel anywhere', () => {
+  it('offers "Any", for a patient who can travel anywhere', () => {
     renderApp()
     const picks = within(group('Distance quick picks'))
 
     expect(picks.getAllByRole('button').map((b) => b.textContent)).toEqual([
-      '50 km',
       '100 km',
-      '300 km',
+      '500 km',
       '1,000 km',
-      'Any distance',
+      'Any',
     ])
-    fireEvent.click(picks.getByRole('button', { name: 'Any distance' }))
+    fireEvent.click(picks.getByRole('button', { name: 'Any' }))
 
-    // The field says "Any distance"; the search gets 20,000 km (see the next test).
+    // The field says "Any"; the search gets 20,000 km (see the next test).
     expect(screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)').value).toBe(
-      'Any distance',
+      'Any',
     )
-    expect(picks.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    expect(picks.getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('selects "Any distance" when 20000 is typed, since that is the same search', () => {
+  it('selects "Any" when 20000 is typed, since that is the same search', () => {
     renderApp()
     const picks = within(group('Distance quick picks'))
 
@@ -152,14 +238,11 @@ describe('the profile form', () => {
       target: { value: '20000' },
     })
 
-    expect(picks.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    expect(picks.getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
     expect(picks.getByRole('button', { name: '1,000 km' })).toHaveAttribute('aria-pressed', 'false')
   })
 
-  it('searches 20,000 km, the furthest a search reaches, for "Any distance"', async () => {
+  it('searches 20,000 km, the furthest a search reaches, for "Any"', async () => {
     const searched: number[] = []
     renderApp(async (profile) => {
       searched.push(profile.maxDistanceKm)
@@ -171,7 +254,7 @@ describe('the profile form', () => {
     fireEvent.click(screen.getByLabelText('Female'))
     fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'India' } })
     fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Pune' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Any distance' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Any' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
 
@@ -179,7 +262,7 @@ describe('the profile form', () => {
     expect(searched).toEqual([20000])
   })
 
-  it('shows "Any distance" again for a saved search at 20,000 km', () => {
+  it('shows "Any" again for a saved search at 20,000 km', () => {
     sessionStorage.setItem(
       'trialscout.profile',
       JSON.stringify({
@@ -200,12 +283,9 @@ describe('the profile form', () => {
     )
 
     expect(screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)').value).toBe(
-      'Any distance',
+      'Any',
     )
-    expect(screen.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    expect(screen.getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('never submits the form from a quick pick', () => {
