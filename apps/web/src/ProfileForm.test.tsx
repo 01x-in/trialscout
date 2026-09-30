@@ -97,7 +97,7 @@ describe('the profile form', () => {
       fireEvent.click(screen.getByLabelText('Female'))
       fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'USA' } })
       fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Honolulu' } })
-      fireEvent.click(screen.getByRole('button', { name: 'Any distance' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Any' }))
       fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
 
       await screen.findByText(/could not check trials right now/i)
@@ -211,7 +211,7 @@ describe('the profile form', () => {
     for (const pick of within(picks).getAllByRole('button')) expect(pick).toHaveClass('text-pick')
   })
 
-  it('offers "Any distance", for a patient who can travel anywhere', () => {
+  it('offers "Any", for a patient who can travel anywhere', () => {
     renderApp()
     const picks = within(group('Distance quick picks'))
 
@@ -219,21 +219,18 @@ describe('the profile form', () => {
       '100 km',
       '500 km',
       '1,000 km',
-      'Any distance',
+      'Any',
     ])
-    fireEvent.click(picks.getByRole('button', { name: 'Any distance' }))
+    fireEvent.click(picks.getByRole('button', { name: 'Any' }))
 
-    // The field says "Any distance"; the search gets 20,000 km (see the next test).
+    // The field says "Any"; the search gets 20,000 km (see the next test).
     expect(screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)').value).toBe(
-      'Any distance',
+      'Any',
     )
-    expect(picks.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    expect(picks.getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('selects "Any distance" when 20000 is typed, since that is the same search', () => {
+  it('selects "Any" when 20000 is typed, since that is the same search', () => {
     renderApp()
     const picks = within(group('Distance quick picks'))
 
@@ -241,14 +238,11 @@ describe('the profile form', () => {
       target: { value: '20000' },
     })
 
-    expect(picks.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    expect(picks.getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
     expect(picks.getByRole('button', { name: '1,000 km' })).toHaveAttribute('aria-pressed', 'false')
   })
 
-  it('searches 20,000 km, the furthest a search reaches, for "Any distance"', async () => {
+  it('searches 20,000 km, the furthest a search reaches, for "Any"', async () => {
     const searched: number[] = []
     renderApp(async (profile) => {
       searched.push(profile.maxDistanceKm)
@@ -260,7 +254,7 @@ describe('the profile form', () => {
     fireEvent.click(screen.getByLabelText('Female'))
     fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'India' } })
     fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Pune' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Any distance' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Any' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Find trials' }))
 
@@ -268,7 +262,7 @@ describe('the profile form', () => {
     expect(searched).toEqual([20000])
   })
 
-  it('shows "Any distance" again for a saved search at 20,000 km', () => {
+  it('shows "Any" again for a saved search at 20,000 km', () => {
     sessionStorage.setItem(
       'trialscout.profile',
       JSON.stringify({
@@ -289,12 +283,9 @@ describe('the profile form', () => {
     )
 
     expect(screen.getByLabelText<HTMLInputElement>('How far can you travel? (km)').value).toBe(
-      'Any distance',
+      'Any',
     )
-    expect(screen.getByRole('button', { name: 'Any distance' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    expect(screen.getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('never submits the form from a quick pick', () => {

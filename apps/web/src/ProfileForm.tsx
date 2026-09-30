@@ -62,8 +62,8 @@ const number = (n: number): string => n.toLocaleString('en-GB')
 
 /**
  * The distance the field's text stands for, read as the form reads it on submit: "any" or
- * "Any distance" is ANY_DISTANCE_KM, and a whole number is itself. So typing "20000" shows
- * "Any distance" as chosen, since it is the same search.
+ * "Any" is ANY_DISTANCE_KM, and a whole number is itself. So typing "20000" shows
+ * "Any" as chosen, since it is the same search.
  */
 function pickedKm(text: string): number | null {
   const value = text.trim()

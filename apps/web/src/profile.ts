@@ -41,7 +41,7 @@ export function formToCandidate(form: FormData): unknown {
     sex: text(form, 'sex'),
     country: text(form, 'country'),
     city: text(form, 'city'),
-    // The field shows "Any distance" (or the patient types "any"); the search gets the number.
+    // The field shows "Any" (or the patient types "any"); the search gets the number.
     maxDistanceKm: /^any\b/i.test(text(form, 'maxDistanceKm'))
       ? ANY_DISTANCE_KM
       : wholeNumber(form, 'maxDistanceKm'),
